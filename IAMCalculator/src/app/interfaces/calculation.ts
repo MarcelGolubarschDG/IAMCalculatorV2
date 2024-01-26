@@ -1,0 +1,39 @@
+export interface Calculation {
+    id:number;
+    basic:{
+    calculationName:string;
+    calculationDesc:string;
+    },
+    customer: {
+    customerName:string;
+    customerNumber:number;
+    customerInternalEmployees:number;
+    customerExternalEmployees:number;
+    },
+    marketunit:{
+    marketunitName:string;
+    marketunitResponsible:string;
+    },
+    targetsystems: {
+    licenseOIM:number;
+    servicelevel:number;
+    stages:number;
+    antivirSrv:boolean;
+    dedicatedSrv:boolean
+    amountMSAD:number;
+    amountMSAAD:number;
+    amountMSEX:number;
+    amountMSEXO:number;
+    amountMSSP:number;
+    amountMSSPO:number;
+    amountMSTEAMS:number;
+    amountFS:number;
+    amountSAPHCMCSV:number;
+    amountSAPHCM:number;
+    amountSAPAPP:number;
+    amountLDAP:number;
+    amountSTAR:number;
+    cloudProducts:string;
+    },
+    servers:any;
+}

@@ -1,0 +1,266 @@
+
+<button class="btn btn-danger" type="button" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
+<button class="btn btn-primary" type="button" (click)="goToPage('/Edit/Calculation/' + calculations?.id)"><i class="bi bi-pencil-fill"></i></button>
+<button class="btn btn-primary d-inline-flex align-items-center" type="button"><i class="bi bi-filetype-csv"></i></button>
+<button class="btn btn-primary d-inline-flex align-items-center" type="button"><i class="bi bi-filetype-xlsx"></i></button>
+
+<div class="row">
+    <div class="col spacer-xl"></div>
+</div>
+
+    <!-- Container Header-->
+    <div class="row">
+        <div class="col d-flex align-items-center justify-content-start">
+            <div style="font-weight: bold;">{{ calculations?.basic?.calculationName }}</div>
+        </div>
+    </div>
+
+
+<div class="row">
+    <div class="col spacer-xl"></div>
+</div>
+    
+    
+    <!-- Allgemein / Projekt -->
+    <div class="row">
+        <div class="col-4">
+            <div class="ITSs">
+                <div class="ITSg">Allgemein</div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Idenitäten</div>
+                        <div class="ITSv">{{ this.CalculateIdentities() }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Zielsyteme</div>
+                        <div class="ITSv">{{ this.CalculateTargetsystems() }}</div>
+                    </div>
+                    <div class="ITSr1">
+                        <div class="ITSn">Server</div>
+                        <div class="ITSv">{{ this.amountOfServerByCalcID() }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Mntl. Lizenzkosten:</div>
+                        <div class="ITSv">2500€</div>
+                    </div>
+                    <div class="ITSr1">
+                        <div class="ITSn">Mntl. Hardwarekosten:</div>
+                        <div class="ITSv">3500€</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Mntl. Gesamtkosten:</div>
+                        <div class="ITSv">6000€</div>
+                    </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="ITSs">
+                <div class="ITSg">Projekt</div>
+                <div class="ITSr1">
+                    <div class="ITSnSpecial">Anforderungsbeschreibung</div>
+                    <div class="ITSv">{{ calculations?.basic?.calculationDesc }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+<div class="row">
+    <div class="col spacer-xl"></div>
+</div>
+
+
+    <!-- Kunde / Markteinheit -->
+    <div class="row">
+        <div class="col-4">
+            <div class="ITSs">
+                <div class="ITSg">Kunde</div>
+                <div class="ITSr1">
+                    <div class="ITSn">Kundenname</div>
+                    <div class="ITSv">{{ calculations?.customer?.customerName }}</div>
+                </div>
+                <div class="ITSr0">
+                    <div class="ITSn">Kundennummer</div>
+                    <div class="ITSv">{{ calculations?.customer?.customerNumber }}</div>
+                </div>
+                <div class="ITSr1">
+                    <div class="ITSn">Mitarbeiter (intern)</div>
+                    <div class="ITSv">{{ calculations?.customer?.customerInternalEmployees }}</div>
+                </div>
+                <div class="ITSr0">
+                    <div class="ITSn">Mitarbeiter (extern)</div>
+                    <div class="ITSv">{{ calculations?.customer?.customerExternalEmployees }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="ITSs">
+                <div class="ITSg">Markteinheit</div>
+                <div class="ITSr0">
+                    <div class="ITSn">Name</div>
+                    <div class="ITSv">{{ calculations?.marketunit?.marketunitName }}</div>
+                </div>
+                <div class="ITSr1">
+                    <div class="ITSn">Ansprechpartner</div>
+                    <div class="ITSv">{{ calculations?.marketunit?.marketunitResponsible }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="row">
+    <div class="col spacer-xl"></div>
+</div>
+
+    <!-- Service und Zielsysteme -->
+    <div class="row">
+        <div class="col-4">
+            <div class="ITSs">
+                <div class="ITSg">Service</div>
+                    <div class="ITSr0">
+                        <div class="ITSn">IAM Lizenz</div>
+                        <div class="ITSv">{{ CalculateLicenseOIM() }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Servicelevel</div>
+                        <div class="ITSv">{{ CalculateServicelevel() }}</div>
+                    </div>
+                    <div class="ITSr1">
+                        <div class="ITSn">Stages</div>
+                        <div class="ITSv">{{ CalculateStages() }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Dedizierte Jobserver</div>
+                        <div class="ITSv">{{ CalculateDedicatedSrv() }}</div>
+                    </div>
+                    <div class="ITSr1">
+                        <div class="ITSn">Server Antivirus</div>
+                        <div class="ITSv">{{ CalculateAntivirSrv() }}</div>
+                    </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="ITSs">
+                <div class="ITSg">Microsoft Applikationen</div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Anzahl Active Directories</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSAD }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Anzahl Azure Active Directories</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSAAD }}</div>
+                    </div>
+                    <div class="ITSr1">
+                        <div class="ITSn">Anzahl Microsoft Exchange</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSEX }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Anzahl Microsoft Exchange Online</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSEXO }}</div>
+                    </div>
+                    <div class="ITSr1">
+                        <div class="ITSn">Anzahl Microsoft Sharepoint</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSSP }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Anzahl Microsoft Sharepoint Online</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSSPO }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Anzahl Microsoft Teams</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSTEAMS }}</div>
+                    </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="ITSs">
+                <div class="ITSg">SAP Applikationen</div>
+                    <div class="ITSr1">
+                        <div class="ITSn">Anzahl SAP HCM per CSV</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountSAPHCMCSV }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Anzahl SAP HCM per Konnektor</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountSAPHCM }}</div>
+                    </div>
+                    <div class="ITSr1">
+                        <div class="ITSn">Anzahl SAP R3 Applikation</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountSAPAPP }}</div>
+                    </div>
+                <div class="ITSg">Andere Applikationen</div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Anzahl File Systeme</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountFS }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Anzahl LDAP Systeme</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.amountLDAP }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Anzahl Starling Konnektoren</div>
+                        <div class="ITSv">{{ calculations?.targetsystems?.cloudProducts || calculations?.targetsystems?.amountSTAR }}</div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="row">
+    <div class="col spacer-xl"></div>
+</div>
+
+<!-- Hardware -->
+    <div class="row">
+        <div class="col">
+            <div class="ITSs">
+                <div class="ITSg">Hardware</div>
+                <div class="ITSrSpecial">
+                    <div class="ITSn">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="dgth" width="5%">#.</th>
+                                    <th class="dgth" width="5%">Stage</th>
+                                    <th class="dgth" width="5%">Size</th>
+                                    <th class="dgth" width="5%">Rolle</th>
+                                    <th class="dgth" width="5%">CPU</th>
+                                    <th class="dgth" width="5%">Ram</th>
+                                    <th class="dgth" width="5%">Speicher</th>
+                                    <th class="dgth" width="5%">Backupspeicher</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let srv of calculations?.servers; let z = index">
+                                    <td>{{ z + 1 }}</td>
+
+                                    <td>{{srv.stage}}</td>
+
+                                    <td>{{srv.tshirtsize}}</td>
+                                    
+                                    <td>{{srv.role}}</td>
+
+                                    <td>{{srv.cpu}} + {{srv.addCPU}}</td>
+
+                                    <td>{{srv.ram }} + {{srv.addRAM}}</td>
+
+                                    <td>{{srv.storage + srv.addStorage}}</td>
+
+                                    <td>{{srv.backupstorage + srv.backupstorage}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="row">
+    <div class="col spacer-xl"></div>
+</div>
+
+
+<div class="row">
+    <div class="col spacer-xl"></div>
+</div>

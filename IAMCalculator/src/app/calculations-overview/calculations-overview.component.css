@@ -1,0 +1,107 @@
+.ownDeleteButtonMenu {
+    width: 100%;
+    height: 30px;
+    border: 0;
+    background-color: #ff003e;
+    color: #fff;
+    border-radius: 2%;
+}
+
+.ownDownloadButtonMenu {
+    width: 100%;
+    height: 30px;
+    border: 0;
+    background-color: #767676;
+    color: #fff;
+    border-radius: 2%;
+}
+
+
+.ownCol {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 2%;
+    border: 5px solid ccc;
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.ownCol:hover {
+    border-radius: 2%;
+    border: 5px solid 000;
+    background-color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+}
+
+
+/* Responsive columns - one column layout (vertical) on small screens */
+@media screen and (max-width: 600px) {
+    .column {
+      width: 100%;
+      display: block;
+      margin-bottom: 20px;
+    }
+  }
+  
+
+  .ITSs {
+    /* Sektion */
+    display: table;
+    width: 100%;
+ }
+
+ .ITSr1 {
+    /* ungerade Zeile */
+    display: table-row;
+    padding: 4px 20px;
+ }
+
+ .ITSr0 {
+    /* gerade Zeile */
+    display: table-row;
+    padding: 4px 20px;
+ }
+
+ .ITSg {
+    /* Gruppe */
+    font-weight: bold;
+    font-size: medium;
+    padding: 10px 20px;
+    display: block;
+ }
+
+ .ITSn {
+    /* Name */
+    display: table-cell;
+    color: #555;
+    vertical-align: top;
+    padding: 4px 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 50%;
+    font-weight: bold;
+    font-size: small;
+ }
+
+ .ITSnSpecial {
+    /* Name */
+    display: table-cell;
+    color: #555;
+    vertical-align: top;
+    padding: 4px 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 25%;
+    font-weight: bold;
+    font-size: small;
+ }
+
+ .ITSv {
+    /* Wert */
+    display: table-cell;
+    color: #555;
+    vertical-align: top;
+    padding: 4px 20px;
+    font-size: small;
+ }

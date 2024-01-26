@@ -1,0 +1,567 @@
+<form [formGroup]="NewCalculation" class="form" autocomplete="off">
+    <mat-stepper orientation="horizontal" [linear]="isLinear" labelPosition="bottom" #stepper>
+        <mat-step [stepControl]="basicform">
+            <input  type="hidden" formControlName="id">
+            <form formGroupName="basic">
+                <ng-template matStepLabel>Kalkulation Informationen</ng-template>
+                <mat-form-field appearance="fill" class="form-size">
+                    <mat-label>Kalkulationsname</mat-label>
+                    <input matInput placeholder="Kundenname, Projektname, o.ä." formControlName="calculationName" required>
+                </mat-form-field>
+                <br>
+                <mat-form-field appearance="fill" class="form-size">
+                    <mat-label>Kurzer Beschreibung der inhaltlichen Anforderungen</mat-label>
+                    <textarea matInput placeholder="" formControlName="calculationDesc"></textarea>
+                </mat-form-field>
+                <div class="container-fluid">
+                    <div class="flex-container py-2">
+                        <div class="button-container">
+                        </div>
+                        <div class="button-container">
+                            <button mat-raised-button color="primary" matStepperNext>Next</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="customerform" label="Kunden Informationen">
+            <form formGroupName="customer">
+                <mat-form-field appearance="fill" class="form-size">
+                    <mat-label>Kundenname</mat-label>
+                    <input matInput formControlName="customerName" placeholder="eindeutiger Kundenname" required>
+                </mat-form-field>
+                <br>
+                <mat-form-field appearance="fill" class="form-size">
+                    <mat-label>Kundennummer</mat-label>
+                    <input matInput formControlName="customerNumber" placeholder="wenn vorhanden Kundennummer">
+                </mat-form-field>
+                <br>
+                <mat-form-field appearance="fill" class="form-size">
+                    <mat-label>Anzahl interner Mitarbeiter</mat-label>
+                    <input matInput formControlName="customerInternalEmployees" placeholder="1500" required>
+                </mat-form-field>
+                <br>
+                <mat-form-field appearance="fill" class="form-size">
+                    <mat-label>Anzahl externer Mitarbeiter</mat-label>
+                    <input matInput formControlName="customerExternalEmployees" placeholder="450" required>
+                </mat-form-field>
+                <div class="container-fluid">
+                    <div class="flex-container py-2">
+                        <div class="button-container">
+                            <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+                        </div>
+                        <div class="button-container">
+                            <button mat-raised-button color="primary" matStepperNext>Next</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="marketunitform" label="Markteinheit Information">
+            <form formGroupName="marketunit">
+                <mat-form-field appearance="fill" class="form-size">
+                    <mat-label>Markteinheit</mat-label>
+                    <input matInput formControlName="marketunitName" placeholder="z.B. DATAGROUP Bremen" required>
+                </mat-form-field>
+                <br>
+                <mat-form-field appearance="fill" class="form-size">
+                    <mat-label>Ansprechpartner Markteinheit</mat-label>
+                    <input matInput formControlName="marketunitResponsible" placeholder="vorname.nachname@datagroup.de" required>
+                </mat-form-field>
+                <div class="container-fluid">
+                    <div class="flex-container py-2">
+                        <div class="button-container">
+                            <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+                        </div>
+                        <div class="button-container">
+                            <button mat-raised-button color="primary" matStepperNext>Next</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="targetsystemform" label="Service Informationen">
+            <form formGroupName="targetsystems">
+                <div class="row">
+                    <div class="col-md-12 mx-2 form-group">
+                        <button mat-flat-button type="button" data-bs-toggle="collapse" data-bs-target="#collapseSLA" aria-expanded="false" aria-controls="collapse">Service Level Agreement</button>
+                        <div class="collapse mx-2" id="collapseSLA">
+                            <div class="row">
+                                <div class="col">
+                                    <mat-radio-group aria-label="Select an option" formControlName="servicelevel" [(ngModel)]="optionValueSLA" required>
+                                        <mat-radio-button mat-mdc-radio-button [value]="1">Business Standard</mat-radio-button>
+                                        <mat-radio-button mat-mdc-radio-button [value]="2">Business Critial</mat-radio-button>
+                                        <mat-radio-button mat-mdc-radio-button [value]="3" matTooltip="Erhöht die notwendigen Hardware und SQL-Lizenz Kosten erheblich. Sorgt aber auch für eine Hochverfügbarkeit des Services und eine geringe Ausfallzeit.">Business Critial Plus</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mx-2 form-group">
+                        <button mat-flat-button type="button" data-bs-toggle="collapse" data-bs-target="#collapseOIM" aria-expanded="false" aria-controls="collapse">One Identity Version</button>
+                        <div class="collapse mx-2" id="collapseOIM">
+                            <div class="row">
+                                <div class="col">
+                                    <mat-radio-group aria-label="Select an option" formControlName="licenseOIM" [(ngModel)]="optionValueOIM" [disabled]="optionValueOIM == 2 && optionValueFS>=1" required>
+                                        <mat-radio-button mat-mdc-radio-button [value]="1">Standard</mat-radio-button>
+                                        <mat-radio-button mat-mdc-radio-button [value]="2" matTooltip="Diese Edition wird für die integrierte File Service Verwaltung benötigt.">Data Governance Editon</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mx-2 form-group">
+                        <button mat-flat-button type="button" data-bs-toggle="collapse" data-bs-target="#collapseStages" aria-expanded="false" aria-controls="collapse">Infrastruktur Optionen</button>
+                        <div class="collapse mx-2" id="collapseStages">
+                            <div class="row">
+                                <div class="col-12">
+                                    <mat-radio-group aria-label="Select an option" formControlName="stages" [(ngModel)]="optionValueStages" required>
+                                        <mat-radio-button mat-mdc-radio-button [value]="1" matTooltip="Dies ein erhebliches Risiko in der Serviceerbringung. Es fehlt hier ein wichtiger Schritt in der Qualitätssicherung. Kann sich negativ auf den Betrieb der Software auswirken.">Zweifach Staging (Produktion und Entwicklung)</mat-radio-button>
+                                        <mat-radio-button mat-mdc-radio-button [value]="2">Dreifach Staging (Produktion, Qualitätssicherung und Entwicklung)</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                                <div class="col-12">
+                                    <mat-checkbox formControlName="dedicatedSrv" [(ngModel)]="optionValuededicatedSrv" required matTooltip="Kann negative Auswirkung auf Performance habe. Reduziert die Serverkosten.">Reduzierte Job Server</mat-checkbox>
+                                </div>
+                                <div class="col-12">
+                                    <mat-checkbox formControlName="antivirSrv" [(ngModel)]="optionValueantivirSrv" required>AV Schutz für alle IAM Server</mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mx-2 form-group">
+                        <button mat-flat-button type="button" data-bs-toggle="collapse" data-bs-target="#collapseMS" aria-expanded="false" aria-controls="collapse">Microsoft Produkte</button>
+                        <div class="collapse mx-2" id="collapseMS">
+                            <div class="row">
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleMSAD(); optionValueMSAD=0'>Active Directory</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenMSAD'>
+                                        <mat-label>Anzahl von Active Directories</mat-label>
+                                        <mat-select formControlName="amountMSAD" [(ngModel)]="optionValueMSAD">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleMSAAD(); optionValueMSAAD=0'>Azure Active Directory</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenMSAAD'>
+                                        <mat-label>Anzahl von Azure Active Directories</mat-label>
+                                        <mat-select formControlName="amountMSAAD" [(ngModel)]="optionValueMSAAD">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleMSEX(); optionValueMSEX=0'>Exchange</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenMSEX'>
+                                        <mat-label>Anzahl von Exchange Organizations</mat-label>
+                                        <mat-select formControlName="amountMSEX" [(ngModel)]="optionValueMSEX">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleMSEXO(); optionValueMSEXO=0'>Exchange Online</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenMSEXO'>
+                                        <mat-label>Anzahl von Active Directories</mat-label>
+                                        <mat-select formControlName="amountMSEXO" [(ngModel)]="optionValueMSEXO">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleMSSP(); optionValueMSSP=0'>Sharepoint</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenMSSP'>
+                                        <mat-label>Anzahl von Active Directories</mat-label>
+                                        <mat-select formControlName="amountMSSP" [(ngModel)]="optionValueMSSP">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleMSSPO(); optionValueMSSPO=0'>Sharepoint Online</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenMSSPO'>
+                                        <mat-label>Anzahl von Active Directories</mat-label>
+                                        <mat-select formControlName="amountMSSPO" [(ngModel)]="optionValueMSSPO">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleMSTEAMS(); optionValueMSTEAMS=0'>Teams</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenMSTEAMS'>
+                                        <mat-label>Anzahl von Active Directories</mat-label>
+                                        <mat-select formControlName="amountMSTEAMS" [(ngModel)]="optionValueMSTEAMS">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleFS(); optionValueFS=0' matTooltip="Für die Verwaltung vom File Service durch das Hersteller Modul wird zwingend eine Data Governance Editon Lizenz benötigt. Mit aktivieren dieser Option wird diese automatisch ausgewählt.">File Service</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenFS'>
+                                        <mat-label>Anzahl von Active Directories</mat-label>
+                                        <mat-select formControlName="amountFS" [(ngModel)]="optionValueFS">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mx-2 form-group">
+                        <button mat-flat-button type="button" data-bs-toggle="collapse" data-bs-target="#collapseSAP" aria-expanded="false" aria-controls="collapse">SAP Produkte</button>
+                        <div class="collapse mx-2" id="collapseSAP">
+                            <div class="row">
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleSAPHCMCSV(); optionValueSAPHCMCSV=0' matTooltip="Einlesen von Unternehmensstammdaten über einen CSV Import. Dadurch können Lizenzkosten gespart werden. Verursacht zusätzlich Aufwände für die Entwicklung der Schnittstelle.">SAP HCM - CSV</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenSAPHCMCSV'>
+                                        <mat-label>Anzahl von Active Directories</mat-label>
+                                        <mat-select formControlName="amountSAPHCMCSV" [(ngModel)]="optionValueSAPHCMCSV">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleSAPHCM(); optionValueSAPHCM=0' matTooltip="Ein von One Identity und SAP abgestimmter Konnektor zum Einlesen von Unternehmensstammdaten. Verursacht zusätzliche Lizenkosten pro Benutzer.">SAP HCM - Konnektor</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenSAPHCM'>
+                                        <mat-label>Anzahl von Active Directories</mat-label>
+                                        <mat-select formControlName="amountSAPHCM" [(ngModel)]="optionValueSAPHCM">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleSAPAPP(); optionValueSAPAPP=0'>SAP R/3</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenSAPAPP'>
+                                        <mat-label>Anzahl von Active Directories</mat-label>
+                                        <mat-select formControlName="amountSAPAPP" [(ngModel)]="optionValueSAPAPP">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col spacer-xl"></div>
+                                <div class="col-12">
+                                    <div class="alert alert-warning" role="alert">
+                                        Für die Optionen "SAP HCM - Konnektor" und "SAP R/3" wird eine SAP Lizenz notwendig. Allerdings nur einmalig pro Identität. Mit einer User-CAL können unendlich viele SAP-Accounts einer Person verwaltet werden.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mx-2 form-group">
+                        <button mat-flat-button type="button" data-bs-toggle="collapse" data-bs-target="#collapseCloud" aria-expanded="false" aria-controls="collapse">Cloud Produkte</button>
+                        <div class="collapse mx-2" id="collapseCloud">
+                            <div class="row">
+                                <div class="col">
+
+                                    <mat-checkbox (change)='toggleSTAR(); optionValueSTAR=0'>Starling Connect</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenSTAR' class="form-size">
+                                        <mat-label>Anzahl von Cloud Produkten</mat-label>
+                                        <mat-select formControlName="amountSTAR" [(ngModel)]="optionValueSTAR">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="fill" class="form-size" [hidden]='isHiddenSTAR'>
+                                        <mat-label>Cloud Produkte angeben. Dropbox, GoToMeeting, ...</mat-label>
+                                        <input matInput formControlName="cloudProducts" placeholder="" [(ngModel)]="optionValueCloudProduct">
+                                    </mat-form-field>
+                                    <br>
+                                    <div [hidden]='isHiddenSTAR'>
+                                        <!--<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+                                            <symbol id="check-circle-fill" viewBox="0 0 16 16">
+                                              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                            </symbol>
+                                            <symbol id="info-fill" viewBox="0 0 16 16">
+                                              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                                            </symbol>
+                                            <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+                                              <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                            </symbol>
+                                          </svg>
+                                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                            <div>
+                                                <span class="h7">Bitte prüfen ob geplanten Cloud Produkte über den Starling Connect anbindbar sind. <a href="https://www.cloud.oneidentity.com/products/starling-connect/connectors">Starling-Connect Produkte Herstellerseite</a></span>
+                                            </div>
+                                        </div>-->
+                                        <div class="alert alert-warning" role="alert">
+                                            Bitte prüfen ob geplanten Cloud Produkte über den Starling Connect anbindbar sind. <a href="https://www.cloud.oneidentity.com/products/starling-connect/connectors">Starling-Connect Produkte Herstellerseite</a><br>                                            Es ist jeweils eine Starling Connect Lizenz pro anzubindendes Cloudsystem notwendig.
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mx-2 form-group">
+                        <button mat-flat-button type="button" data-bs-toggle="collapse" data-bs-target="#collapseOther" aria-expanded="false" aria-controls="collapse">Andere Produkte</button>
+                        <div class="collapse mx-2" id="collapseOther">
+                            <div class="row">
+                                <div class="col">
+                                    <mat-checkbox (change)='toggleLDAP(); optionValueLDAP=0'>LDAP Service</mat-checkbox><br>
+                                    <mat-form-field [hidden]='isHiddenLDAP' class="form-size">
+                                        <mat-label>Anzahl von LDAP Systeme</mat-label>
+                                        <mat-select formControlName="amountLDAP"  [(ngModel)]="optionValueLDAP">
+                                            <mat-option [value]="0">0</mat-option>
+                                            <mat-option [value]="1">1</mat-option>
+                                            <mat-option [value]="2">2</mat-option>
+                                            <mat-option [value]="3">3</mat-option>
+                                            <mat-option [value]="4">4</mat-option>
+                                            <mat-option [value]="5">5</mat-option>
+                                            <mat-option [value]="6">6</mat-option>
+                                            <mat-option [value]="7">7</mat-option>
+                                            <mat-option [value]="8">8</mat-option>
+                                            <mat-option [value]="9">9</mat-option>
+                                            <mat-option [value]="10">10</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+                                    <!-- Platzhalter -->
+                                </div>
+                                <div class="col">
+                                    <!-- Platzhalter -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="row">
+                    <div class="col-md-12 mx-2 form-group">
+                        <button mat-flat-button type="button" data-bs-toggle="collapse" data-bs-target="#collapseDG" aria-expanded="false" aria-controls="collapse">Datagroup Module</button>
+                        <div class="collapse mx-2" id="collapseDG">
+                            <div class="row">
+                                <div class="col">
+                                    <mat-checkbox>File Service</mat-checkbox>
+                                </div>
+                                <div class="col">
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+                <div class="row">
+                    <div class="col-md-12 mx-2 form-group">
+                        <button mat-flat-button type="button" data-bs-toggle="collapse" data-bs-target="#collapseDGPro" aria-expanded="false" aria-controls="collapse">Datagroup Prozesse</button>
+                        <div class="collapse mx-2" id="collapseDGPro">
+                            <div class="row">
+                                <div class="col">
+                                    <mat-checkbox>Identity Lifecycle</mat-checkbox>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox>AD Groupmamangement</mat-checkbox>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox>One Time Secrets</mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                    <div class="flex-container py-2">
+                        <div class="button-container">
+                            <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+                        </div>
+                        <div class="button-container">
+                            <button mat-raised-button color="accent" type="button" (click)="this.postMultiform(NewCalculation.value); goToPage('/Home')">Submit</button>
+                            <!--<button mat-raised-button color="primary" matStepperNext>Next</button>-->
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </mat-step>
+        <!--<mat-step [stepControl]="finishform" label="Abschluss">
+            <form formGroupName="finished">
+                <div class="container">
+                    <div class="row row-cols-4">
+                        <div class="col-12 h5">Kalkulation</div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6"></div>
+                                <div class="col-6"></div>
+                            </div>
+                        </div>
+                        <div class="col-12" style="height: 30px;"></div>
+                        <div class="col-12 h5">Kunde</div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6"></div>
+                                <div class="col-6"></div>
+                            </div>
+                        </div>
+                        <div class="col-12" style="height: 30px;"></div>
+                        <div class="col-12 h5">Markteinheit</div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6"></div>
+                                <div class="col-6"></div>
+                            </div>
+                        </div>
+                        <div class="col-12" style="height: 30px;"></div>
+                        <div class="col-12 h5">Service</div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6"></div>
+                                <div class="col-6"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                    <div class="container-fluid">
+                        <div class="flex-container py-2">
+                            <div class="button-container">
+                                <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+                            </div>
+                            <div class="button-container">
+                                <button mat-raised-button color="accent" type="button" (click)="this.postMultiform(NewCalculation.value); goToPage('/Home')">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </mat-step>-->
+    </mat-stepper>
+</form>

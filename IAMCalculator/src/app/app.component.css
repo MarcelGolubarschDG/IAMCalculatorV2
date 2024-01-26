@@ -1,0 +1,17 @@
+.item1 {
+    height: 15vh;
+    background-color: #ddd;
+}
+
+.logo {
+    height: 70%;
+    margin-left: 100px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.content {
+    margin-left: 60px;
+    width: fit-content;
+    max-width: 1400px;
+}

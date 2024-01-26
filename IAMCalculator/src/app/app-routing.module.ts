@@ -1,0 +1,36 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { CalculationDetailComponent } from './calculation-detail/calculation-detail.component';
+import { EditCalculationDetailComponent } from './edit-calculation-detail/edit-calculation-detail.component';
+import { HomeComponent } from './home/home.component';
+import { MultiformComponent } from './multiform/multiform.component';
+import { CalculationsOverviewComponent } from './calculations-overview/calculations-overview.component';
+
+const routes: Routes = [
+
+{
+    path: 'Home', component: HomeComponent,
+},
+{
+    path: 'Overview', component: CalculationsOverviewComponent, pathMatch: 'full',
+},
+{
+    path: 'Calculation/:id', component: CalculationDetailComponent, pathMatch: 'full',
+},
+{
+    path: 'Edit/Calculation/:id', component: EditCalculationDetailComponent, pathMatch: 'full',
+},
+{
+    path: 'NewCalculation', component: MultiformComponent,
+},
+{
+    path: '', pathMatch: 'full', redirectTo: 'Home',
+}
+
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
