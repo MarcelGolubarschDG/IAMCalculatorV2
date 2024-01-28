@@ -19,7 +19,9 @@ export interface Calculation {
     servicelevel:number;
     stages:number;
     antivirSrv:boolean;
-    dedicatedSrv:boolean
+    dedicatedSrv:boolean;
+    SAPHCMCSV:boolean;
+    SAPHCM:boolean;
     amountMSAD:number;
     amountMSAAD:number;
     amountMSEX:number;
@@ -28,8 +30,6 @@ export interface Calculation {
     amountMSSPO:number;
     amountMSTEAMS:number;
     amountFS:number;
-    amountSAPHCMCSV:number;
-    amountSAPHCM:number;
     amountSAPAPP:number;
     amountLDAP:number;
     amountSTAR:number;

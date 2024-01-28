@@ -10,11 +10,11 @@
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Zielsysteme</div>
-                    <div class="ITSv">{{ this.amountOfTargetsystems(calc.id) }}</div>
+                    <div class="ITSv">{{ this.amountOfTargetsystems(calc.id) || 0 }}</div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Server</div>
-                    <div class="ITSv"> {{ this.amountOfServerByCalcID(calc.id) }}</div>
+                    <div class="ITSv"> {{ this.amountOfServerByCalcID(calc.id) || 0 }}</div>
                 </div>
             </div>
         </a>

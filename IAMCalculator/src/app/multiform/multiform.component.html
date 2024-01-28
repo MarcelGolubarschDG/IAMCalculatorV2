@@ -1,4 +1,5 @@
 <form [formGroup]="matStepperForm" (ngSubmit)="onSubmit()">
+    <input type="hidden" formControlName="id" [value]="">
     <button class="btn btn-danger d-inline-flex align-items-center" type="button" (click)="goBack()">
         <i class="bi bi-arrow-left"></i>
     </button>
@@ -12,46 +13,59 @@
 
         <!-- Kunde / Markteinheit -->
         <div class="row">
-            <div class="col-4">
-                <div class="ITSs">
-                    <div class="ITSg">Kalkulation</div>
-                    <div class="ITSr1">
-                        <div class="ITSn">Kalkulationame</div>
-                        <div class="ITSv"><input class="form-control" type="text"></div>
+                <div class="col-4" formGroupName="basicform">
+                    <div class="ITSs">
+                        <div class="ITSg">Kalkulation</div>
+                        <div class="ITSr1">
+                            <div class="ITSn">Kalkulationame</div>
+                            <div class="ITSv"><input class="form-control" type="text" formControlName="calculationName"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-4">
+                <div class="col-8" formGroupName="basicform">
+                    <div class="ITSs">
+                        <div class="ITSg">Projekt</div>
+                        <div class="ITSr1">
+                            <div class="ITSnSpecial">Anforderungsbeschreibung</div>
+                            <div class="ITSv">
+                                <textarea class="form-control" contenteditable="true" aria-multiline="true" formControlName="calculationDesc"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="col-4" formGroupName="customerform">
                 <div class="ITSs">
                     <div class="ITSg">Kunde</div>
                     <div class="ITSr1">
                         <div class="ITSn">Kundenname</div>
-                        <div class="ITSv"><input class="form-control" type="text"></div>
+                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerName"></div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Kundennummer</div>
-                        <div class="ITSv"><input class="form-control" type="text"></div>
+                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerNumber"></div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Mitarbeiter (intern)</div>
-                        <div class="ITSv"><input class="form-control" type="text"></div>
+                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerInternalEmployees" (change)="calcServerSize(matStepperForm.value)"></div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Mitarbeiter (extern)</div>
-                        <div class="ITSv"><input class="form-control" type="text"></div>
+                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerExternalEmployees" (change)="calcServerSize(matStepperForm.value)"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+
+            <div class="col-4" formGroupName="marketunitform">
                 <div class="ITSs">
                     <div class="ITSg">Markteinheit</div>
                     <div class="ITSr0">
                         <div class="ITSn">Name</div>
-                        <div class="ITSv"><input class="form-control" type="text"></div>
+                        <div class="ITSv"><input class="form-control" type="text" formControlName="marketunitName"></div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Ansprechpartner</div>
-                        <div class="ITSv"><input class="form-control" type="text"></div>
+                        <div class="ITSv"><input class="form-control" type="text" formControlName="marketunitResponsible"></div>
                     </div>
                 </div>
             </div>
@@ -62,16 +76,17 @@
         <div class="col spacer-l"></div>
     </div>
 
+
         <!-- Service und Zielsysteme -->
-        <div class="row">
+        <div class="row" formGroupName="targetsystemsform" (change)="calcServerSize(matStepperForm.value)">
             <div class="col-4">
                 <div class="ITSs">
                     <div class="ITSg">Service</div>
                         <div class="ITSr0">
                             <div class="ITSn">IAM Lizenz</div>
                             <div class="ITSv">
-                                <select class="form-control">
-                                    <option value="1">Standard</option>
+                                <select class="form-control" formControlName="licenseOIM" [(ngModel)]="optionValueOIM">
+                                    <option value="1" selected>Standard</option>
                                     <option value="2">Data Governance Editon</option>
                                 </select>
                             </div>
@@ -79,7 +94,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Servicelevel</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" name="servicelevel" formControlName="servicelevel" [(ngModel)]="optionValueSLA">
                                     <option value="1">Business Standard</option>
                                     <option value="2">Business Critical</option>
                                     <option value="3">Business Critical +</option>
@@ -89,7 +104,7 @@
                         <div class="ITSr1">
                             <div class="ITSn">Stages</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="stages" [(ngModel)]="optionValueStages">
                                     <option value="1">P D</option>
                                     <option value="2">P Q D</option>
                                 </select>
@@ -98,13 +113,13 @@
                         <div class="ITSr0">
                             <div class="ITSn">Dedizierte Jobserver</div>
                             <div class="ITSv">
-                                <input type="checkbox">
+                                <input type="checkbox" formControlName="dedicatedSrv" [(ngModel)]="optionValuededicatedSrv">
                             </div>
                         </div>
                         <div class="ITSr1">
                             <div class="ITSn">Server Antivirus</div>
                             <div class="ITSv">
-                                <input type="checkbox">
+                                <input type="checkbox" formControlName="antivirSrv" [(ngModel)]="optionValueantivirSrv">
                             </div>
                         </div>
                 </div>
@@ -115,7 +130,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Anzahl Active Directories</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountMSAD" [(ngModel)]="optionValueMSAD">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -132,7 +147,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Anzahl Azure Active Directories</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountMSAAD" [(ngModel)]="optionValueMSAAD">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -149,7 +164,7 @@
                         <div class="ITSr1">
                             <div class="ITSn">Anzahl Microsoft Exchange</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountMSEX" [(ngModel)]="optionValueMSEX">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -166,7 +181,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Anzahl Microsoft Exchange Online</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountMSEXO" [(ngModel)]="optionValueMSEXO">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -183,7 +198,7 @@
                         <div class="ITSr1">
                             <div class="ITSn">Anzahl Microsoft Sharepoint</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountMSSP" [(ngModel)]="optionValueMSSP">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -200,7 +215,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Anzahl Microsoft Sharepoint Online</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountMSSPO" [(ngModel)]="optionValueMSSPO">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -217,7 +232,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Anzahl Microsoft Teams</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountMSTEAMS" [(ngModel)]="optionValueMSTEAMS">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -239,19 +254,19 @@
                         <div class="ITSr1">
                             <div class="ITSn">SAP HCM per CSV</div>
                             <div class="ITSv">
-                                <input type="checkbox">
+                                <input type="checkbox" formControlName="amountSAPHCMCSV" [(ngModel)]="optionValueSAPHCMCSV">
                             </div>
                         </div>
                         <div class="ITSr0">
                             <div class="ITSn">SAP HCM per Konnektor</div>
                             <div class="ITSv">
-                                <input type="checkbox">
+                                <input type="checkbox" formControlName="amountSAPHCM" [(ngModel)]="optionValueSAPHCM">
                             </div>
                         </div>
                         <div class="ITSr1">
                             <div class="ITSn">Anzahl SAP R3 Applikation</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountSAPAPP" [(ngModel)]="optionValueSAPAPP">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -269,7 +284,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Anzahl File Systeme</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountFS" [(ngModel)]="optionValueFS">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -286,7 +301,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Anzahl LDAP Systeme</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountLDAP" [(ngModel)]="optionValueLDAP">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -303,7 +318,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Anzahl Starling Konnektoren</div>
                             <div class="ITSv">
-                                <select class="form-control">
+                                <select class="form-control" formControlName="amountSTAR" [(ngModel)]="optionValueSTAR">
                                     <option>0</option>
                                     <option>1</option>
                                     <option>2</option>
@@ -315,86 +330,49 @@
                                     <option>8</option>
                                     <option>9</option>
                                 </select>
-                                <div class="form-control" contenteditable="true" aria-multiline="true"></div>
+                                <textarea class="form-control" contenteditable="true" aria-multiline="true" formControlName="cloudProducts" [(ngModel)]="optionValueCloudProduct"></textarea>
                             </div>
                         </div>
                 </div>
             </div>
         </div>
-
-
-    <div class="row">
-        <div class="col spacer-l"></div>
-    </div>
-
-
-    <!-- Projekt -->
-    <div class="row">
-        <div class="col-12">
-            <div class="ITSs">
-                <div class="ITSg">Projekt</div>
-                <div class="ITSr1">
-                    <div class="ITSnSpecial">Anforderungsbeschreibung</div>
-                    <div class="ITSv">
-                        <div class="form-control" contenteditable="true" aria-multiline="true"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Hardware 
-    <div class="row">
-        <div class="col">
-            <div class="ITSs">
-                <div class="ITSg">
-                    Hardware <button class="btn btn-outline-danger btn-sm border-0" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseAddServer'" type="button">Server hinzufügen</button>
-                </div>
-                <div class="ITSr">
-                        <div class="accordian-body collapse p-2" id="collapseAddServer">
-                            <div class="col d-flex align-items-center">
-                                <div class="input-group">
-                                    <select class="form-control">
-                                        <option value="PROD">PROD</option>
-                                        <option value="QS">QS</option>
-                                        <option value="DEV">DEV</option>
-                                    </select>
-                                    <select class="form-control">
-                                        <option value="XL">XL</option>
-                                        <option value="L">L</option>
-                                        <option value="M">M</option>
-                                        <option value="S">S</option>
-                                        <option value="XS">XS</option>
-                                    </select>
-                                    <select class="form-control">
-                                        <option value="DB">DB</option>
-                                        <option value="Web">Web</option>
-                                        <option value="Job">Job</option>
-                                        <option value="DC">DC</option>
-                                        <option value="All">All</option>
-                                    </select>
-                                    <input type="text" class="form-control">
-                                    <input type="text" class="form-control">
-                                    <input type="text" class="form-control">
-                                    <input type="text" class="form-control">
-                                    <button class="btn btn-success" type="button">Speichern</button>
-                                    <button class="btn btn-danger" type="button">Abbruch</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-    <div class="row">
-        <div class="col spacer-l"></div>
-    </div>-->
         
 
     <div class="row">
         <div class="col spacer-l"></div>
     </div>
+
+
+        <div class="row" formGroupName="servers">
+            <div class="col-12">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="dgth" width="5%">#.</th>
+                            <th class="dgth" width="5%">Stage</th>
+                            <th class="dgth" width="5%">Size</th>
+                            <th class="dgth" width="5%">Rolle</th>
+                            <th class="dgth" width="5%">CPU</th>
+                            <th class="dgth" width="5%">Ram</th>
+                            <th class="dgth" width="5%">Speicher</th>
+                            <th class="dgth" width="5%">Backupspeicher</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let srv of serverControls; let z = index" formGroupName="{{z}}">
+                            <td>{{z+1}}</td>
+                            <td><input type="text" class="form-control" [value]="serverControls[z].value['stage']" disabled></td>
+                            <td><input type="text" class="form-control" [value]="serverControls[z].value['size']" disabled></td>
+                            <td><input type="text" class="form-control" [value]="serverControls[z].value['role']" disabled></td>
+                            <td><input type="text" class="form-control" [value]="serverControls[z].value['cpu']" disabled></td>
+                            <td><input type="text" class="form-control" [value]="serverControls[z].value['ram']" disabled></td>
+                            <td><input type="text" class="form-control" [value]="serverControls[z].value['storage']" disabled></td>
+                            <td><input type="text" class="form-control" [value]="serverControls[z].value['backupstorage']" disabled></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 </form>
+
+<!--<button class="btn btn-outline-danger btn-sm border-0" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseAddServer'">Server hinzufügen</button>-->

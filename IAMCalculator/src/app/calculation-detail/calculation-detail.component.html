@@ -177,11 +177,11 @@
                 <div class="ITSg">SAP Applikationen</div>
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl SAP HCM per CSV</div>
-                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountSAPHCMCSV }}</div>
+                        <div class="ITSv">{{ CalculateSAPHCMCSV() }}</div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl SAP HCM per Konnektor</div>
-                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountSAPHCM }}</div>
+                        <div class="ITSv">{{ CalculateSAPHCM() }}</div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl SAP R3 Applikation</div>
@@ -235,17 +235,17 @@
 
                                     <td>{{srv.stage}}</td>
 
-                                    <td>{{srv.tshirtsize}}</td>
+                                    <td>{{srv.size}}</td>
                                     
                                     <td>{{srv.role}}</td>
 
-                                    <td>{{srv.cpu}} + {{srv.addCPU}}</td>
+                                    <td>{{srv.cpu }} + {{ srv.addCPU || null }}</td>
 
-                                    <td>{{srv.ram }} + {{srv.addRAM}}</td>
+                                    <td>{{srv.ram }} + {{ srv.addRAM || null }}</td>
 
-                                    <td>{{srv.storage + srv.addStorage}}</td>
+                                    <td>{{srv.storage }} + {{ srv.addStorage || null }}</td>
 
-                                    <td>{{srv.backupstorage + srv.backupstorage}}</td>
+                                    <td>{{srv.backupstorage }} + {{ srv.addBackupstorage || null }}</td>
                                 </tr>
                             </tbody>
                         </table>

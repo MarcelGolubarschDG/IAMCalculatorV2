@@ -2,7 +2,6 @@ import { Component, Injectable, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../services/api.service';
 import { Calculation } from '../interfaces/calculation';
-import { Server } from '../interfaces/server';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -24,6 +23,8 @@ stages:string = ""
 licenseOIM:string = ""
 antivirSrv: string = ""
 dedicatedSrv: string = ""
+SAPHCM: string = ""
+SAPHCMCSV: string = ""
 
 // div toggle variables
 showMyContainer: boolean = false;
@@ -74,8 +75,6 @@ constructor(
                + Number(this.calculations?.targetsystemsform.amountMSSPO)
                + Number(this.calculations?.targetsystemsform.amountMSTEAMS)
                + Number(this.calculations?.targetsystemsform.amountFS)
-               + Number(this.calculations?.targetsystemsform.amountSAPHCMCSV)
-               + Number(this.calculations?.targetsystemsform.amountSAPHCM)
                + Number(this.calculations?.targetsystemsform.amountSAPAPP)
                + Number(this.calculations?.targetsystemsform.amountLDAP)
                + Number(this.calculations?.targetsystemsform.amountSTAR)
@@ -148,6 +147,32 @@ constructor(
       default:
     }
     return this.antivirSrv
+  }
+
+  CalculateSAPHCM() {
+    switch(this.calculations?.targetsystemsform.SAPHCM) {
+      case true:
+        this.SAPHCM = "Ja"
+        break;
+      case false:
+        this.SAPHCM = "Nein"
+        break;
+      default:
+    }
+    return this.SAPHCM
+  }
+
+  CalculateSAPHCMCSV() {
+    switch(this.calculations?.targetsystemsform.SAPHCMCSV) {
+      case true:
+        this.SAPHCMCSV = "Ja"
+        break;
+      case false:
+        this.SAPHCMCSV = "Nein"
+        break;
+      default:
+    }
+    return this.SAPHCMCSV
   }
 
   // get servercount from array server for specific calcid ### source https://www.freecodecamp.org/news/how-to-count-objects-in-an-array/

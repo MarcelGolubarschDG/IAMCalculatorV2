@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Calculation } from '../interfaces/calculation';
-import { Server } from '../interfaces/server';
 import { ApiService } from '../services/api.service';
 import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
@@ -15,7 +14,6 @@ export class CalculationsOverviewComponent implements OnInit {
 
   // init empty array with interface (defined in interfaces) 
   calculations: Calculation[] = [];
-  servers: Server[] = [];
 
   
   constructor(
@@ -67,8 +65,6 @@ export class CalculationsOverviewComponent implements OnInit {
                + Number(this.calculations[i].targetsystemsform.amountMSSPO)
                + Number(this.calculations[i].targetsystemsform.amountMSTEAMS)
                + Number(this.calculations[i].targetsystemsform.amountFS)
-               + Number(this.calculations[i].targetsystemsform.amountSAPHCMCSV)
-               + Number(this.calculations[i].targetsystemsform.amountSAPHCM)
                + Number(this.calculations[i].targetsystemsform.amountSAPAPP)
                + Number(this.calculations[i].targetsystemsform.amountLDAP)
                + Number(this.calculations[i].targetsystemsform.amountSTAR)

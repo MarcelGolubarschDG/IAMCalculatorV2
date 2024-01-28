@@ -5,14 +5,32 @@
     <div class="col spacer-l"></div>
 </div>
 
-    <!-- Container Header-->
+
+    <!-- Projekt -->
     <div class="row">
-        <div class="col d-flex align-items-center justify-content-start">
-            <div style="font-weight: bold;">{{ calculations?.basicform?.calculationName }}</div>
+        <div class="col-4">
+            <div class="ITSs">
+                <div class="ITSg">Kalkulation</div>
+                <div class="ITSr1">
+                    <div class="ITSn">Kalkulationame</div>
+                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.basicform?.calculationName"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="ITSs">
+                <div class="ITSg">Projekt</div>
+                <div class="ITSr1">
+                    <div class="ITSnSpecial">Anforderungsbeschreibung</div>
+                    <div class="ITSv">
+                        <div class="form-control" contenteditable="true" aria-multiline="true">{{ calculations?.basicform?.calculationDesc }}</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-
+    
 <div class="row">
     <div class="col spacer-l"></div>
 </div>
@@ -336,40 +354,40 @@
                     Hardware <button class="btn btn-outline-danger btn-sm border-0" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseAddServer'">Server hinzufügen</button>
                 </div>
                 <div class="ITSr">
-                        <div class="accordian-body collapse p-2" id="collapseAddServer">
-                            <div class="col d-flex align-items-center">
-                                <div class="input-group">
-                                    <select class="form-control">
-                                        <option value="PROD">PROD</option>
-                                        <option value="QS" *ngIf="calculations?.targetsystemsform?.stages==2">QS</option>
-                                        <option value="DEV">DEV</option>
-                                    </select>
-                                    <select class="form-control">
-                                        <option value="XL">XL</option>
-                                        <option value="L">L</option>
-                                        <option value="M">M</option>
-                                        <option value="S">S</option>
-                                        <option value="XS">XS</option>
-                                    </select>
-                                    <select class="form-control">
-                                        <option value="DB">DB</option>
-                                        <option value="Web">Web</option>
-                                        <option value="Job">Job</option>
-                                        <option value="DC">DC</option>
-                                        <option value="All">All</option>
-                                    </select>
-                                    <input type="text" class="form-control">
-                                    <input type="text" class="form-control">
-                                    <input type="text" class="form-control">
-                                    <input type="text" class="form-control">
-                                    <button class="btn btn-success" type="submit">Speichern</button>
-                                    <button class="btn btn-danger" type="reset">Abbruch</button>
-                                </div>
+                    <div class="accordian-body collapse p-2" id="collapseAddServer">
+                        <div class="col d-flex align-items-center">
+                            <div class="input-group">
+                                <select class="form-control">
+                                    <option value="PROD">PROD</option>
+                                    <option value="QS" *ngIf="calculations?.targetsystemsform?.stages==2">QS</option>
+                                    <option value="DEV">DEV</option>
+                                </select>
+                                <select class="form-control">
+                                    <option value="XL">XL</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="S">S</option>
+                                    <option value="XS">XS</option>
+                                </select>
+                                <select class="form-control">
+                                    <option value="DB">DB</option>
+                                    <option value="Web">Web</option>
+                                    <option value="Job">Job</option>
+                                    <option value="DC">DC</option>
+                                    <option value="All">All</option>
+                                </select>
+                                <input type="text" class="form-control">
+                                <input type="text" class="form-control">
+                                <input type="text" class="form-control">
+                                <input type="text" class="form-control">
+                                <button class="btn btn-success" type="submit">Speichern</button>
+                                <button class="btn btn-danger" type="reset">Abbruch</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ITSrSpecial">
+            </div>
+            <div class="ITSrSpecial">
                     <div class="ITSn">
                         <table>
                             <thead>
@@ -388,7 +406,7 @@
                                 <tr *ngFor="let srv of calculations?.servers; let z = index">
                                     <td>{{ z }}</td>
                                     <td><input type="text" class="form-control" [value]="srv.stage"></td>
-                                    <td><input type="text" class="form-control" [value]="srv.tshirtsize"></td>
+                                    <td><input type="text" class="form-control" [value]="srv.size"></td>
                                     <td><input type="text" class="form-control" [value]="srv.role"></td>
                                     <td><input type="text" class="form-control" [value]="srv.addCPU"></td>
                                     <td><input type="text" class="form-control" [value]="srv.addRAM"></td>
@@ -398,27 +416,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-    </div>
-
-
-<div class="row">
-    <div class="col spacer-l"></div>
-</div>
-
-
-    <!-- Projekt -->
-    <div class="row">
-        <div class="col-12">
-            <div class="ITSs">
-                <div class="ITSg">Projekt</div>
-                <div class="ITSr1">
-                    <div class="ITSnSpecial">Anforderungsbeschreibung</div>
-                    <div class="ITSv">
-                        <div class="form-control" contenteditable="true" aria-multiline="true">{{ calculations?.basicform?.calculationDesc }}</div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
