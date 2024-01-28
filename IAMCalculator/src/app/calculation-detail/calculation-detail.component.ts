@@ -59,31 +59,31 @@ constructor(
   }
 
   CalculateIdentities() {
-    let internal = Number(this.calculations?.customer.customerInternalEmployees)
-    let external = Number(this.calculations?.customer.customerExternalEmployees)
+    let internal = Number(this.calculations?.customerform.customerInternalEmployees)
+    let external = Number(this.calculations?.customerform.customerExternalEmployees)
     let result = internal + external
     return result
   }
 
   CalculateTargetsystems() {
-    let result = Number(this.calculations?.targetsystems.amountMSAD)
-               + Number(this.calculations?.targetsystems.amountMSAAD)
-               + Number(this.calculations?.targetsystems.amountMSEX)
-               + Number(this.calculations?.targetsystems.amountMSEXO)
-               + Number(this.calculations?.targetsystems.amountMSSP)
-               + Number(this.calculations?.targetsystems.amountMSSPO)
-               + Number(this.calculations?.targetsystems.amountMSTEAMS)
-               + Number(this.calculations?.targetsystems.amountFS)
-               + Number(this.calculations?.targetsystems.amountSAPHCMCSV)
-               + Number(this.calculations?.targetsystems.amountSAPHCM)
-               + Number(this.calculations?.targetsystems.amountSAPAPP)
-               + Number(this.calculations?.targetsystems.amountLDAP)
-               + Number(this.calculations?.targetsystems.amountSTAR)
+    let result = Number(this.calculations?.targetsystemsform.amountMSAD)
+               + Number(this.calculations?.targetsystemsform.amountMSAAD)
+               + Number(this.calculations?.targetsystemsform.amountMSEX)
+               + Number(this.calculations?.targetsystemsform.amountMSEXO)
+               + Number(this.calculations?.targetsystemsform.amountMSSP)
+               + Number(this.calculations?.targetsystemsform.amountMSSPO)
+               + Number(this.calculations?.targetsystemsform.amountMSTEAMS)
+               + Number(this.calculations?.targetsystemsform.amountFS)
+               + Number(this.calculations?.targetsystemsform.amountSAPHCMCSV)
+               + Number(this.calculations?.targetsystemsform.amountSAPHCM)
+               + Number(this.calculations?.targetsystemsform.amountSAPAPP)
+               + Number(this.calculations?.targetsystemsform.amountLDAP)
+               + Number(this.calculations?.targetsystemsform.amountSTAR)
     return result
   }
 
   CalculateServicelevel() {
-    switch(this.calculations?.targetsystems.servicelevel) {
+    switch(this.calculations?.targetsystemsform.servicelevel) {
       case 1:
         this.servicelevel = "Business Standard"
         break;
@@ -99,7 +99,7 @@ constructor(
   }
   
   CalculateLicenseOIM() {
-    switch(this.calculations?.targetsystems.licenseOIM) {
+    switch(this.calculations?.targetsystemsform.licenseOIM) {
       case 1:
         this.licenseOIM = "Standard"
         break;
@@ -112,7 +112,7 @@ constructor(
   }
 
   CalculateStages() {
-    switch(this.calculations?.targetsystems.stages) {
+    switch(this.calculations?.targetsystemsform.stages) {
       case 1:
         this.stages = "Produktion, Entwicklung"
         break;
@@ -125,7 +125,7 @@ constructor(
   }
 
   CalculateDedicatedSrv() {
-    switch(this.calculations?.targetsystems.dedicatedSrv) {
+    switch(this.calculations?.targetsystemsform.dedicatedSrv) {
       case true:
         this.dedicatedSrv = "Ja"
         break;
@@ -138,7 +138,7 @@ constructor(
   }
 
   CalculateAntivirSrv() {
-    switch(this.calculations?.targetsystems.antivirSrv) {
+    switch(this.calculations?.targetsystemsform.antivirSrv) {
       case true:
         this.antivirSrv = "Ja"
         break;

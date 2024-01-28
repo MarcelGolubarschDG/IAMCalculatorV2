@@ -8,7 +8,7 @@
     <!-- Container Header-->
     <div class="row">
         <div class="col d-flex align-items-center justify-content-start">
-            <div style="font-weight: bold;">{{ calculations?.basic?.calculationName }}</div>
+            <div style="font-weight: bold;">{{ calculations?.basicform?.calculationName }}</div>
         </div>
     </div>
 
@@ -25,19 +25,19 @@
                 <div class="ITSg">Kunde</div>
                 <div class="ITSr1">
                     <div class="ITSn">Kundenname</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customer?.customerName"></div>
+                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customerform?.customerName"></div>
                 </div>
                 <div class="ITSr0">
                     <div class="ITSn">Kundennummer</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customer?.customerNumber"></div>
+                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customerform?.customerNumber"></div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Mitarbeiter (intern)</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customer?.customerInternalEmployees"></div>
+                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customerform?.customerInternalEmployees"></div>
                 </div>
                 <div class="ITSr0">
                     <div class="ITSn">Mitarbeiter (extern)</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customer?.customerExternalEmployees"></div>
+                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customerform?.customerExternalEmployees"></div>
                 </div>
             </div>
         </div>
@@ -46,11 +46,11 @@
                 <div class="ITSg">Markteinheit</div>
                 <div class="ITSr0">
                     <div class="ITSn">Name</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.marketunit?.marketunitName"></div>
+                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.marketunitform?.marketunitName"></div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Ansprechpartner</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.marketunit?.marketunitResponsible"></div>
+                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.marketunitform?.marketunitResponsible"></div>
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">IAM Lizenz</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.licenseOIM">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.licenseOIM">
                                 <option value="1">Standard</option>
                                 <option value="2">Data Governance Editon</option>
                             </select>
@@ -78,7 +78,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Servicelevel</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.servicelevel">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.servicelevel">
                                 <option value="1">Business Standard</option>
                                 <option value="2">Business Critical</option>
                                 <option value="3">Business Critical +</option>
@@ -88,7 +88,7 @@
                     <div class="ITSr1">
                         <div class="ITSn">Stages</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.stages">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.stages">
                                 <option value="1">P D</option>
                                 <option value="2">P Q D</option>
                             </select>
@@ -97,13 +97,13 @@
                     <div class="ITSr0">
                         <div class="ITSn">Dedizierte Jobserver</div>
                         <div class="ITSv">
-                            <input type="checkbox" [value]="calculations?.targetsystems?.dedicatedSrv">
+                            <input type="checkbox" [value]="calculations?.targetsystemsform?.dedicatedSrv">
                         </div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Server Antivirus</div>
                         <div class="ITSv">
-                            <input type="checkbox" [value]="calculations?.targetsystems?.antivirSrv">
+                            <input type="checkbox" [value]="calculations?.targetsystemsform?.antivirSrv">
                         </div>
                     </div>
             </div>
@@ -114,7 +114,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Active Directories</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountMSAD">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSAD">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -131,7 +131,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Azure Active Directories</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountMSAAD">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSAAD">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -148,7 +148,7 @@
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl Microsoft Exchange</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountMSEX">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSEX">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -165,7 +165,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Microsoft Exchange Online</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountMSEXO">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSEXO">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -182,7 +182,7 @@
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl Microsoft Sharepoint</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountMSSP">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSSP">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -199,7 +199,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Microsoft Sharepoint Online</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountMSSPO">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSSPO">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -216,7 +216,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Microsoft Teams</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountMSTEAMS">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSTEAMS">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -250,7 +250,7 @@
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl SAP R3 Applikation</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountSAPAPP">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountSAPAPP">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -268,7 +268,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl File Systeme</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountFS">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountFS">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -285,7 +285,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl LDAP Systeme</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountLDAP">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountLDAP">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -302,7 +302,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Starling Konnektoren</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystems?.amountSTAR">
+                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountSTAR">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -314,7 +314,7 @@
                                 <option>8</option>
                                 <option>9</option>
                             </select>
-                            <input type="text" [value]="calculations?.targetsystems?.cloudProducts">
+                            <input type="text" [value]="calculations?.targetsystemsform?.cloudProducts">
                         </div>
                     </div>
             </div>
@@ -341,7 +341,7 @@
                                 <div class="input-group">
                                     <select class="form-control">
                                         <option value="PROD">PROD</option>
-                                        <option value="QS" *ngIf="calculations?.targetsystems?.stages==2">QS</option>
+                                        <option value="QS" *ngIf="calculations?.targetsystemsform?.stages==2">QS</option>
                                         <option value="DEV">DEV</option>
                                     </select>
                                     <select class="form-control">
@@ -416,7 +416,7 @@
                 <div class="ITSr1">
                     <div class="ITSnSpecial">Anforderungsbeschreibung</div>
                     <div class="ITSv">
-                        <div class="form-control" contenteditable="true" aria-multiline="true">{{ calculations?.basic?.calculationDesc }}</div>
+                        <div class="form-control" contenteditable="true" aria-multiline="true">{{ calculations?.basicform?.calculationDesc }}</div>
                     </div>
                 </div>
             </div>

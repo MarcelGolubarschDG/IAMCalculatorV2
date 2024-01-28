@@ -1,20 +1,20 @@
 export interface Calculation {
     id:number;
-    basic:{
+    basicform:{
     calculationName:string;
     calculationDesc:string;
     },
-    customer: {
+    customerform: {
     customerName:string;
     customerNumber:number;
     customerInternalEmployees:number;
     customerExternalEmployees:number;
     },
-    marketunit:{
+    marketunitform:{
     marketunitName:string;
     marketunitResponsible:string;
     },
-    targetsystems: {
+    targetsystemsform: {
     licenseOIM:number;
     servicelevel:number;
     stages:number;

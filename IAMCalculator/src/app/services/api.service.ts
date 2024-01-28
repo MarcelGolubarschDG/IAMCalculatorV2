@@ -65,12 +65,21 @@ export class ApiService {
 
     ////////////// SAVE METHODS //////////////
 
-    /** ADD: add the calculation to database */
+    /**  ADD: add the calculation to database
     addCalculation(calculation: Calculation): Observable<Calculation> {
       return this.http.post<Calculation>(this.CalcUrl, calculation, this.httpOptions).pipe(
         tap((data: Calculation) => console.log('createProduct: ' + JSON.stringify(data))),
         catchError(this.handleError<any>('addCalculation'))
         )
+    }*/
+
+    /** ADD: add the calculation to database */
+    addCalculation(calculation: Calculation) {
+      // Send Http request
+      this.http.post(this.CalcUrl, calculation).subscribe(
+        responseData => {
+                          console.log(responseData);
+                        });
     }
 
 

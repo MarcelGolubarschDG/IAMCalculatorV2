@@ -59,19 +59,19 @@ export class CalculationsOverviewComponent implements OnInit {
     for (let i = 0; i < this.calculations.length; i++) {
       if (this.calculations[i].id === id)
       {
-        amount = Number(this.calculations[i].targetsystems.amountMSAD)
-               + Number(this.calculations[i].targetsystems.amountMSAAD)
-               + Number(this.calculations[i].targetsystems.amountMSEX)
-               + Number(this.calculations[i].targetsystems.amountMSEXO)
-               + Number(this.calculations[i].targetsystems.amountMSSP)
-               + Number(this.calculations[i].targetsystems.amountMSSPO)
-               + Number(this.calculations[i].targetsystems.amountMSTEAMS)
-               + Number(this.calculations[i].targetsystems.amountFS)
-               + Number(this.calculations[i].targetsystems.amountSAPHCMCSV)
-               + Number(this.calculations[i].targetsystems.amountSAPHCM)
-               + Number(this.calculations[i].targetsystems.amountSAPAPP)
-               + Number(this.calculations[i].targetsystems.amountLDAP)
-               + Number(this.calculations[i].targetsystems.amountSTAR)
+        amount = Number(this.calculations[i].targetsystemsform.amountMSAD)
+               + Number(this.calculations[i].targetsystemsform.amountMSAAD)
+               + Number(this.calculations[i].targetsystemsform.amountMSEX)
+               + Number(this.calculations[i].targetsystemsform.amountMSEXO)
+               + Number(this.calculations[i].targetsystemsform.amountMSSP)
+               + Number(this.calculations[i].targetsystemsform.amountMSSPO)
+               + Number(this.calculations[i].targetsystemsform.amountMSTEAMS)
+               + Number(this.calculations[i].targetsystemsform.amountFS)
+               + Number(this.calculations[i].targetsystemsform.amountSAPHCMCSV)
+               + Number(this.calculations[i].targetsystemsform.amountSAPHCM)
+               + Number(this.calculations[i].targetsystemsform.amountSAPAPP)
+               + Number(this.calculations[i].targetsystemsform.amountLDAP)
+               + Number(this.calculations[i].targetsystemsform.amountSTAR)
       }
       
     }

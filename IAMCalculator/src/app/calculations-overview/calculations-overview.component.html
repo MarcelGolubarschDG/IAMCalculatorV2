@@ -3,10 +3,10 @@
     <div class="col ownCol" *ngFor="let calc of calculations">
         <a (click)="goToPage('/Calculation/' + calc.id);">
             <div class="ITSs">
-                <div class="ITSg">{{calc.basic.calculationName}}</div>
+                <div class="ITSg">{{ calc.basicform.calculationName }}</div>
                 <div class="ITSr1">
                     <div class="ITSn">Identitäten</div>
-                    <div class="ITSv">{{ calc.customer.customerInternalEmployees + calc.customer.customerExternalEmployees }}</div>
+                    <div class="ITSv">{{ calc.customerform.customerInternalEmployees + calc.customerform.customerExternalEmployees }}</div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Zielsysteme</div>

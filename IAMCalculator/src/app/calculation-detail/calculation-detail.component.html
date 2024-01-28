@@ -11,7 +11,7 @@
     <!-- Container Header-->
     <div class="row">
         <div class="col d-flex align-items-center justify-content-start">
-            <div style="font-weight: bold;">{{ calculations?.basic?.calculationName }}</div>
+            <div style="font-weight: bold;">{{ calculations?.basicform?.calculationName }}</div>
         </div>
     </div>
 
@@ -57,7 +57,7 @@
                 <div class="ITSg">Projekt</div>
                 <div class="ITSr1">
                     <div class="ITSnSpecial">Anforderungsbeschreibung</div>
-                    <div class="ITSv">{{ calculations?.basic?.calculationDesc }}</div>
+                    <div class="ITSv">{{ calculations?.basicform?.calculationDesc }}</div>
                 </div>
             </div>
         </div>
@@ -76,19 +76,19 @@
                 <div class="ITSg">Kunde</div>
                 <div class="ITSr1">
                     <div class="ITSn">Kundenname</div>
-                    <div class="ITSv">{{ calculations?.customer?.customerName }}</div>
+                    <div class="ITSv">{{ calculations?.customerform?.customerName }}</div>
                 </div>
                 <div class="ITSr0">
                     <div class="ITSn">Kundennummer</div>
-                    <div class="ITSv">{{ calculations?.customer?.customerNumber }}</div>
+                    <div class="ITSv">{{ calculations?.customerform?.customerNumber }}</div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Mitarbeiter (intern)</div>
-                    <div class="ITSv">{{ calculations?.customer?.customerInternalEmployees }}</div>
+                    <div class="ITSv">{{ calculations?.customerform?.customerInternalEmployees }}</div>
                 </div>
                 <div class="ITSr0">
                     <div class="ITSn">Mitarbeiter (extern)</div>
-                    <div class="ITSv">{{ calculations?.customer?.customerExternalEmployees }}</div>
+                    <div class="ITSv">{{ calculations?.customerform?.customerExternalEmployees }}</div>
                 </div>
             </div>
         </div>
@@ -97,11 +97,11 @@
                 <div class="ITSg">Markteinheit</div>
                 <div class="ITSr0">
                     <div class="ITSn">Name</div>
-                    <div class="ITSv">{{ calculations?.marketunit?.marketunitName }}</div>
+                    <div class="ITSv">{{ calculations?.marketunitform?.marketunitName }}</div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Ansprechpartner</div>
-                    <div class="ITSv">{{ calculations?.marketunit?.marketunitResponsible }}</div>
+                    <div class="ITSv">{{ calculations?.marketunitform?.marketunitResponsible }}</div>
                 </div>
             </div>
         </div>
@@ -144,31 +144,31 @@
                 <div class="ITSg">Microsoft Applikationen</div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Active Directories</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSAD }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountMSAD }}</div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Azure Active Directories</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSAAD }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountMSAAD }}</div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl Microsoft Exchange</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSEX }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountMSEX }}</div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Microsoft Exchange Online</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSEXO }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountMSEXO }}</div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl Microsoft Sharepoint</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSSP }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountMSSP }}</div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Microsoft Sharepoint Online</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSSPO }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountMSSPO }}</div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Microsoft Teams</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountMSTEAMS }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountMSTEAMS }}</div>
                     </div>
             </div>
         </div>
@@ -177,28 +177,28 @@
                 <div class="ITSg">SAP Applikationen</div>
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl SAP HCM per CSV</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountSAPHCMCSV }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountSAPHCMCSV }}</div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl SAP HCM per Konnektor</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountSAPHCM }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountSAPHCM }}</div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl SAP R3 Applikation</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountSAPAPP }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountSAPAPP }}</div>
                     </div>
                 <div class="ITSg">Andere Applikationen</div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl File Systeme</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountFS }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountFS }}</div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl LDAP Systeme</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.amountLDAP }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountLDAP }}</div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Starling Konnektoren</div>
-                        <div class="ITSv">{{ calculations?.targetsystems?.cloudProducts || calculations?.targetsystems?.amountSTAR }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.cloudProducts || calculations?.targetsystemsform?.amountSTAR }}</div>
                     </div>
             </div>
         </div>
