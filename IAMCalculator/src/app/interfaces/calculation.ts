@@ -20,6 +20,7 @@ export interface Calculation {
     stages:number;
     antivirSrv:boolean;
     dedicatedSrv:boolean;
+    dedicatedSQLSrv:boolean;
     SAPHCMCSV:boolean;
     SAPHCM:boolean;
     amountMSAD:number;

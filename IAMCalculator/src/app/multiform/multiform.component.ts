@@ -21,6 +21,8 @@ export class MultiformComponent implements OnInit{
     return (this.matStepperForm.get('servers') as FormArray).controls;
   }
 
+  
+
   constructor(
     public apiservice: ApiService,
     private router: Router,
@@ -52,6 +54,31 @@ export class MultiformComponent implements OnInit{
     this.apiservice.addCalculation(data)
   }
 
+  checkFS(formvalue:any){
+    if (formvalue != "0")
+    {
+      this.optionValueOIM = 2
+      this.disabledLicense = true
+      console.log('if')
+    }else{
+      this.optionValueOIM = 1
+      this.disabledLicense = false
+      console.log('else')
+    }
+  }
+
+  checkSAPHCM(formvalue:any){
+    if (formvalue){
+      this.optionValueSAPHCMCSV = false
+    }
+  }
+
+  checkSAPHCMCSV(formvalue:any){
+    if (formvalue){
+      this.optionValueSAPHCM = false
+    }
+  }
+
   calcServerSize(data: any){
 
     // Clear FormArray Servers
@@ -75,6 +102,7 @@ export class MultiformComponent implements OnInit{
     var int_targetsystems_amountSTAR = parseInt(data.targetsystemsform.amountSTAR)
     var int_targetsystems_amountLDAP = parseInt(data.targetsystemsform.amountLDAP)
     var int_targetsystems_dedicatedSrv = Boolean(data.targetsystemsform.dedicatedSrv)
+    var int_targetsystems_dedicatedSQLSrv = Boolean(data.targetsystemsform.dedicatedSQLSrv)
 
     // Berechnung Anzahl Zielsysteme
     var stages:number = int_targetsystems_stages
@@ -91,6 +119,7 @@ export class MultiformComponent implements OnInit{
     var amountLDAP:number = int_targetsystems_amountLDAP
     var amountSTAR:number = int_targetsystems_amountSTAR
     var dedicatedSrv:boolean = int_targetsystems_dedicatedSrv
+    var dedicatedSQLSrv:boolean = int_targetsystems_dedicatedSQLSrv
 
     // Berechnung Identitäten
     var amountIdentities:number
@@ -105,6 +134,7 @@ export class MultiformComponent implements OnInit{
     var amountOtherTargetsystems:number = 0
     var amountMSTargetsystems:number = 0
     var amountSAPTargetsystems:number = 0
+    var amountTargetsystem:number = amountOtherTargetsystems + amountMSTargetsystems + amountSAPTargetsystems
 
     // Berechnung aller benötigter Server
     var amountDCQS:number = 0
@@ -162,7 +192,62 @@ export class MultiformComponent implements OnInit{
         amountOtherTargetsystems = Math.ceil((amountFS+amountLDAP+amountSTAR) / 5)
         amountMSTargetsystems = Math.ceil((amountMSAD+amountMSAAD+amountMSEX+amountMSEXO+amountMSSP+amountMSSPO+amountMSTEAMS) / 3)
         amountSAPTargetsystems = Math.ceil((amountSAPHCM + amountSAPAPP) / 6)
+      break;
+      // keine dedizierte Server / 10 Pro Job Server
+      case dedicatedSrv != true:
+        amountOtherTargetsystems = Math.ceil((amountFS+amountLDAP+amountSTAR))
+        amountMSTargetsystems = Math.ceil((amountMSAD+amountMSAAD+amountMSEX+amountMSEXO+amountMSSP+amountMSSPO+amountMSTEAMS))
+        amountSAPTargetsystems = Math.ceil((amountSAPHCM + amountSAPAPP))
+        amountJobServerProd = Math.ceil((amountOtherTargetsystems + amountMSTargetsystems + amountSAPTargetsystems) / 10)
+      break;
+    }
 
+    // Job Server Berechnung DEV QS
+    switch (true)
+    {
+      // dedizierte Server
+      case stages == 1 && dedicatedSQLSrv:
+        amountDCQS = 0
+        amountDCDEV = 1
+        amountJobServerQS = 0
+        amountJobServerDEV = 1
+        amountDBServerQS = 0
+        amountDBServerDEV = 1
+      break;
+      // keine dedizierte Server / 10 Pro Job Server
+      case stages == 2 && dedicatedSQLSrv:
+        amountDCQS = 1
+        amountDCDEV = 1
+        amountJobServerQS = 1
+        amountJobServerDEV = 1
+        amountDBServerQS = 1
+        amountDBServerDEV = 1
+      break;
+      // keine dedizierte Server / 10 Pro Job Server
+      case stages == 1 && !dedicatedSQLSrv:
+        amountDCQS = 0
+        amountDCDEV = 1
+        amountJobServerQS = 0
+        amountJobServerDEV = 1
+        amountDBServerQS = 0
+        amountDBServerDEV = 0
+      break;
+      // keine dedizierte Server / 10 Pro Job Server
+      case stages == 2 && !dedicatedSQLSrv:
+        amountDCQS = 1
+        amountDCDEV = 1
+        amountJobServerQS = 1
+        amountJobServerDEV = 1
+        amountDBServerQS = 0
+        amountDBServerDEV = 0
+      break;
+    }
+    
+    //Baue Prod Server
+    switch (true)
+    {
+      // dedizierte Server
+      case dedicatedSrv == true:
         //Baue PROD DB Server
         for (var i = 1; i <= amountDBServerProd; i++){
           string_stage = "Prod"
@@ -192,7 +277,7 @@ export class MultiformComponent implements OnInit{
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
           (<FormArray>this.matStepperForm.get('servers')).push(control);
-          console.log(this.matStepperForm.get('servers'))
+          //console.log(this.matStepperForm.get('servers'))
         }
         //Baue PROD Web Server
         for (var i = 1; i <= amountWebServerProd; i++){
@@ -223,7 +308,7 @@ export class MultiformComponent implements OnInit{
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
           (<FormArray>this.matStepperForm.get('servers')).push(control);
-          console.log(this.matStepperForm.get('servers'))
+          //console.log(this.matStepperForm.get('servers'))
         }
         //Baue PROD MS Job Server
         for (var i = 1; i <= amountMSTargetsystems; i++){
@@ -254,7 +339,7 @@ export class MultiformComponent implements OnInit{
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
           (<FormArray>this.matStepperForm.get('servers')).push(control);
-          console.log(this.matStepperForm.get('servers'))
+          //console.log(this.matStepperForm.get('servers'))
         }
         //Baue PROD SAP Job Server
         for (var i = 1; i <= amountSAPTargetsystems; i++){
@@ -285,7 +370,7 @@ export class MultiformComponent implements OnInit{
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
           (<FormArray>this.matStepperForm.get('servers')).push(control);
-          console.log(this.matStepperForm.get('servers'))
+          //console.log(this.matStepperForm.get('servers'))
         }
         //Baue PROD Other Job Server
         for (var i = 1; i <= amountOtherTargetsystems; i++){
@@ -316,15 +401,11 @@ export class MultiformComponent implements OnInit{
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
           (<FormArray>this.matStepperForm.get('servers')).push(control);
-          console.log(this.matStepperForm.get('servers'))
+          //console.log(this.matStepperForm.get('servers'))
         }
       break;
-      // keine dedizierte Server / 10 Pro Job Server
-      case dedicatedSrv != true:
-        amountOtherTargetsystems = Math.ceil((amountFS+amountLDAP+amountSTAR))
-        amountMSTargetsystems = Math.ceil((amountMSAD+amountMSAAD+amountMSEX+amountMSEXO+amountMSSP+amountMSSPO+amountMSTEAMS))
-        amountSAPTargetsystems = Math.ceil((amountSAPHCM + amountSAPAPP))
-        amountJobServerProd = Math.ceil((amountOtherTargetsystems + amountMSTargetsystems + amountSAPTargetsystems) / 10)
+      // dedizierte Server
+      case dedicatedSrv == false:
         //Baue PROD DB Server
         for (var i = 1; i <= amountDBServerProd; i++){
           string_stage = "Prod"
@@ -354,7 +435,7 @@ export class MultiformComponent implements OnInit{
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
           (<FormArray>this.matStepperForm.get('servers')).push(control);
-          console.log(this.matStepperForm.get('servers'))
+          //console.log(this.matStepperForm.get('servers'))
         }
         //Baue PROD Web Server
         for (var i = 1; i <= amountWebServerProd; i++){
@@ -385,7 +466,7 @@ export class MultiformComponent implements OnInit{
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
           (<FormArray>this.matStepperForm.get('servers')).push(control);
-          console.log(this.matStepperForm.get('servers'))
+          //console.log(this.matStepperForm.get('servers'))
         }
         //Baue PROD DB Server
         for (var i = 1; i <= amountJobServerProd; i++){
@@ -416,55 +497,11 @@ export class MultiformComponent implements OnInit{
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
           (<FormArray>this.matStepperForm.get('servers')).push(control);
-          console.log(this.matStepperForm.get('servers'))
+          //console.log(this.matStepperForm.get('servers'))
         }
       break;
     }
 
-
-
-    
-    // Job Server Berechnung DEV QS
-    switch (true)
-    {
-      // dedizierte Server
-      case stages == 1 && dedicatedSrv:
-        amountDCQS = 0
-        amountDCDEV = 1
-        amountJobServerQS = 0
-        amountJobServerDEV = 1
-        amountDBServerQS = 0
-        amountDBServerDEV = 1
-      break;
-      // keine dedizierte Server / 10 Pro Job Server
-      case stages == 2 && dedicatedSrv:
-        amountDCQS = 1
-        amountDCDEV = 1
-        amountJobServerQS = 1
-        amountJobServerDEV = 1
-        amountDBServerQS = 1
-        amountDBServerDEV = 1
-      break;
-      // keine dedizierte Server / 10 Pro Job Server
-      case stages == 1 && !dedicatedSrv:
-        amountDCQS = 0
-        amountDCDEV = 1
-        amountJobServerQS = 0
-        amountJobServerDEV = 1
-        amountDBServerQS = 0
-        amountDBServerDEV = 0
-      break;
-      // keine dedizierte Server / 10 Pro Job Server
-      case stages == 2 && !dedicatedSrv:
-        amountDCQS = 1
-        amountDCDEV = 1
-        amountJobServerQS = 1
-        amountJobServerDEV = 1
-        amountDBServerQS = 0
-        amountDBServerDEV = 0
-      break;
-    }
-    
     //Baue DB Server DEV QS
     for (var i = 1; i <= amountDBServerDEV+amountDBServerQS; i++){
       string_stage = ""
@@ -500,8 +537,9 @@ export class MultiformComponent implements OnInit{
         addBackupstorage: new FormControl(int_addbsto,  []),
       });
       (<FormArray>this.matStepperForm.get('servers')).push(control);
-      console.log(this.matStepperForm.get('servers'))
+      //console.log(this.matStepperForm.get('servers'))
     }
+
     //Baue  Server DEV QS
     for (var i = 1; i <= amountJobServerDEV+amountJobServerQS; i++){
       string_stage = ""
@@ -537,8 +575,9 @@ export class MultiformComponent implements OnInit{
         addBackupstorage: new FormControl(int_addbsto,  []),
       });
       (<FormArray>this.matStepperForm.get('servers')).push(control);
-      console.log(this.matStepperForm.get('servers'))
+      //console.log(this.matStepperForm.get('servers'))
     }
+
     //Baue DC Server DEV QS
     for (var i = 1; i <= amountDCDEV+amountDCQS; i++){
       string_stage = ""
@@ -574,9 +613,9 @@ export class MultiformComponent implements OnInit{
         addBackupstorage: new FormControl(int_addbsto,  []),
       });
       (<FormArray>this.matStepperForm.get('servers')).push(control);
-      console.log(this.matStepperForm.get('servers'))
+      //console.log(this.matStepperForm.get('servers'))
     }
-
+  
     //Formgroup erzeugen
     var string_stage:string = ""
     var string_role:string = ""
@@ -618,6 +657,7 @@ export class MultiformComponent implements OnInit{
       licenseOIM: new FormControl(null, []),
       stages: new FormControl(null, []),
       dedicatedSrv: new FormControl(null, []),
+      dedicatedSQLSrv: new FormControl(null, []),
       antivirSrv: new FormControl(null, []),
       amountMSAD: new FormControl(null, []),
       amountMSAAD: new FormControl(null, []),
@@ -641,7 +681,8 @@ export class MultiformComponent implements OnInit{
   optionValueSLA = 1;
   optionValueStages = 2;
   optionValuededicatedSrv = false;
-  optionValueantivirSrv = true
+  optionValuededicatedSQLSrv = false;
+  optionValueantivirSrv = false;
   optionValueMSAD = 0;
   optionValueMSAAD = 0;
   optionValueMSEX = 0;
@@ -651,10 +692,10 @@ export class MultiformComponent implements OnInit{
   optionValueMSTEAMS = 0;
   optionValueFS = 0;
   optionValueSAPHCMCSV = false;
-  optionValueSAPHCM = true;
+  optionValueSAPHCM = false;
   optionValueSAPAPP = 0;
   optionValueLDAP = 0;
   optionValueSTAR = 0;
   optionValueCloudProduct = "Keine Starling Cloud Anbindung vorgesehen.";
-
+  disabledLicense = false;
 }

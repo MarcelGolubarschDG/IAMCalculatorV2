@@ -131,3 +131,15 @@
     padding-top: 5px;
     padding-bottom: 5px;
     }
+
+    .divtextarea_Desc {
+        min-height: fit-content;
+        max-height: 20vh;
+        overflow: auto
+    }
+    
+    .divtextarea_Cloud {
+        min-height: fit-content;
+        max-height: 10vh;
+        overflow: auto
+    }
