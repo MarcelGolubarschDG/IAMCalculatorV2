@@ -82,12 +82,23 @@ export class ApiService {
     }
 
 
-    /** PUT: update the calculation in database */
+    /** PUT: update the calculation in database
     updateCalculation(calculation: Calculation): Observable<any> {
       return this.http.put(this.CalcUrl, calculation, this.httpOptions).pipe(
         catchError(this.handleError<any>('updateCalculation'))
       );
+    }*/
+
+    /** PUT: update the calculation in database */
+    updateCalculation(data: string, id: number) {
+      // Send Http request
+      this.http.put(this.CalcUrl + "/" + id, JSON.parse(data), this.httpOptions).subscribe(
+        responseData => {
+                          console.log(JSON.parse(data));
+                        });
     }
+
+
 
     // error handling function
 

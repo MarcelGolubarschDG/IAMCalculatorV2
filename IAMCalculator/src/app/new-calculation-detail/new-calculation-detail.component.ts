@@ -5,29 +5,25 @@ import { Observable } from 'rxjs';
 import { Location } from '@angular/common';
 import { Calculation } from '../interfaces/calculation';
 import { Router, ActivatedRoute } from '@angular/router';
-import { InMemoryDataService } from '../in-memory-data.service';
 
 @Component({
-  selector: 'app-multiform',
-  templateUrl: './multiform.component.html',
-  styleUrl: './multiform.component.css'
+  selector: 'app-new-calculation-detail',
+  templateUrl: './new-calculation-detail.component.html',
+  styleUrl: './new-calculation-detail.component.css'
 })
 
-export class MultiformComponent implements OnInit{
+export class NewCalculationDetailComponent implements OnInit{
 
   calculations: Calculation[] = [];
 
   get serverControls() {
-    return (this.matStepperForm.get('servers') as FormArray).controls;
+    return (this.NewCalcForm.get('servers') as FormArray).controls;
   }
-
-  
 
   constructor(
     public apiservice: ApiService,
     private router: Router,
-    private location: Location,
-    private inmemory: InMemoryDataService
+    private location: Location
     ) {}
 
   ngOnInit(): void {}
@@ -44,9 +40,9 @@ export class MultiformComponent implements OnInit{
 
   //ngsubmit function
   onSubmit() {
-    //console.log(this.matStepperForm.value);
-    this.onPostForm(this.matStepperForm.value)
-    this.matStepperForm.reset()
+    //console.log(this.NewCalcForm.value);
+    this.onPostForm(this.NewCalcForm.value)
+    this.NewCalcForm.reset()
     this.goToPage('/Overview')
   }
 
@@ -82,8 +78,8 @@ export class MultiformComponent implements OnInit{
   calcServerSize(data: any){
 
     // Clear FormArray Servers
-    while ((<FormArray>this.matStepperForm.get('servers')).length !== 0) {
-      (<FormArray>this.matStepperForm.get('servers')).removeAt(0)
+    while ((<FormArray>this.NewCalcForm.get('servers')).length !== 0) {
+      (<FormArray>this.NewCalcForm.get('servers')).removeAt(0)
     }
 
     /** convert from string to expected type */
@@ -276,8 +272,8 @@ export class MultiformComponent implements OnInit{
             backupstorage: new FormControl(int_bsto,  []),
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
-          (<FormArray>this.matStepperForm.get('servers')).push(control);
-          //console.log(this.matStepperForm.get('servers'))
+          (<FormArray>this.NewCalcForm.get('servers')).push(control);
+          //console.log(this.NewCalcForm.get('servers'))
         }
         //Baue PROD Web Server
         for (var i = 1; i <= amountWebServerProd; i++){
@@ -307,8 +303,8 @@ export class MultiformComponent implements OnInit{
             backupstorage: new FormControl(int_bsto,  []),
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
-          (<FormArray>this.matStepperForm.get('servers')).push(control);
-          //console.log(this.matStepperForm.get('servers'))
+          (<FormArray>this.NewCalcForm.get('servers')).push(control);
+          //console.log(this.NewCalcForm.get('servers'))
         }
         //Baue PROD MS Job Server
         for (var i = 1; i <= amountMSTargetsystems; i++){
@@ -338,8 +334,8 @@ export class MultiformComponent implements OnInit{
             backupstorage: new FormControl(int_bsto,  []),
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
-          (<FormArray>this.matStepperForm.get('servers')).push(control);
-          //console.log(this.matStepperForm.get('servers'))
+          (<FormArray>this.NewCalcForm.get('servers')).push(control);
+          //console.log(this.NewCalcForm.get('servers'))
         }
         //Baue PROD SAP Job Server
         for (var i = 1; i <= amountSAPTargetsystems; i++){
@@ -369,8 +365,8 @@ export class MultiformComponent implements OnInit{
             backupstorage: new FormControl(int_bsto,  []),
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
-          (<FormArray>this.matStepperForm.get('servers')).push(control);
-          //console.log(this.matStepperForm.get('servers'))
+          (<FormArray>this.NewCalcForm.get('servers')).push(control);
+          //console.log(this.NewCalcForm.get('servers'))
         }
         //Baue PROD Other Job Server
         for (var i = 1; i <= amountOtherTargetsystems; i++){
@@ -400,8 +396,8 @@ export class MultiformComponent implements OnInit{
             backupstorage: new FormControl(int_bsto,  []),
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
-          (<FormArray>this.matStepperForm.get('servers')).push(control);
-          //console.log(this.matStepperForm.get('servers'))
+          (<FormArray>this.NewCalcForm.get('servers')).push(control);
+          //console.log(this.NewCalcForm.get('servers'))
         }
       break;
       // dedizierte Server
@@ -434,8 +430,8 @@ export class MultiformComponent implements OnInit{
             backupstorage: new FormControl(int_bsto,  []),
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
-          (<FormArray>this.matStepperForm.get('servers')).push(control);
-          //console.log(this.matStepperForm.get('servers'))
+          (<FormArray>this.NewCalcForm.get('servers')).push(control);
+          //console.log(this.NewCalcForm.get('servers'))
         }
         //Baue PROD Web Server
         for (var i = 1; i <= amountWebServerProd; i++){
@@ -465,8 +461,8 @@ export class MultiformComponent implements OnInit{
             backupstorage: new FormControl(int_bsto,  []),
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
-          (<FormArray>this.matStepperForm.get('servers')).push(control);
-          //console.log(this.matStepperForm.get('servers'))
+          (<FormArray>this.NewCalcForm.get('servers')).push(control);
+          //console.log(this.NewCalcForm.get('servers'))
         }
         //Baue PROD DB Server
         for (var i = 1; i <= amountJobServerProd; i++){
@@ -496,8 +492,8 @@ export class MultiformComponent implements OnInit{
             backupstorage: new FormControl(int_bsto,  []),
             addBackupstorage: new FormControl(int_addbsto,  []),
           });
-          (<FormArray>this.matStepperForm.get('servers')).push(control);
-          //console.log(this.matStepperForm.get('servers'))
+          (<FormArray>this.NewCalcForm.get('servers')).push(control);
+          //console.log(this.NewCalcForm.get('servers'))
         }
       break;
     }
@@ -536,8 +532,8 @@ export class MultiformComponent implements OnInit{
         backupstorage: new FormControl(int_bsto,  []),
         addBackupstorage: new FormControl(int_addbsto,  []),
       });
-      (<FormArray>this.matStepperForm.get('servers')).push(control);
-      //console.log(this.matStepperForm.get('servers'))
+      (<FormArray>this.NewCalcForm.get('servers')).push(control);
+      //console.log(this.NewCalcForm.get('servers'))
     }
 
     //Baue  Server DEV QS
@@ -574,8 +570,8 @@ export class MultiformComponent implements OnInit{
         backupstorage: new FormControl(int_bsto,  []),
         addBackupstorage: new FormControl(int_addbsto,  []),
       });
-      (<FormArray>this.matStepperForm.get('servers')).push(control);
-      //console.log(this.matStepperForm.get('servers'))
+      (<FormArray>this.NewCalcForm.get('servers')).push(control);
+      //console.log(this.NewCalcForm.get('servers'))
     }
 
     //Baue DC Server DEV QS
@@ -612,8 +608,8 @@ export class MultiformComponent implements OnInit{
         backupstorage: new FormControl(int_bsto,  []),
         addBackupstorage: new FormControl(int_addbsto,  []),
       });
-      (<FormArray>this.matStepperForm.get('servers')).push(control);
-      //console.log(this.matStepperForm.get('servers'))
+      (<FormArray>this.NewCalcForm.get('servers')).push(control);
+      //console.log(this.NewCalcForm.get('servers'))
     }
   
     //Formgroup erzeugen
@@ -636,7 +632,7 @@ export class MultiformComponent implements OnInit{
   // Variables and Arrays
   // Form Variables
 
-  matStepperForm : FormGroup = new FormGroup({
+  NewCalcForm : FormGroup = new FormGroup({
     id: new FormControl(),
     basicform: new FormGroup({
       calculationName: new FormControl(null, []),

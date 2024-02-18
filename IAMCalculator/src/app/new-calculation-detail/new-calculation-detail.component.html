@@ -1,4 +1,4 @@
-<form [formGroup]="matStepperForm" (ngSubmit)="onSubmit()" #f="ngForm">
+<form [formGroup]="NewCalcForm" (ngSubmit)="onSubmit()" #f="ngForm">
     <input type="hidden" formControlName="id" [value]="">
     <button class="btn btn-danger d-inline-flex align-items-center" type="button" (click)="goBack()">
         <i class="bi bi-arrow-left"></i>
@@ -28,7 +28,7 @@
                         <div class="ITSr1">
                             <div class="ITSnSpecial">Anforderungsbeschreibung</div>
                             <div class="ITSv">
-                                <div class="form-control divtextarea_Desc" contenteditable="true" aria-multiline="true" formControlName="calculationDesc" [(ngModel)]="optionValueCloudProduct"></div>
+                                <div class="form-control divtextarea_Desc" contenteditable="true" aria-multiline="true" formControlName="calculationDesc"></div>
                             </div>
                         </div>
                     </div>
@@ -47,11 +47,11 @@
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Mitarbeiter (intern)</div>
-                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerInternalEmployees" (change)="calcServerSize(matStepperForm.value)"></div>
+                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerInternalEmployees" (change)="calcServerSize(NewCalcForm.value)"></div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Mitarbeiter (extern)</div>
-                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerExternalEmployees" (change)="calcServerSize(matStepperForm.value)"></div>
+                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerExternalEmployees" (change)="calcServerSize(NewCalcForm.value)"></div>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
 
 
         <!-- Service und Zielsysteme -->
-        <div class="row" formGroupName="targetsystemsform" (change)="calcServerSize(matStepperForm.value)">
+        <div class="row" formGroupName="targetsystemsform" (change)="calcServerSize(NewCalcForm.value)">
             <div class="col-4">
                 <div class="ITSs">
                     <div class="ITSg">Service</div>

@@ -4,6 +4,7 @@ import { ApiService } from '../services/api.service';
 import { Calculation } from '../interfaces/calculation';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-calculation-detail',
@@ -28,6 +29,8 @@ SAPHCMCSV: string = ""
 
 // div toggle variables
 showMyContainer: boolean = false;
+
+jsonData: any;
 
 constructor(
   private toastr: ToastrService,
@@ -57,6 +60,38 @@ constructor(
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.apiService.getCalculationByCalcID(id)
     .subscribe(calculations => this.calculations = calculations);
+  }
+
+  fetchDataAndExport(){
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.apiService.getCalculationByCalcID(id).subscribe(
+      data => {
+        this.jsonData = data;
+        this.exportToExcel();
+      })
+  }
+
+  exportToExcel() {
+    if (!this.jsonData) {
+      console.error('No data to export.');
+      return;
+    }
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.jsonData);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    this.saveAsExcelFile(excelBuffer, 'data');
+  }
+
+  saveAsExcelFile(buffer: any, fileName: string): void {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(data);
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.href = url;
+    a.download = fileName + '.xlsx';
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
   }
 
   CalculateIdentities() {

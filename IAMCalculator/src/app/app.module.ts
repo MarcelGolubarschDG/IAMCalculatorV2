@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { MultiformComponent } from './multiform/multiform.component';
+import { NewCalculationDetailComponent } from './new-calculation-detail/new-calculation-detail.component';
 import { HomeComponent } from './home/home.component';
 import { CalculationDetailComponent } from './calculation-detail/calculation-detail.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -31,7 +31,7 @@ import { CalculationsOverviewComponent } from './calculations-overview/calculati
   declarations: [
     AppComponent,
     NavbarComponent,
-    MultiformComponent,
+    NewCalculationDetailComponent,
     HomeComponent,
     CalculationDetailComponent,
     EditCalculationDetailComponent,

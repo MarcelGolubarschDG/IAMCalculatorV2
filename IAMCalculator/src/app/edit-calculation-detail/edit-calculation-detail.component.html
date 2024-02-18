@@ -1,5 +1,6 @@
-<button class="btn btn-danger d-inline-flex align-items-center" type="button" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
-<button class="btn btn-primary d-inline-flex align-items-center" type="button"><i class="bi bi-floppy"></i></button>
+<form [formGroup]="EditCalcForm" (ngSubmit)="onSubmit(EditCalcForm.value)" #f="ngForm">
+    <button class="btn btn-danger d-inline-flex align-items-center" type="button" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
+    <button class="btn btn-primary d-inline-flex align-items-center" type="submit" (click)="goBack()"><i class="bi bi-floppy"></i></button>
 
 <div class="row">
     <div class="col spacer-l"></div>
@@ -8,22 +9,22 @@
 
     <!-- Projekt -->
     <div class="row">
-        <div class="col-4">
+        <div class="col-4" formGroupName="basicform">
             <div class="ITSs">
                 <div class="ITSg">Kalkulation</div>
                 <div class="ITSr1">
                     <div class="ITSn">Kalkulationame</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.basicform?.calculationName"></div>
+                    <div class="ITSv"><input class="form-control" type="text" formControlName="calculationName" formControlName="calculationName"></div>
                 </div>
             </div>
         </div>
-        <div class="col-8">
+        <div class="col-8" formGroupName="basicform">
             <div class="ITSs">
                 <div class="ITSg">Projekt</div>
                 <div class="ITSr1">
                     <div class="ITSnSpecial">Anforderungsbeschreibung</div>
                     <div class="ITSv">
-                        <div class="form-control" contenteditable="true" aria-multiline="true">{{ calculations?.basicform?.calculationDesc }}</div>
+                        <textarea class="form-control" contenteditable="true" aria-multiline="true" formControlName="calculationDesc"></textarea>
                     </div>
                 </div>
             </div>
@@ -38,37 +39,37 @@
 
     <!-- Kunde / Markteinheit -->
     <div class="row">
-        <div class="col-4">
+        <div class="col-4" formGroupName="customerform">
             <div class="ITSs">
                 <div class="ITSg">Kunde</div>
                 <div class="ITSr1">
                     <div class="ITSn">Kundenname</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customerform?.customerName"></div>
+                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerName"></div>
                 </div>
                 <div class="ITSr0">
                     <div class="ITSn">Kundennummer</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customerform?.customerNumber"></div>
+                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerNumber"></div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Mitarbeiter (intern)</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customerform?.customerInternalEmployees"></div>
+                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerInternalEmployees"></div>
                 </div>
                 <div class="ITSr0">
                     <div class="ITSn">Mitarbeiter (extern)</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.customerform?.customerExternalEmployees"></div>
+                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerExternalEmployees"></div>
                 </div>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-4" formGroupName="marketunitform">
             <div class="ITSs">
                 <div class="ITSg">Markteinheit</div>
                 <div class="ITSr0">
                     <div class="ITSn">Name</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.marketunitform?.marketunitName"></div>
+                    <div class="ITSv"><input class="form-control" type="text" formControlName="marketunitName"></div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Ansprechpartner</div>
-                    <div class="ITSv"><input class="form-control" type="text" [value]="calculations?.marketunitform?.marketunitResponsible"></div>
+                    <div class="ITSv"><input class="form-control" type="text" formControlName="marketunitResponsible"></div>
                 </div>
             </div>
         </div>
@@ -81,13 +82,13 @@
 
     <!-- Service und Zielsysteme -->
     <div class="row">
-        <div class="col-4">
+        <div class="col-4" formGroupName="targetsystemsform">
             <div class="ITSs">
                 <div class="ITSg">Service</div>
                     <div class="ITSr0">
                         <div class="ITSn">IAM Lizenz</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.licenseOIM">
+                            <select class="form-control" formControlName="licenseOIM">
                                 <option value="1">Standard</option>
                                 <option value="2">Data Governance Editon</option>
                             </select>
@@ -96,17 +97,17 @@
                     <div class="ITSr0">
                         <div class="ITSn">Servicelevel</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.servicelevel">
+                            <select class="form-control" formControlName="servicelevel">
                                 <option value="1">Business Standard</option>
                                 <option value="2">Business Critical</option>
-                                <option value="3">Business Critical +</option>
+                                <!--<option value="3">Business Critical +</option>-->
                             </select>
                         </div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Stages</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.stages">
+                            <select class="form-control" formControlName="stages">
                                 <option value="1">P D</option>
                                 <option value="2">P Q D</option>
                             </select>
@@ -115,24 +116,24 @@
                     <div class="ITSr0">
                         <div class="ITSn">Dedizierte Jobserver</div>
                         <div class="ITSv">
-                            <input type="checkbox" [value]="calculations?.targetsystemsform?.dedicatedSrv">
+                            <input type="checkbox" formControlName="dedicatedSrv">
                         </div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Server Antivirus</div>
                         <div class="ITSv">
-                            <input type="checkbox" [value]="calculations?.targetsystemsform?.antivirSrv">
+                            <input type="checkbox" formControlName="antivirSrv">
                         </div>
                     </div>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-4" formGroupName="targetsystemsform">
             <div class="ITSs">
                 <div class="ITSg">Microsoft Applikationen</div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Active Directories</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSAD">
+                            <select class="form-control" formControlName="amountMSAD">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -149,7 +150,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Azure Active Directories</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSAAD">
+                            <select class="form-control" formControlName="amountMSAAD">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -166,7 +167,7 @@
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl Microsoft Exchange</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSEX">
+                            <select class="form-control" formControlName="amountMSEX">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -183,7 +184,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Microsoft Exchange Online</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSEXO">
+                            <select class="form-control" formControlName="amountMSEXO">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -200,7 +201,7 @@
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl Microsoft Sharepoint</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSSP">
+                            <select class="form-control" formControlName="amountMSSP">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -217,7 +218,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Microsoft Sharepoint Online</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSSPO">
+                            <select class="form-control" formControlName="amountMSSPO">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -234,7 +235,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Microsoft Teams</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountMSTEAMS">
+                            <select class="form-control" formControlName="amountMSTEAMS">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -250,25 +251,25 @@
                     </div>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-4" formGroupName="targetsystemsform">
             <div class="ITSs">
                 <div class="ITSg">SAP Applikationen</div>
                     <div class="ITSr1">
                         <div class="ITSn">SAP HCM per CSV</div>
                         <div class="ITSv">
-                            <input type="checkbox">
+                            <input type="checkbox" formControlName="amountSAPHCMCSV" (change)="checkSAPHCM(optionValueSAPHCM)">
                         </div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">SAP HCM per Konnektor</div>
                         <div class="ITSv">
-                            <input type="checkbox">
+                            <input type="checkbox" formControlName="amountSAPHCM" (change)="checkSAPHCM(optionValueSAPHCM)">
                         </div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Anzahl SAP R3 Applikation</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountSAPAPP">
+                            <select class="form-control" formControlName="amountSAPAPP">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -286,7 +287,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl File Systeme</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountFS">
+                            <select class="form-control" formControlName="amountFS">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -303,7 +304,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl LDAP Systeme</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountLDAP">
+                            <select class="form-control" formControlName="amountLDAP">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -320,7 +321,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Starling Konnektoren</div>
                         <div class="ITSv">
-                            <select class="form-control" [value]="calculations?.targetsystemsform?.amountSTAR">
+                            <select class="form-control" formControlName="amountSTAR">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -332,7 +333,12 @@
                                 <option>8</option>
                                 <option>9</option>
                             </select>
-                            <input type="text" [value]="calculations?.targetsystemsform?.cloudProducts">
+                        </div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Cloudsysteme Starling Konnektoren</div>
+                        <div class="ITSv">
+                            <textarea class="form-control divtextarea_Cloud" contenteditable="true" aria-multiline="true" formControlName="cloudProducts"></textarea>
                         </div>
                     </div>
             </div>
@@ -347,7 +353,7 @@
 
 
     <!-- Hardware -->
-    <div class="row">
+    <div class="row" formGroupName="servers">
         <div class="col">
             <div class="ITSs">
                 <div class="ITSg">
@@ -403,15 +409,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let srv of calculations?.servers; let z = index">
-                                    <td>{{ z }}</td>
-                                    <td><input type="text" class="form-control" [value]="srv.stage"></td>
-                                    <td><input type="text" class="form-control" [value]="srv.size"></td>
-                                    <td><input type="text" class="form-control" [value]="srv.role"></td>
-                                    <td><input type="text" class="form-control" [value]="srv.addCPU"></td>
-                                    <td><input type="text" class="form-control" [value]="srv.addRAM"></td>
-                                    <td><input type="text" class="form-control" [value]="srv.addStorage"></td>
-                                    <td><input type="text" class="form-control" [value]="srv.addBackupstorage"></td>
+                                <tr *ngFor="let srv of serversArr.controls; index as i" [formGroupName]="i">
+                                    <td>{{ i }}</td>
+                                    <td><input type="text" class="form-control" formControlName="stage"></td>
+                                    <td><input type="text" class="form-control" formControlName="size"></td>
+                                    <td><input type="text" class="form-control" formControlName="role"></td>
+                                    <td><input type="text" class="form-control" formControlName="addCPU"></td>
+                                    <td><input type="text" class="form-control" formControlName="addRAM"></td>
+                                    <td><input type="text" class="form-control" formControlName="storage"></td>
+                                    <td><input type="text" class="form-control" formControlName="backupstorage"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -424,3 +430,4 @@
 <div class="row">
     <div class="col spacer-l"></div>
 </div>
+</form>
