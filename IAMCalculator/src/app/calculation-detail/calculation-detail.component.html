@@ -1,8 +1,10 @@
-
+<div class="row">
+    <div class="col spacer-xl"></div>
+</div>
 <button class="btn btn-danger" type="button" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
 <button class="btn btn-primary" type="button" (click)="goToPage('/Edit/Calculation/' + calculations?.id)"><i class="bi bi-pencil-fill"></i></button>
-<button class="btn btn-primary d-inline-flex align-items-center" type="button"><i class="bi bi-filetype-csv"></i></button>
-<button class="btn btn-primary d-inline-flex align-items-center" type="button"><i class="bi bi-filetype-xlsx"></i></button>
+<button class="btn btn-primary d-inline-flex align-items-center" type="button" (click)="onExportXLSX()"><i class="bi bi-filetype-xlsx"></i></button>
+<button class="btn btn-primary d-inline-flex align-items-center" type="button" (click)="onExportCSV()"><i class="bi bi-filetype-csv"></i></button>
 
 <div class="row">
     <div class="col spacer-xl"></div>
@@ -38,18 +40,6 @@
                         <div class="ITSn">Server</div>
                         <div class="ITSv">{{ this.amountOfServerByCalcID() }}</div>
                     </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Mntl. Lizenzkosten:</div>
-                        <div class="ITSv">2500€</div>
-                    </div>
-                    <div class="ITSr1">
-                        <div class="ITSn">Mntl. Hardwarekosten:</div>
-                        <div class="ITSv">3500€</div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Mntl. Gesamtkosten:</div>
-                        <div class="ITSv">6000€</div>
-                    </div>
             </div>
         </div>
         <div class="col-8">
@@ -82,13 +72,9 @@
                     <div class="ITSn">Kundennummer</div>
                     <div class="ITSv">{{ calculations?.customerform?.customerNumber }}</div>
                 </div>
-                <div class="ITSr1">
-                    <div class="ITSn">Mitarbeiter (intern)</div>
-                    <div class="ITSv">{{ calculations?.customerform?.customerInternalEmployees }}</div>
-                </div>
                 <div class="ITSr0">
-                    <div class="ITSn">Mitarbeiter (extern)</div>
-                    <div class="ITSv">{{ calculations?.customerform?.customerExternalEmployees }}</div>
+                    <div class="ITSn">Mitarbeiter</div>
+                    <div class="ITSv">{{ calculations?.customerform?.customerEmployees }}</div>
                 </div>
             </div>
         </div>

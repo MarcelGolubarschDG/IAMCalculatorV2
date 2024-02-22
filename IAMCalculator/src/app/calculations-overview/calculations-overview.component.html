@@ -1,12 +1,15 @@
 
 <div class="row">
+    <div class="col spacer-xl"></div>
+</div>
+<div class="row">
     <div class="col ownCol" *ngFor="let calc of calculations">
         <a (click)="goToPage('/Calculation/' + calc.id);">
             <div class="ITSs">
                 <div class="ITSg">{{ calc.basicform.calculationName }}</div>
                 <div class="ITSr1">
                     <div class="ITSn">Identitäten</div>
-                    <div class="ITSv">{{ calc.customerform.customerInternalEmployees + calc.customerform.customerExternalEmployees }}</div>
+                    <div class="ITSv">{{ calc.customerform.customerEmployees}}</div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Zielsysteme</div>
@@ -18,12 +21,10 @@
                 </div>
             </div>
         </a>
-        <div class="d-flex w-100 align-items-center justify-content-between">
-            <button class="ownDownloadButtonMenu">
-                Download
-            </button>
+        <div class="row">
+            <div class="col spacer-m"></div>
         </div>
-        <div class="d-flex w-100 align-items-center justify-content-between">
+        <div class="d-flex w-100 align-items-center justify-content-between bottombutton">
             <button class="ownDeleteButtonMenu" (click)="this.delete(calc)">
                 Löschen
             </button>

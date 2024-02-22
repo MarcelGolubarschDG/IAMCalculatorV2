@@ -1,40 +1,39 @@
 export interface Calculation {
     id:number;
     basicform:{
-    calculationName:string;
-    calculationDesc:string;
+        calculationName:string;
+        calculationDesc:string;
     },
     customerform: {
-    customerName:string;
-    customerNumber:number;
-    customerInternalEmployees:number;
-    customerExternalEmployees:number;
+        customerName:string;
+        customerNumber:number;
+        customerEmployees:number;
     },
     marketunitform:{
-    marketunitName:string;
-    marketunitResponsible:string;
+        marketunitName:string;
+        marketunitResponsible:string;
     },
     targetsystemsform: {
-    licenseOIM:number;
-    servicelevel:number;
-    stages:number;
-    antivirSrv:boolean;
-    dedicatedSrv:boolean;
-    dedicatedSQLSrv:boolean;
-    SAPHCMCSV:boolean;
-    SAPHCM:boolean;
-    amountMSAD:number;
-    amountMSAAD:number;
-    amountMSEX:number;
-    amountMSEXO:number;
-    amountMSSP:number;
-    amountMSSPO:number;
-    amountMSTEAMS:number;
-    amountFS:number;
-    amountSAPAPP:number;
-    amountLDAP:number;
-    amountSTAR:number;
-    cloudProducts:string;
+        licenseOIM:number;
+        servicelevel:number;
+        stages:number;
+        antivirSrv:boolean;
+        dedicatedSrv:boolean;
+        dedicatedSQLSrv:boolean;
+        SAPHCMCSV:boolean;
+        SAPHCM:boolean;
+        amountMSAD:number;
+        amountMSAAD:number;
+        amountMSEX:number;
+        amountMSEXO:number;
+        amountMSSP:number;
+        amountMSSPO:number;
+        amountMSTEAMS:number;
+        amountFS:number;
+        amountSAPAPP:number;
+        amountLDAP:number;
+        amountSTAR:number;
+        cloudProducts:string;
     },
     servers:any;
 }

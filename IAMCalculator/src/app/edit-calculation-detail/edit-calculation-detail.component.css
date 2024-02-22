@@ -1,133 +1,143 @@
 .btn-primary {
-    background-color: #767676;
-    }
-    .btn-danger {
-    background-color: #ff003e;
-    }
-    
-    .spacer-xs {
-    height: 10px;
-    }
-    
-    .spacer-s {
-    height: 17.5px;
-    }
-    
-    .spacer-m {
-    height: 25px;
-    }
-    
-    .spacer-l {
-    height: 37.5px;
-    }
-    
-    .spacer-xl {
-    height: 50px;
-    }
-    
-    .spacer-xxl {
-    height: 75px;
-    }
-    
-    .bg-none {
-    background-color:rgba(0, 0, 0, 0);
-    }
-    
-    .ITSs {
-    /* Sektion */
-    display: table;
+background-color: #767676;
+border-color: #cccccc;
+}
+.btn-danger {
+background-color: #ff003e;
+border-color: #cccccc;
+}
+
+.spacer-xs {
+height: 10px;
+}
+
+.spacer-s {
+height: 17.5px;
+}
+
+.spacer-m {
+height: 25px;
+}
+
+.spacer-l {
+height: 37.5px;
+}
+
+.spacer-xl {
+height: 50px;
+}
+
+.spacer-xxl {
+height: 75px;
+}
+
+.bg-none {
+background-color:rgba(0, 0, 0, 0);
+}
+
+.ITSs {
+/* Sektion */
+display: table;
+width: 100%;
+}
+
+.ITSr1 {
+/* ungerade Zeile */
+display: table-row;
+padding: 4px 20px;
+}
+
+.ITSr0 {
+/* gerade Zeile */
+display: table-row;
+padding: 4px 20px;
+}
+
+.ITSr1:hover {
+background-color: #cccccc;
+/* ungerade Zeile */
+display: table-row;
+padding: 4px 20px;
+}
+
+.ITSr0:hover {
+background-color: #cccccc;
+/* gerade Zeile */
+display: table-row;
+padding: 4px 20px;
+}
+
+.ITSg {
+/* Gruppe */
+font-weight: bold;
+font-size: medium;
+padding: 10px 20px;
+display: block;
+border-bottom: 1px #ff003e solid;
+}
+
+.ITSn {
+/* Name */
+display: table-cell;
+color: #555;
+vertical-align: top;
+padding: 4px 20px;
+white-space: nowrap;
+overflow: hidden;
+width: 50%;
+font-weight: bold;
+font-size: small;
+}
+
+.ITSv {
+/* Wert */
+display: table-cell;
+color: #555;
+vertical-align: top;
+padding: 4px 20px;
+font-size: small;
+}
+
+.ITSnSpecial {
+/* Name */
+display: table-cell;
+color: #555;
+vertical-align: top;
+padding: 4px 20px;
+white-space: nowrap;
+overflow: hidden;
+width: 25%;
+font-weight: bold;
+font-size: small;
+}
+
+.ITSrSpecial {
+/* gerade Zeile */
+display: table-row;
+padding: 4px 20px;
+}
+
+.dgth {
+border-bottom: 1px #ff003e solid;
+}
+
+table {
+margin-top: 15px;
+}
+
+tr:hover {
+background-color: #cccccc;
+}
+
+td,th {
+padding-top: 5px;
+padding-bottom: 5px;
+}
+
+.textareasize{
     width: 100%;
-    }
-    
-    .ITSr1 {
-    /* ungerade Zeile */
-    display: table-row;
-    padding: 4px 20px;
-    }
-    
-    .ITSr0 {
-    /* gerade Zeile */
-    display: table-row;
-    padding: 4px 20px;
-    }
-    
-    .ITSr1:hover {
-    background-color: #cccccc;
-    /* ungerade Zeile */
-    display: table-row;
-    padding: 4px 20px;
-    }
-    
-    .ITSr0:hover {
-    background-color: #cccccc;
-    /* gerade Zeile */
-    display: table-row;
-    padding: 4px 20px;
-    }
-    
-    .ITSg {
-    /* Gruppe */
-    font-weight: bold;
-    font-size: medium;
-    padding: 10px 20px;
-    display: block;
-    border-bottom: 1px #ff003e solid;
-    }
-    
-    .ITSn {
-    /* Name */
-    display: table-cell;
-    color: #555;
-    vertical-align: top;
-    padding: 4px 20px;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 50%;
-    font-weight: bold;
-    font-size: small;
-    }
-    
-    .ITSv {
-    /* Wert */
-    display: table-cell;
-    color: #555;
-    vertical-align: top;
-    padding: 4px 20px;
-    font-size: small;
-    }
-    
-    .ITSnSpecial {
-    /* Name */
-    display: table-cell;
-    color: #555;
-    vertical-align: top;
-    padding: 4px 20px;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 25%;
-    font-weight: bold;
-    font-size: small;
-    }
-    
-    .ITSrSpecial {
-    /* gerade Zeile */
-    display: table-row;
-    padding: 4px 20px;
-    }
-    
-    .dgth {
-    border-bottom: 1px #ff003e solid;
-    }
-    
-    table {
-        margin-top: 15px;
-    }
-    
-    tr:hover {
-    background-color: #cccccc;
-    }
-    
-    td,th {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    }
+    height: 10vh;
+    min-height: fit-content;
+    max-height: 20vh;
+    overflow: auto
+}

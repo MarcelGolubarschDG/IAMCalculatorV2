@@ -13,25 +13,29 @@
     border: 0;
     background-color: #767676;
     color: #fff;
-    border-radius: 2%;
 }
-
 
 .ownCol {
     margin: 10px;
     padding: 10px;
-    border-radius: 2%;
     border: 5px solid ccc;
     background-color: #f0f0f0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     transition: box-shadow 0.3s ease-in-out;
+    position: relative;
 }
 
 .ownCol:hover {
-    border-radius: 2%;
     border: 5px solid 000;
     background-color: #fff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+}
+
+.bottombutton {
+   position: absolute; /* Setze das innere Div auf absolute Position */
+   bottom: 0; /* An den unteren Rand setzen */
+   width: 100%; /* Vollständige Breite innerhalb des äußeren Divs */
+   left: 0;
 }
 
 
@@ -69,6 +73,7 @@
     font-size: medium;
     padding: 10px 20px;
     display: block;
+    width: fit-content;
  }
 
  .ITSn {
@@ -105,3 +110,28 @@
     padding: 4px 20px;
     font-size: small;
  }
+
+ .spacer-xs {
+ height: 10px;
+ }
+ 
+ .spacer-s {
+ height: 17.5px;
+ }
+ 
+ .spacer-m {
+ height: 25px;
+ }
+ 
+ .spacer-l {
+ height: 37.5px;
+ }
+ 
+ .spacer-xl {
+ height: 50px;
+ }
+ 
+ .spacer-xxl {
+ height: 75px;
+ }
+ 

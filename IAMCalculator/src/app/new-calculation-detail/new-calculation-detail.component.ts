@@ -92,8 +92,8 @@ export class NewCalculationDetailComponent implements OnInit{
     var int_targetsystems_amountMSSPO = parseInt(data.targetsystemsform.amountMSSPO)
     var int_targetsystems_amountMSTEAMS = parseInt(data.targetsystemsform.amountMSTEAMS)
     var int_targetsystems_amountFS = parseInt(data.targetsystemsform.amountFS)
-    var bool_targetsystems_amountSAPHCMCSV = Boolean(data.targetsystemsform.amountSAPHCMCSV)
-    var bool_targetsystems_amountSAPHCM = Boolean(data.targetsystemsform.amountSAPHCM)
+    var bool_targetsystems_amountSAPHCMCSV = Boolean(data.targetsystemsform.SAPHCMCSV)
+    var bool_targetsystems_amountSAPHCM = Boolean(data.targetsystemsform.SAPHCM)
     var int_targetsystems_amountSAPAPP = parseInt(data.targetsystemsform.amountSAPAPP)
     var int_targetsystems_amountSTAR = parseInt(data.targetsystemsform.amountSTAR)
     var int_targetsystems_amountLDAP = parseInt(data.targetsystemsform.amountLDAP)
@@ -119,9 +119,7 @@ export class NewCalculationDetailComponent implements OnInit{
 
     // Berechnung Identitäten
     var amountIdentities:number
-    var amountIdentitiesInternal:number = parseInt(data.customerform.customerInternalEmployees)
-    var amountIdentitiesExternal:number = parseInt(data.customerform.customerExternalEmployees)
-    amountIdentities = amountIdentitiesInternal + amountIdentitiesExternal
+    amountIdentities = parseInt(data.customerform.customerEmployees)
 
     // Berechnung SLA
     var servicelevel:number = parseInt(data.targetsystemsform.servicelevel)
@@ -160,23 +158,39 @@ export class NewCalculationDetailComponent implements OnInit{
     }
 
     // Web Server Berechnung Prod
+    var WebServerSize:string = ""
+    var WebServerCPU:number = 0
+    var WebServerRAM:number = 0
+
     switch (true)
     {
       // < 2500 Identitäten # 1 L
       case amountIdentities < 2500:
         amountWebServerProd = 1
+        WebServerSize = "M"
+        WebServerCPU = 8
+        WebServerRAM = 8
       break;
       // > 2499 Identitäten < 5001 Identitäten # 1 XL
       case amountIdentities > 2499 && amountIdentities < 5000:
         amountWebServerProd = 1
+        WebServerSize = "L"
+        WebServerCPU = 8
+        WebServerRAM = 16
       break;
       // >= 5000 Identitäten < 8500 # 2 L
-      case amountIdentities >= 5000 && amountIdentities < 5000:
+      case amountIdentities >= 5000 && amountIdentities < 8500:
         amountWebServerProd = 2
+        WebServerSize = "L"
+        WebServerCPU = 8
+        WebServerRAM = 16
       break;
       // B> 8500 Identitäten # 2 XL
       case amountIdentities >= 8500:
         amountWebServerProd = 2
+        WebServerSize = "XL"
+        WebServerCPU = 16
+        WebServerRAM = 32
       break;
     }
 
@@ -231,7 +245,7 @@ export class NewCalculationDetailComponent implements OnInit{
       // keine dedizierte Server / 10 Pro Job Server
       case stages == 2 && !dedicatedSQLSrv:
         amountDCQS = 1
-        amountDCDEV = 1
+        amountDCDEV = 0
         amountJobServerQS = 1
         amountJobServerDEV = 1
         amountDBServerQS = 0
@@ -255,8 +269,8 @@ export class NewCalculationDetailComponent implements OnInit{
           int_bsto = 0
           int_addcpu = 0
           int_addram = 0
-          int_addsto = 50
-          int_addbsto = 100
+          int_addsto = 1000
+          int_addbsto = 0
 
           const control = new FormGroup({
             id: new FormControl(null, []),
@@ -278,16 +292,16 @@ export class NewCalculationDetailComponent implements OnInit{
         //Baue PROD Web Server
         for (var i = 1; i <= amountWebServerProd; i++){
           string_stage = "Prod"
-          string_size = "XL"
+          string_size = WebServerSize
           string_role = "Web"
-          int_cpu = 8
-          int_ram = 32
+          int_cpu = WebServerCPU
+          int_ram = WebServerRAM
           int_sto = 0
           int_bsto = 0
           int_addcpu = 0
           int_addram = 0
-          int_addsto = 50
-          int_addbsto = 100
+          int_addsto = 100
+          int_addbsto = 0
 
           const control = new FormGroup({
             id: new FormControl(null, []),
@@ -317,8 +331,8 @@ export class NewCalculationDetailComponent implements OnInit{
           int_bsto = 0
           int_addcpu = 0
           int_addram = 0
-          int_addsto = 50
-          int_addbsto = 100
+          int_addsto = 100
+          int_addbsto = 0
 
           const control = new FormGroup({
             id: new FormControl(null, []),
@@ -348,8 +362,8 @@ export class NewCalculationDetailComponent implements OnInit{
           int_bsto = 0
           int_addcpu = 0
           int_addram = 0
-          int_addsto = 50
-          int_addbsto = 100
+          int_addsto = 100
+          int_addbsto = 0
 
           const control = new FormGroup({
             id: new FormControl(null, []),
@@ -379,8 +393,8 @@ export class NewCalculationDetailComponent implements OnInit{
           int_bsto = 0
           int_addcpu = 0
           int_addram = 0
-          int_addsto = 50
-          int_addbsto = 100
+          int_addsto = 100
+          int_addbsto = 0
 
           const control = new FormGroup({
             id: new FormControl(null, []),
@@ -436,10 +450,10 @@ export class NewCalculationDetailComponent implements OnInit{
         //Baue PROD Web Server
         for (var i = 1; i <= amountWebServerProd; i++){
           string_stage = "Prod"
-          string_size = "XL"
+          string_size = WebServerSize
           string_role = "Web"
-          int_cpu = 8
-          int_ram = 32
+          int_cpu = WebServerCPU
+          int_ram = WebServerRAM
           int_sto = 0
           int_bsto = 0
           int_addcpu = 0
@@ -536,25 +550,46 @@ export class NewCalculationDetailComponent implements OnInit{
       //console.log(this.NewCalcForm.get('servers'))
     }
 
-    //Baue  Server DEV QS
+    //Baue Job Server DEV QS
     for (var i = 1; i <= amountJobServerDEV+amountJobServerQS; i++){
       string_stage = ""
-      if (i == 1 && amountJobServerDEV == 1){ 
-        string_stage = "DEV"
-      }
-      else if (i == 2 && amountJobServerQS == 1){
-        string_stage = "QS"
-      }
-      string_size = "XL"
-      string_role = "Job"
-      int_cpu = 8
-      int_ram = 32
+      string_size = ""
+      string_role = ""
+      int_cpu = 0
+      int_ram = 0
       int_sto = 0
       int_bsto = 0
       int_addcpu = 0
       int_addram = 0
-      int_addsto = 50
-      int_addbsto = 100
+      int_addsto = 0
+      int_addbsto = 0
+      if (i == 1 && amountJobServerDEV == 1){
+        string_stage = "DEV"
+        string_size = "L"
+        string_role = "Job"
+        int_cpu = 8
+        int_ram = 16
+        int_sto = 0
+        int_bsto = 0
+        int_addcpu = 0
+        int_addram = 0
+        int_addsto = 50
+        int_addbsto = 100
+      }
+      else if (i == 2 && amountJobServerQS == 1){
+        string_stage = "QS"
+        string_size = "L"
+        string_role = "Job"
+        int_cpu = 8
+        int_ram = 16
+        int_sto = 0
+        int_bsto = 0
+        int_addcpu = 0
+        int_addram = 0
+        int_addsto = 50
+        int_addbsto = 100
+      }
+      
 
       const control = new FormGroup({
         id: new FormControl(null, []),
@@ -580,13 +615,16 @@ export class NewCalculationDetailComponent implements OnInit{
       if (i == 1 && amountDCDEV == 1){ 
         string_stage = "DEV"
       }
+      else if (i == 1 && amountDCDEV == 0 && amountDCQS == 1){
+        string_stage = "QS"
+      }
       else if (i == 2 && amountDCQS == 1){
         string_stage = "QS"
       }
-      string_size = "XL"
+      string_size = "M"
       string_role = "DC"
-      int_cpu = 8
-      int_ram = 32
+      int_cpu = 4
+      int_ram = 8
       int_sto = 0
       int_bsto = 0
       int_addcpu = 0
@@ -641,8 +679,7 @@ export class NewCalculationDetailComponent implements OnInit{
     customerform: new FormGroup({
       customerName: new FormControl(null, []),
       customerNumber: new FormControl(null,[]),
-      customerInternalEmployees: new FormControl(null,[]),
-      customerExternalEmployees: new FormControl(null,[]),
+      customerEmployees: new FormControl(null,[]),
     }),
     marketunitform: new FormGroup({
       marketunitName: new FormControl(null, []),
@@ -664,8 +701,8 @@ export class NewCalculationDetailComponent implements OnInit{
       amountMSTEAMS: new FormControl(null, []),
       amountFS: new FormControl(null, []),
       amountSAPAPP: new FormControl(null, []),
-      amountSAPHCMCSV: new FormControl(null, []),
-      amountSAPHCM: new FormControl(null, []),
+      SAPHCMCSV: new FormControl(null, []),
+      SAPHCM: new FormControl(null, []),
       amountLDAP: new FormControl(null, []),
       amountSTAR: new FormControl(null, []),
       cloudProducts: new FormControl(null, [])

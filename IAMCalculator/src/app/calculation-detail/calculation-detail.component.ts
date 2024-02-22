@@ -4,7 +4,8 @@ import { ApiService } from '../services/api.service';
 import { Calculation } from '../interfaces/calculation';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import * as XLSX from 'xlsx';
+import { CsvExportServiceService } from '../services/csv-export-service.service';
+import { ExcelExportServiceService } from '../services/excel-export-service.service';
 
 @Component({
   selector: 'app-calculation-detail',
@@ -30,14 +31,16 @@ SAPHCMCSV: string = ""
 // div toggle variables
 showMyContainer: boolean = false;
 
-jsonData: any;
+
 
 constructor(
   private toastr: ToastrService,
   private apiService: ApiService,
   private route: ActivatedRoute,
   private router: Router,
-  private location: Location
+  private location: Location,
+  private csvService: CsvExportServiceService,
+  private excelService: ExcelExportServiceService
   ) {
     route.params.subscribe(val => {
     // put the code from `ngOnInit` here
@@ -56,48 +59,24 @@ constructor(
     this.location.back();
   }
 
+  onExportCSV(){
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.csvService.exportCsv(id)
+  }
+  onExportXLSX(){
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.excelService.exportXlsx(id)
+  }
+
   getCalculation() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.apiService.getCalculationByCalcID(id)
     .subscribe(calculations => this.calculations = calculations);
   }
 
-  fetchDataAndExport(){
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.apiService.getCalculationByCalcID(id).subscribe(
-      data => {
-        this.jsonData = data;
-        this.exportToExcel();
-      })
-  }
-
-  exportToExcel() {
-    if (!this.jsonData) {
-      console.error('No data to export.');
-      return;
-    }
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.jsonData);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    this.saveAsExcelFile(excelBuffer, 'data');
-  }
-
-  saveAsExcelFile(buffer: any, fileName: string): void {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url = window.URL.createObjectURL(data);
-    const a = document.createElement('a');
-    document.body.appendChild(a);
-    a.href = url;
-    a.download = fileName + '.xlsx';
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
-  }
-
   CalculateIdentities() {
-    let internal = Number(this.calculations?.customerform.customerInternalEmployees)
-    let external = Number(this.calculations?.customerform.customerExternalEmployees)
-    let result = internal + external
+    let internal = Number(this.calculations?.customerform.customerEmployees)
+    let result = internal
     return result
   }
 
@@ -215,7 +194,7 @@ constructor(
     const id = Number(this.route.snapshot.paramMap.get('id'));
     let counter = 0;
     for (let i = 0; i < this.calculations?.servers.length; i++) {
-      if (this.calculations?.servers[i].calculationID === id) counter++;
+      if (this.calculations?.servers[i]) counter++;
     }
     return counter
   }

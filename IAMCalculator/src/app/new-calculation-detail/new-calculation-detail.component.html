@@ -1,3 +1,6 @@
+<div class="row">
+    <div class="col spacer-xl"></div>
+</div>
 <form [formGroup]="NewCalcForm" (ngSubmit)="onSubmit()" #f="ngForm">
     <input type="hidden" formControlName="id" [value]="">
     <button class="btn btn-danger d-inline-flex align-items-center" type="button" (click)="goBack()">
@@ -28,7 +31,7 @@
                         <div class="ITSr1">
                             <div class="ITSnSpecial">Anforderungsbeschreibung</div>
                             <div class="ITSv">
-                                <div class="form-control divtextarea_Desc" contenteditable="true" aria-multiline="true" formControlName="calculationDesc"></div>
+                                <textarea class="form-control textareasize" contenteditable="true" aria-multiline="true" formControlName="calculationDesc"></textarea>
                             </div>
                         </div>
                     </div>
@@ -46,12 +49,8 @@
                         <div class="ITSv"><input class="form-control" type="text" formControlName="customerNumber"></div>
                     </div>
                     <div class="ITSr1">
-                        <div class="ITSn">Mitarbeiter (intern)</div>
-                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerInternalEmployees" (change)="calcServerSize(NewCalcForm.value)"></div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Mitarbeiter (extern)</div>
-                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerExternalEmployees" (change)="calcServerSize(NewCalcForm.value)"></div>
+                        <div class="ITSn">Mitarbeiter</div>
+                        <div class="ITSv"><input class="form-control" type="text" formControlName="customerEmployees" (change)="calcServerSize(NewCalcForm.value)"></div>
                     </div>
                 </div>
             </div>
@@ -99,7 +98,6 @@
                                 <select class="form-control" formControlName="servicelevel" [(ngModel)]="optionValueSLA">
                                     <option value="1">Business Standard</option>
                                     <option value="2">Business Critical</option>
-                                    <option value="3">Business Critical +</option>
                                 </select>
                             </div>
                         </div>
@@ -262,13 +260,13 @@
                         <div class="ITSr1">
                             <div class="ITSn">SAP HCM per CSV</div>
                             <div class="ITSv">
-                                <input type="checkbox" formControlName="amountSAPHCMCSV" [(ngModel)]="optionValueSAPHCMCSV" (change)="checkSAPHCMCSV(optionValueSAPHCMCSV)">
+                                <input type="checkbox" formControlName="SAPHCMCSV" [(ngModel)]="optionValueSAPHCMCSV" (change)="checkSAPHCMCSV(optionValueSAPHCMCSV)">
                             </div>
                         </div>
                         <div class="ITSr0">
                             <div class="ITSn">SAP HCM per Konnektor</div>
                             <div class="ITSv">
-                                <input type="checkbox" formControlName="amountSAPHCM" [(ngModel)]="optionValueSAPHCM" (change)="checkSAPHCM(optionValueSAPHCM)">
+                                <input type="checkbox" formControlName="SAPHCM" [(ngModel)]="optionValueSAPHCM" (change)="checkSAPHCM(optionValueSAPHCM)">
                             </div>
                         </div>
                         <div class="ITSr1">
@@ -343,7 +341,7 @@
                         <div class="ITSr0">
                             <div class="ITSn">Cloudsysteme Starling Konnektoren</div>
                             <div class="ITSv">
-                                <div class="form-control divtextarea_Cloud" contenteditable="true" aria-multiline="true" formControlName="cloudProducts" [(ngModel)]="optionValueCloudProduct"></div>
+                                <textarea class="form-control divtextarea_Cloud" contenteditable="true" aria-multiline="true" formControlName="cloudProducts" [(ngModel)]="optionValueCloudProduct"></textarea>
                             </div>
                         </div>
                 </div>

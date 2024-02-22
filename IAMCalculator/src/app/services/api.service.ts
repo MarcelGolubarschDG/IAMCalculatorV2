@@ -98,8 +98,6 @@ export class ApiService {
                         });
     }
 
-
-
     // error handling function
 
     private handleError<T>(operation = 'operation', result?: T) {

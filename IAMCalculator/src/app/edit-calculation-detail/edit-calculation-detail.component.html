@@ -1,7 +1,7 @@
 <form [formGroup]="EditCalcForm" (ngSubmit)="onSubmit(EditCalcForm.value)" #f="ngForm">
     <button class="btn btn-danger d-inline-flex align-items-center" type="button" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
     <button class="btn btn-primary d-inline-flex align-items-center" type="submit" (click)="goBack()"><i class="bi bi-floppy"></i></button>
-
+    
 <div class="row">
     <div class="col spacer-l"></div>
 </div>
@@ -24,7 +24,7 @@
                 <div class="ITSr1">
                     <div class="ITSnSpecial">Anforderungsbeschreibung</div>
                     <div class="ITSv">
-                        <textarea class="form-control" contenteditable="true" aria-multiline="true" formControlName="calculationDesc"></textarea>
+                        <textarea class="form-control textareasize" contenteditable="true" aria-multiline="true" formControlName="calculationDesc"></textarea>
                     </div>
                 </div>
             </div>
@@ -51,12 +51,8 @@
                     <div class="ITSv"><input class="form-control" type="text" formControlName="customerNumber"></div>
                 </div>
                 <div class="ITSr1">
-                    <div class="ITSn">Mitarbeiter (intern)</div>
-                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerInternalEmployees"></div>
-                </div>
-                <div class="ITSr0">
-                    <div class="ITSn">Mitarbeiter (extern)</div>
-                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerExternalEmployees"></div>
+                    <div class="ITSn">Mitarbeiter</div>
+                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerEmployees"></div>
                 </div>
             </div>
         </div>
@@ -88,10 +84,12 @@
                     <div class="ITSr0">
                         <div class="ITSn">IAM Lizenz</div>
                         <div class="ITSv">
-                            <select class="form-control" formControlName="licenseOIM">
-                                <option value="1">Standard</option>
-                                <option value="2">Data Governance Editon</option>
-                            </select>
+                            <fieldset [disabled]="this.disabledLicense">
+                                <select class="form-control" formControlName="licenseOIM" >
+                                    <option value="1">Standard</option>
+                                    <option value="2">Data Governance Editon</option>
+                                </select>
+                            </fieldset>
                         </div>
                     </div>
                     <div class="ITSr0">
@@ -257,13 +255,13 @@
                     <div class="ITSr1">
                         <div class="ITSn">SAP HCM per CSV</div>
                         <div class="ITSv">
-                            <input type="checkbox" formControlName="amountSAPHCMCSV" (change)="checkSAPHCM(optionValueSAPHCM)">
+                            <input type="checkbox" formControlName="SAPHCMCSV" (change)="checkSAPHCMCSV(EditCalcForm.value)">
                         </div>
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">SAP HCM per Konnektor</div>
                         <div class="ITSv">
-                            <input type="checkbox" formControlName="amountSAPHCM" (change)="checkSAPHCM(optionValueSAPHCM)">
+                            <input type="checkbox" formControlName="SAPHCM" (change)="checkSAPHCM(EditCalcForm.value)">
                         </div>
                     </div>
                     <div class="ITSr1">
@@ -287,7 +285,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl File Systeme</div>
                         <div class="ITSv">
-                            <select class="form-control" formControlName="amountFS">
+                            <select class="form-control" formControlName="amountFS" (change)="checkLicense(EditCalcForm.value)">
                                 <option>0</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -357,7 +355,8 @@
         <div class="col">
             <div class="ITSs">
                 <div class="ITSg">
-                    Hardware <button class="btn btn-outline-danger btn-sm border-0" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseAddServer'">Server hinzufügen</button>
+                    Hardware <button class="btn btn-outline-danger btn-sm border-0" (click)="calcServerSize(EditCalcForm.value)">Automatisch berechnen</button>
+                    <!--<button class="btn btn-outline-danger btn-sm border-0" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseAddServer'">Server hinzufügen</button>-->
                 </div>
                 <div class="ITSr">
                     <div class="accordian-body collapse p-2" id="collapseAddServer">

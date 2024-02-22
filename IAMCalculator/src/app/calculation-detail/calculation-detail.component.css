@@ -1,8 +1,10 @@
 .btn-primary {
 background-color: #767676;
+border-color: #cccccc;
 }
 .btn-danger {
 background-color: #ff003e;
+border-color: #cccccc;
 }
 
 .spacer-xs {
