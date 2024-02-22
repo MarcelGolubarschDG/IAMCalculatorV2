@@ -39,18 +39,21 @@ background-color:rgba(0, 0, 0, 0);
 /* Sektion */
 display: table;
 width: 100%;
+min-width: fit-content;
 }
 
 .ITSr1 {
 /* ungerade Zeile */
 display: table-row;
 padding: 4px 20px;
+min-width: fit-content;
 }
 
 .ITSr0 {
 /* gerade Zeile */
 display: table-row;
 padding: 4px 20px;
+min-width: fit-content;
 }
 
 .ITSr1:hover {
@@ -58,6 +61,7 @@ background-color: #cccccc;
 /* ungerade Zeile */
 display: table-row;
 padding: 4px 20px;
+min-width: fit-content;
 }
 
 .ITSr0:hover {
@@ -65,6 +69,7 @@ background-color: #cccccc;
 /* gerade Zeile */
 display: table-row;
 padding: 4px 20px;
+min-width: fit-content;
 }
 
 .ITSg {
@@ -74,6 +79,7 @@ font-size: medium;
 padding: 10px 20px;
 display: block;
 border-bottom: 1px #ff003e solid;
+min-width: fit-content;
 }
 
 .ITSn {
@@ -87,6 +93,7 @@ overflow: hidden;
 width: 50%;
 font-weight: bold;
 font-size: small;
+min-width: fit-content;
 }
 
 .ITSv {
@@ -96,6 +103,7 @@ color: #555;
 vertical-align: top;
 padding: 4px 20px;
 font-size: small;
+min-width: fit-content;
 }
 
 .ITSnSpecial {
@@ -109,12 +117,14 @@ overflow: hidden;
 width: 25%;
 font-weight: bold;
 font-size: small;
+min-width: fit-content;
 }
 
 .ITSrSpecial {
 /* gerade Zeile */
 display: table-row;
 padding: 4px 20px;
+min-width: fit-content;
 }
 
 .dgth {
@@ -152,4 +162,8 @@ overflow: auto
     min-height: fit-content;
     max-height: 20vh;
     overflow: auto
+}
+
+.form-control {
+    min-width: 180px;
 }
