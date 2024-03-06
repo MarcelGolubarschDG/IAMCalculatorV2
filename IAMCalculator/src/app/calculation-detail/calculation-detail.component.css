@@ -117,6 +117,15 @@ display: table-row;
 padding: 4px 20px;
 }
 
+.ITSvSpecial {
+    /* Wert */
+    display: table-cell;
+    color: #555;
+    vertical-align: top;
+    padding: 4px 20px;
+    font-size: small;
+    }
+
 .dgth {
 border-bottom: 1px #ff003e solid;
 }

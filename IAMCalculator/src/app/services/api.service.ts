@@ -13,14 +13,14 @@ export class ApiService {
   constructor(    private http: HttpClient    ) { }
 
     // URL to web api
-    private APIUrl = 'api/';
+    private APIUrl = 'http://localhost:5067/api/';
     private CalcUrl = this.APIUrl + 'Calculations'
-    private ServerUrl = this.APIUrl + 'Servers'
 
     // http header options
     httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
+    
 
     ////////////// GET METHODS //////////////
 
@@ -74,8 +74,9 @@ export class ApiService {
 
     /** ADD: add the calculation to database */
     addCalculation(calculation: Calculation) {
+      console.log(calculation);
       // Send Http request
-      this.http.post(this.CalcUrl, calculation).subscribe(
+      this.http.post(this.CalcUrl, JSON.stringify(calculation), this.httpOptions).subscribe(
         responseData => {
                           console.log(responseData);
                         });

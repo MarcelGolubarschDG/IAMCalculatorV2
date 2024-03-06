@@ -25,13 +25,12 @@ stages:string = ""
 licenseOIM:string = ""
 antivirSrv: string = ""
 dedicatedSrv: string = ""
+dedicatedStages: string = ""
 SAPHCM: string = ""
 SAPHCMCSV: string = ""
 
 // div toggle variables
 showMyContainer: boolean = false;
-
-
 
 constructor(
   private toastr: ToastrService,
@@ -150,6 +149,19 @@ constructor(
     return this.dedicatedSrv
   }
 
+  CalculateDedicatedStages() {
+    switch(this.calculations?.targetsystemsform.dedicatedStages) {
+      case true:
+        this.dedicatedStages = "Ja"
+        break;
+      case false:
+        this.dedicatedStages = "Nein"
+        break;
+      default:
+    }
+    return this.dedicatedStages
+  }
+
   CalculateAntivirSrv() {
     switch(this.calculations?.targetsystemsform.antivirSrv) {
       case true:
@@ -190,13 +202,13 @@ constructor(
   }
 
   // get servercount from array server for specific calcid ### source https://www.freecodecamp.org/news/how-to-count-objects-in-an-array/
-  amountOfServerByCalcID() {
+  /*amountOfServerByCalcID() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     let counter = 0;
-    for (let i = 0; i < this.calculations?.servers.length; i++) {
+    for (let i = 0; i < this.calculations.servers.length; i++) {
       if (this.calculations?.servers[i]) counter++;
     }
     return counter
-  }
+  }*/
 
 }

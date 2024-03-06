@@ -1,3 +1,16 @@
+interface server {
+    role:string
+    stage:string
+    size:string
+    cpu:number
+    addCPU:number
+    ram:number
+    addRAM:number
+    storage:number
+    addStorage:number
+    backupstorage:number
+    addBackupstorage:number
+}
 export interface Calculation {
     id:number;
     basicform:{
@@ -19,7 +32,7 @@ export interface Calculation {
         stages:number;
         antivirSrv:boolean;
         dedicatedSrv:boolean;
-        dedicatedSQLSrv:boolean;
+        dedicatedStages:boolean;
         SAPHCMCSV:boolean;
         SAPHCM:boolean;
         amountMSAD:number;
@@ -35,5 +48,5 @@ export interface Calculation {
         amountSTAR:number;
         cloudProducts:string;
     },
-    servers:any;
+    servers: server[];
 }

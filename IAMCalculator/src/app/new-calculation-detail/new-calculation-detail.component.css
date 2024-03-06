@@ -129,6 +129,7 @@ min-width: fit-content;
 
 .dgth {
 border-bottom: 1px #ff003e solid;
+font-size: small;
 }
 
 table {
@@ -158,12 +159,16 @@ overflow: auto
 
 .textareasize{
     width: 100%;
-    height: 10vh;
-    min-height: fit-content;
+    min-height: 20vh;
+    height: 20vh;
     max-height: 20vh;
     overflow: auto
 }
 
 .form-control {
     min-width: 180px;
+}
+
+.form-control-table {
+    min-width: 120px;
 }

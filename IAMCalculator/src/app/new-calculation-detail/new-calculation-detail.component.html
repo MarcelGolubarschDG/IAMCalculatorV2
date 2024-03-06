@@ -2,7 +2,7 @@
     <div class="col spacer-xl"></div>
 </div>
 <form [formGroup]="NewCalcForm" (ngSubmit)="onSubmit()" #f="ngForm">
-    <input type="hidden" formControlName="id" [value]="">
+    <!--<input type="hidden" formControlName="id">-->
     <button class="btn btn-danger d-inline-flex align-items-center" type="button" (click)="goBack()">
         <i class="bi bi-arrow-left"></i>
     </button>
@@ -117,9 +117,9 @@
                             </div>
                         </div>
                         <div class="ITSr0">
-                            <div class="ITSn">Dedizierte Datenbank Server</div>
+                            <div class="ITSn">Dedizierte Stages</div>
                             <div class="ITSv">
-                                <input type="checkbox" formControlName="dedicatedSQLSrv" [(ngModel)]="optionValuededicatedSQLSrv">
+                                <input type="checkbox" formControlName="dedicatedStages" [(ngModel)]="optionValuededicatedStages">
                             </div>
                         </div>
                         <div class="ITSr1">
@@ -359,26 +359,34 @@
                 <table>
                     <thead>
                         <tr>
-                            <th class="dgth" width="5%">#.</th>
-                            <th class="dgth" width="5%">Stage</th>
-                            <th class="dgth" width="5%">Size</th>
-                            <th class="dgth" width="5%">Rolle</th>
-                            <th class="dgth" width="5%">CPU</th>
-                            <th class="dgth" width="5%">Ram</th>
-                            <th class="dgth" width="5%">Speicher</th>
-                            <th class="dgth" width="5%">Backupspeicher</th>
+                            <th class="dgth" width="2%">#.</th>
+                            <th class="dgth" width="2%">Stage</th>
+                            <th class="dgth" width="2%">Size</th>
+                            <th class="dgth" width="2%">Rolle</th>
+                            <th class="dgth" width="2%">CPU</th>
+                            <th class="dgth" width="2%">RAM</th>
+                            <th class="dgth" width="2%">Speicher</th>
+                            <th class="dgth" width="2%">Backupspeicher</th>
+                            <th class="dgth" width="2%">+CPU</th>
+                            <th class="dgth" width="2%">+RAM</th>
+                            <th class="dgth" width="2%">+Speicher</th>
+                            <th class="dgth" width="2%">+Backupspeicher</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let srv of serverControls; let z = index;" formGroupName="{{z}}">
                             <td>{{z+1}}</td>
-                            <td><input type="text" class="form-control" [value]="serverControls[z].value['stage']" disabled></td>
-                            <td><input type="text" class="form-control" [value]="serverControls[z].value['size']" disabled></td>
-                            <td><input type="text" class="form-control" [value]="serverControls[z].value['role']" disabled></td>
-                            <td><input type="text" class="form-control" [value]="serverControls[z].value['cpu']" disabled></td>
-                            <td><input type="text" class="form-control" [value]="serverControls[z].value['ram']" disabled></td>
-                            <td><input type="text" class="form-control" [value]="serverControls[z].value['storage']" disabled></td>
-                            <td><input type="text" class="form-control" [value]="serverControls[z].value['backupstorage']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['stage']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['size']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['role']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['cpu']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['ram']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['storage']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['backupstorage']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['addCPU']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['addRAM']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['addStorage']" disabled></td>
+                            <td><input type="text" class="form-control form-control-table" [value]="serverControls[z].value['addBackupstorage']" disabled></td>
                         </tr>
                     </tbody>
                 </table>
