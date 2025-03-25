@@ -28,17 +28,17 @@
         <div class="col-4">
             <div class="ITSs">
                 <div class="ITSg">Allgemein</div>
-                    <div class="ITSr0">
+                    <!-- <div class="ITSr0">
                         <div class="ITSn">Idenitäten</div>
                         <div class="ITSv">{{ this.CalculateIdentities() }}</div>
-                    </div>
+                    </div>-->
                     <div class="ITSr0">
                         <div class="ITSn">Zielsyteme</div>
                         <div class="ITSv">{{ this.CalculateTargetsystems() }}</div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Server</div>
-                        <div class="ITSv">{{ this.amountOfServerByCalcID() }}</div>
+                        <div class="ITSv"></div>
                     </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
                 <div class="ITSg">Projekt</div>
                 <div class="ITSr1">
                     <div class="ITSnSpecial">Anforderungsbeschreibung</div>
-                    <div class="ITSv">{{ calculations?.basicform?.calculationDesc }}</div>
+                    <div class="ITSvSpecial">{{ calculations?.basicform?.calculationDesc }}</div>
                 </div>
             </div>
         </div>
@@ -118,6 +118,10 @@
                     <div class="ITSr0">
                         <div class="ITSn">Dedizierte Jobserver</div>
                         <div class="ITSv">{{ CalculateDedicatedSrv() }}</div>
+                    </div>
+                    <div class="ITSr0">
+                        <div class="ITSn">Dedizierte Stages</div>
+                        <div class="ITSv">{{ CalculateDedicatedStages() }}</div>
                     </div>
                     <div class="ITSr1">
                         <div class="ITSn">Server Antivirus</div>

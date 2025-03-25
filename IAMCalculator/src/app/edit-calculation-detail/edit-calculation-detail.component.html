@@ -1,4 +1,4 @@
-<form [formGroup]="EditCalcForm" (ngSubmit)="onSubmit(EditCalcForm.value)" #f="ngForm">
+<form [formGroup]="EditCalcForm" (ngSubmit)="onSubmit(EditCalcForm.value)" #f="ngForm" (change)="calcServerSize(EditCalcForm.value)">
     <button class="btn btn-danger d-inline-flex align-items-center" type="button" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
     <button class="btn btn-primary d-inline-flex align-items-center" type="submit" (click)="goBack()"><i class="bi bi-floppy"></i></button>
     
@@ -24,7 +24,7 @@
                 <div class="ITSr1">
                     <div class="ITSnSpecial">Anforderungsbeschreibung</div>
                     <div class="ITSv">
-                        <textarea class="form-control textareasize" contenteditable="true" aria-multiline="true" formControlName="calculationDesc"></textarea>
+                        <textarea class="form-control textareasize" formControlName="calculationDesc"></textarea>
                     </div>
                 </div>
             </div>
@@ -115,6 +115,12 @@
                         <div class="ITSn">Dedizierte Jobserver</div>
                         <div class="ITSv">
                             <input type="checkbox" formControlName="dedicatedSrv">
+                        </div>
+                    </div>
+                    <div class="ITSr1">
+                        <div class="ITSn">Dedizierte Stages</div>
+                        <div class="ITSv">
+                            <input type="checkbox" formControlName="dedicatedStages">
                         </div>
                     </div>
                     <div class="ITSr1">
@@ -336,7 +342,7 @@
                     <div class="ITSr0">
                         <div class="ITSn">Cloudsysteme Starling Konnektoren</div>
                         <div class="ITSv">
-                            <textarea class="form-control divtextarea_Cloud" contenteditable="true" aria-multiline="true" formControlName="cloudProducts"></textarea>
+                            <input class="form-control divtextarea_Cloud" contenteditable="true" aria-multiline="true" formControlName="cloudProducts">
                         </div>
                     </div>
             </div>
@@ -355,10 +361,10 @@
         <div class="col">
             <div class="ITSs">
                 <div class="ITSg">
-                    Hardware <button class="btn btn-outline-danger btn-sm border-0" (click)="calcServerSize(EditCalcForm.value)">Automatisch berechnen</button>
-                    <!--<button class="btn btn-outline-danger btn-sm border-0" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseAddServer'">Server hinzufügen</button>-->
+                    Hardware <!--<button class="btn btn-outline-danger btn-sm border-0" (click)="calcServerSize(EditCalcForm.value)">Automatisch berechnen</button>
+                    <button class="btn btn-outline-danger btn-sm border-0" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseAddServer'">Server hinzufügen</button>-->
                 </div>
-                <div class="ITSr">
+                <!--<div class="ITSr">
                     <div class="accordian-body collapse p-2" id="collapseAddServer">
                         <div class="col d-flex align-items-center">
                             <div class="input-group">
@@ -390,33 +396,41 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
             <div class="ITSrSpecial">
                     <div class="ITSn">
                         <table>
                             <thead>
                                 <tr>
-                                    <th class="dgth" width="5%">#.</th>
-                                    <th class="dgth" width="5%">Stage</th>
-                                    <th class="dgth" width="5%">Size</th>
-                                    <th class="dgth" width="5%">Rolle</th>
-                                    <th class="dgth" width="5%">CPU</th>
-                                    <th class="dgth" width="5%">Ram</th>
-                                    <th class="dgth" width="5%">Speicher</th>
-                                    <th class="dgth" width="5%">Backupspeicher</th>
+                                    <th class="dgth" width="2%">#.</th>
+                                    <th class="dgth" width="2%">Stage</th>
+                                    <th class="dgth" width="2%">Size</th>
+                                    <th class="dgth" width="2%">Rolle</th>
+                                    <th class="dgth" width="2%">CPU</th>
+                                    <th class="dgth" width="2%">RAM</th>
+                                    <th class="dgth" width="2%">Speicher</th>
+                                    <th class="dgth" width="2%">Backupspeicher</th>
+                                    <th class="dgth" width="2%">+CPU</th>
+                                    <th class="dgth" width="2%">+RAM</th>
+                                    <th class="dgth" width="2%">+Speicher</th>
+                                    <th class="dgth" width="2%">+Backupspeicher</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let srv of serversArr.controls; index as i" [formGroupName]="i">
                                     <td>{{ i }}</td>
-                                    <td><input type="text" class="form-control" formControlName="stage"></td>
-                                    <td><input type="text" class="form-control" formControlName="size"></td>
-                                    <td><input type="text" class="form-control" formControlName="role"></td>
-                                    <td><input type="text" class="form-control" formControlName="addCPU"></td>
-                                    <td><input type="text" class="form-control" formControlName="addRAM"></td>
-                                    <td><input type="text" class="form-control" formControlName="storage"></td>
-                                    <td><input type="text" class="form-control" formControlName="backupstorage"></td>
+                                    <td>{{srv.get('stage')?.value}}</td>
+                                    <td>{{srv.get('size')?.value}}</td>
+                                    <td>{{srv.get('role')?.value}}</td>
+                                    <td>{{srv.get('cpu')?.value}}</td>
+                                    <td>{{srv.get('ram')?.value}}</td>
+                                    <td>{{srv.get('storage')?.value}}</td>
+                                    <td>{{srv.get('backupstorage')?.value}}</td>
+                                    <td>{{srv.get('addCPU')?.value}}</td>
+                                    <td>{{srv.get('addRAM')?.value}}</td>
+                                    <td>{{srv.get('addStorage')?.value}}</td>
+                                    <td>{{srv.get('addBackupstorage')?.value}}</td>
                                 </tr>
                             </tbody>
                         </table>
