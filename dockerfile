@@ -1,0 +1,23 @@
+# Verwende eine stabile Node.js LTS-Version
+FROM node:20-alpine
+
+# Setze das Arbeitsverzeichnis im Container
+WORKDIR /usr/src/app
+
+# Kopiere nur die package.json und package-lock.json aus der Angular-App
+COPY IAMCalculator/package*.json ./
+
+# Installiere alle Abhängigkeiten (einschließlich In-Memory Web API)
+RUN npm install
+
+# Kopiere den gesamten Quellcode der Angular-App in den Container
+COPY IAMCalculator/ .
+
+# Installiere Angular CLI global
+RUN npm install -g @angular/cli
+
+# Stelle sicher, dass Port 4200 freigegeben wird
+EXPOSE 4200
+
+# Starte die Angular-App
+CMD ["ng", "serve", "--host", "0.0.0.0"]
