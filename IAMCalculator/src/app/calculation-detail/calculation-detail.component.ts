@@ -220,5 +220,11 @@ constructor(
     return this.SAPHCMCSV
   }
 
+  
+
+  CalculateServer() {
+    
+    return this.calculations?.servers.length
+  }
 
 }

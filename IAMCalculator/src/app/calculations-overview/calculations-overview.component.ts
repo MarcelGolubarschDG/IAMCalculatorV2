@@ -73,11 +73,6 @@ export class CalculationsOverviewComponent implements OnInit {
     }
     return amount
   }
-  /** load all servers via ApiService
-  getServers(): void {
-    this.apiService.getServers()
-    .subscribe(servers => this.servers = servers);
-  }*/
 
   // get all servers from array server for specific calcid ### source https://www.freecodecamp.org/news/how-to-count-objects-in-an-array/
   amountOfServerByCalcID(id:string) {
@@ -89,7 +84,6 @@ export class CalculationsOverviewComponent implements OnInit {
     }
     return counter
   }
-
   
 
 }
