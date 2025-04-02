@@ -90,12 +90,6 @@ export class CalculationsOverviewComponent implements OnInit {
     return counter
   }
 
-
-  // delete calculation via API
-  delete(calculation: Calculation): void {
-    this.calculations = this.calculations.filter(h => h !== calculation);
-    this.apiService.deleteCalculation(calculation._id.oid).subscribe();
-    this.toastr.error('Deleted successfully', 'Calculation Detail Register')
-  }
+  
 
 }

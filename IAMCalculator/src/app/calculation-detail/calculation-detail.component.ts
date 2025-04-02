@@ -59,6 +59,24 @@ constructor(
     this.location.back();
   }
 
+  delete() {
+    const id = String(this.route.snapshot.paramMap.get('id'));
+    console.log('Attempting to delete calculation with ID:', id); // Ausgabe der ID
+  
+    this.apiService.deleteCalculation(id).subscribe(
+      response => {
+        console.log('Delete response:', response);
+        this.toastr.success('Calculation deleted successfully', 'Success'); // Erfolgsnachricht
+        // Weiterleitung nach dem Löschen, z.B. auf eine Liste von Berechnungen
+        this.router.navigate(['/calculation']);
+      },
+      error => {
+        console.error('Error deleting calculation:', error);
+        this.toastr.error('Failed to delete the calculation', 'Error'); // Fehlermeldung
+      }
+    );
+  }
+
   onExportCSV(){
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.csvService.exportCsv(id)

@@ -53,26 +53,22 @@ export class ApiService {
       );
     }
 
-    ////////////// DELETE METHODS //////////////
-
-    /** DELETE: delete the calculation from database */
-    deleteCalculation(id: string): Observable<Calculation> {
-      const url = `${this.CalcUrl}/${id}`;
-
-      return this.http.delete<Calculation>(url, this.httpOptions).pipe(
-        catchError(this.handleError<Calculation>('deleteHero'))
+    /** DELETE: Lösche die Berechnung aus der Datenbank */
+    deleteCalculation(id: string): Observable<any> {
+      const url = `${this.CalcUrlID}/${id}`;
+      console.log('Delete URL:', url); // Ausgabe der URL für die Anfrage
+      return this.http.delete(url, this.httpOptions).pipe(
+        tap(response => {
+          // Logge die Antwort vom Server
+          console.log('API Response for DELETE:', response);
+        }),
+        catchError(error => {
+          // Fehlerbehandlung im Fehlerfall
+          console.error('Error during DELETE request:', error);
+          return throwError(error); // Wir werfen den Fehler weiter
+        })
       );
     }
-
-    ////////////// SAVE METHODS //////////////
-
-    /**  ADD: add the calculation to database
-    addCalculation(calculation: Calculation): Observable<Calculation> {
-      return this.http.post<Calculation>(this.CalcUrl, calculation, this.httpOptions).pipe(
-        tap((data: Calculation) => console.log('createProduct: ' + JSON.stringify(data))),
-        catchError(this.handleError<any>('addCalculation'))
-        )
-    }*/
 
     /** ADD: add the calculation to database */
     addCalculation(calculation: Calculation) {
@@ -85,33 +81,23 @@ export class ApiService {
     }
 
 
-    /** PUT: update the calculation in database
-    updateCalculation(calculation: Calculation): Observable<any> {
-      return this.http.put(this.CalcUrl, calculation, this.httpOptions).pipe(
-        catchError(this.handleError<any>('updateCalculation'))
-      );
-    }*/
-
     /** PUT: update the calculation in database */
     updateCalculation(data: string, id: string) {
       // Send Http request
-      this.http.put(this.CalcUrl + "/" + id, JSON.parse(data), this.httpOptions).subscribe(
+      this.http.put(this.CalcUrl + "/id/" + id, JSON.parse(data), this.httpOptions).subscribe(
         responseData => {
                           console.log(JSON.parse(data));
                         });
     }
 
-    // error handling function
+    
 
-    private handleError<T>(operation = 'operation', result?: T) {
-      return (error: any): Observable<T> => {
-  
-        // log to console instead
-        console.error(error); 
-  
-        // Let the app keep running by returning an empty result.
-        return of(result as T);
-      };
-    }
+  /** Fehlerbehandlung für HTTP-Anfragen */
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} failed: ${error.message}`);
+      return of(result as T);
+    };
+  }
 }
 
