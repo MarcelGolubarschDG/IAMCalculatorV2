@@ -78,11 +78,11 @@ constructor(
   }
 
   onExportCSV(){
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = String(this.route.snapshot.paramMap.get('id'));
     this.csvService.exportCsv(id)
   }
   onExportXLSX(){
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = String(this.route.snapshot.paramMap.get('id'));
     this.excelService.exportXlsx(id)
   }
 

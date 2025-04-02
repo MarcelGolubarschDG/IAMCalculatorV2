@@ -25,10 +25,10 @@ export class ExcelExportServiceService {
 
   constructor(private http: HttpClient) {}
 
-  private APIUrl = 'http://localhost:5067/api/Calculations/'
+  private APIUrl = 'http://localhost:3000/api/Calculation/id/'
 
 
-  exportXlsx(id: number) {
+  exportXlsx(id: string) {
     const wb = XLSX.utils.book_new();
     this.http.get<any[]>(this.APIUrl+id).subscribe(data => {
       // Füge Daten als neues Arbeitsblatt hinzu

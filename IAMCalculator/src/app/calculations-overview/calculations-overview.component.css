@@ -1,137 +1,138 @@
 .ownDeleteButtonMenu {
-    width: 100%;
-    height: 30px;
-    border: 0;
-    background-color: #ff003e;
-    color: #fff;
-    border-radius: 2%;
+   width: 100%;
+   height: 30px;
+   border: 0;
+   background-color: #ff003e;
+   color: #fff;
+   border-radius: 2%;
 }
 
 .ownDownloadButtonMenu {
-    width: 100%;
-    height: 30px;
-    border: 0;
-    background-color: #767676;
-    color: #fff;
+   width: 100%;
+   height: 30px;
+   border: 0;
+   background-color: #767676;
+   color: #fff;
 }
 
 .ownCol {
-    margin: 10px;
-    padding: 10px;
-    border: 5px solid ccc;
-    background-color: #f0f0f0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-    transition: box-shadow 0.3s ease-in-out;
-    position: relative;
+   margin: 10px;
+   padding: 10px;
+   border: 5px solid ccc;
+   border-radius: 10px; /* Rundung der Ecken */
+   background-color: #f0f0f0;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+   transition: box-shadow 0.3s ease-in-out;
+   position: relative;
 }
 
 .ownCol:hover {
-    border: 5px solid 000;
-    background-color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+   border: 5px solid 000;
+   border-radius: 10px; /* Rundung der Ecken */
+   background-color: #fff;
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
 }
 
 .bottombutton {
-   position: absolute; /* Setze das innere Div auf absolute Position */
-   bottom: 0; /* An den unteren Rand setzen */
-   width: 100%; /* Vollständige Breite innerhalb des äußeren Divs */
-   left: 0;
+  position: absolute; /* Setze das innere Div auf absolute Position */
+  bottom: 0; /* An den unteren Rand setzen */
+  width: 100%; /* Vollständige Breite innerhalb des äußeren Divs */
+  left: 0;
 }
 
 
 /* Responsive columns - one column layout (vertical) on small screens */
 @media screen and (max-width: 600px) {
-    .column {
-      width: 100%;
-      display: block;
-      margin-bottom: 20px;
-    }
-  }
-  
-
-  .ITSs {
-    /* Sektion */
-    display: table;
-    width: 100%;
- }
-
- .ITSr1 {
-    /* ungerade Zeile */
-    display: table-row;
-    padding: 4px 20px;
- }
-
- .ITSr0 {
-    /* gerade Zeile */
-    display: table-row;
-    padding: 4px 20px;
- }
-
- .ITSg {
-    /* Gruppe */
-    font-weight: bold;
-    font-size: medium;
-    padding: 10px 20px;
-    display: block;
-    width: fit-content;
- }
-
- .ITSn {
-    /* Name */
-    display: table-cell;
-    color: #555;
-    vertical-align: top;
-    padding: 4px 20px;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 50%;
-    font-weight: bold;
-    font-size: small;
- }
-
- .ITSnSpecial {
-    /* Name */
-    display: table-cell;
-    color: #555;
-    vertical-align: top;
-    padding: 4px 20px;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 25%;
-    font-weight: bold;
-    font-size: small;
- }
-
- .ITSv {
-    /* Wert */
-    display: table-cell;
-    color: #555;
-    vertical-align: top;
-    padding: 4px 20px;
-    font-size: small;
- }
-
- .spacer-xs {
- height: 10px;
+   .column {
+     width: 100%;
+     display: block;
+     margin-bottom: 20px;
+   }
  }
  
- .spacer-s {
- height: 17.5px;
- }
- 
- .spacer-m {
- height: 25px;
- }
- 
- .spacer-l {
- height: 37.5px;
- }
- 
- .spacer-xl {
- height: 50px;
- }
- 
- .spacer-xxl {
- height: 75px;
- }
- 
+
+ .ITSs {
+   /* Sektion */
+   display: table;
+   width: 100%;
+}
+
+.ITSr1 {
+   /* ungerade Zeile */
+   display: table-row;
+   padding: 4px 20px;
+}
+
+.ITSr0 {
+   /* gerade Zeile */
+   display: table-row;
+   padding: 4px 20px;
+}
+
+.ITSg {
+   /* Gruppe */
+   font-weight: bold;
+   font-size: medium;
+   padding: 10px 20px;
+   display: block;
+   width: fit-content;
+}
+
+.ITSn {
+   /* Name */
+   display: table-cell;
+   color: #555;
+   vertical-align: top;
+   padding: 4px 20px;
+   white-space: nowrap;
+   overflow: hidden;
+   width: 50%;
+   font-weight: bold;
+   font-size: small;
+}
+
+.ITSnSpecial {
+   /* Name */
+   display: table-cell;
+   color: #555;
+   vertical-align: top;
+   padding: 4px 20px;
+   white-space: nowrap;
+   overflow: hidden;
+   width: 25%;
+   font-weight: bold;
+   font-size: small;
+}
+
+.ITSv {
+   /* Wert */
+   display: table-cell;
+   color: #555;
+   vertical-align: top;
+   padding: 4px 20px;
+   font-size: small;
+}
+
+.spacer-xs {
+height: 10px;
+}
+
+.spacer-s {
+height: 17.5px;
+}
+
+.spacer-m {
+height: 25px;
+}
+
+.spacer-l {
+height: 37.5px;
+}
+
+.spacer-xl {
+height: 50px;
+}
+
+.spacer-xxl {
+height: 75px;
+}

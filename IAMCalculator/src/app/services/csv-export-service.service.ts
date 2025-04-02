@@ -63,9 +63,9 @@ interface ServerData {
 export class CsvExportServiceService {
 
   constructor(private http: HttpClient) {}
-  private APIUrl = 'http://localhost:5067/api/Calculations/'
+  private APIUrl = 'http://localhost:3000/api/Calculation/id/'
 
-  exportCsv(id: number) {
+  exportCsv(id: string) {
     this.http.get<any[]>(this.APIUrl+id).pipe(
       catchError(error => {
         console.error('Error fetching data:', error);
