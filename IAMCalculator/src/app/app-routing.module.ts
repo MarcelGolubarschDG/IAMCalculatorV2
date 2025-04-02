@@ -12,7 +12,10 @@ const routes: Routes = [
     path: 'Home', component: HomeComponent,
 },
 {
-    path: 'Overview', component: CalculationsOverviewComponent, pathMatch: 'full',
+    path: 'OverviewManagedIAM', component: CalculationsOverviewComponent, pathMatch: 'full',
+},
+{
+    path: 'OverviewIAMonDemand', component: CalculationsOverviewComponent, pathMatch: 'full',
 },
 {
     path: 'Calculation/:id', component: CalculationDetailComponent, pathMatch: 'full',
@@ -21,7 +24,10 @@ const routes: Routes = [
     path: 'Edit/Calculation/:id', component: EditCalculationDetailComponent, pathMatch: 'full',
 },
 {
-    path: 'NewCalculation', component: NewCalculationDetailComponent,
+    path: 'NewCalculationManagedIAM', component: NewCalculationDetailComponent,
+},
+{
+    path: 'NewCalculationIAMonDemand', component: NewCalculationDetailComponent,
 },
 {
     path: '', pathMatch: 'full', redirectTo: 'Home',

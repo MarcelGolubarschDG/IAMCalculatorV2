@@ -2,31 +2,47 @@
     <ul>
         <li class="has-subnav">
             <a (click)="goToPage('Home');">
-                <i [routerLink]="['/Home']" [routerLinkActive]="['active']" class="fa fa-home fa-4x"></i>
+                <i [routerLink]="['/Home']" [routerLinkActive]="['active']" class="fa fa-home fa-5x"></i>
                 <span class="nav-text">
                     Home
                 </span>
             </a>
         </li>
         <li class="has-subnav">
-            <a (click)="goToPage('Overview');">
-                <i [routerLink]="['/Overview']" [routerLinkActive]="['active']" class="fa fa-pie-chart fa-4x"></i>
+            <a (click)="goToPage('OverviewManagedIAM');">
+                <i [routerLink]="['/OverviewManagedIAM']" [routerLinkActive]="['active']" class="fa fa-pie-chart fa-5x"></i>
                 <span class="nav-text">
-                    Kalkulation Übersicht
+                    Managed IAM
                 </span>
             </a>
         </li>
         <li class="has-subnav">
-            <a (click)="goToPage('NewCalculation');">
-                <i [routerLink]="['/NewCalculation']" [routerLinkActive]="['active']" class="fa bi-file-earmark-plus fa-4x"></i>
+            <a (click)="goToPage('OverviewIAMonDemand');">
+                <i [routerLink]="['/OverviewIAMonDemand']" [routerLinkActive]="['active']" class="fa fa-pie-chart fa-5x"></i>
                 <span class="nav-text">
-                    Kalkulation erstellen
+                    IAM on Demand
+                </span>
+            </a>
+        </li>
+        <li class="has-subnav">
+            <a (click)="goToPage('NewCalculationManagedIAM');">
+                <i [routerLink]="['/NewCalculationManagedIAM']" [routerLinkActive]="['active']" class="fa bi-file-earmark-plus fa-5x"></i>
+                <span class="nav-text">
+                    Managed IAM Kalkulation erstellen
+                </span>
+            </a>
+        </li>
+        <li class="has-subnav">
+            <a (click)="goToPage('NewCalculationIAMonDemand');">
+                <i [routerLink]="['/NewCalculation']" [routerLinkActive]="['active']" class="fa bi-file-earmark-plus fa-5x"></i>
+                <span class="nav-text">
+                    IAM on Demand Kalkulation erstellen
                 </span>
             </a>
         </li>
         <!--<li class="has-subnav">
             <a (click)="goToPage('Leistungsschein');">
-                <i [routerLink]="['/Leistungsschein']" [routerLinkActive]="['active']" class="fa bi-file-earmark-plus fa-4x"></i>
+                <i [routerLink]="['/Leistungsschein']" [routerLinkActive]="['active']" class="fa bi-file-earmark-plus fa-5x"></i>
                 <span class="nav-text">
                     Leistungsschein erstellen
                 </span>
