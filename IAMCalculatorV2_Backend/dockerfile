@@ -1,0 +1,18 @@
+# Basis-Image für Node.js
+FROM node:18
+
+# Arbeitsverzeichnis im Container erstellen
+WORKDIR /app
+
+# Paketdateien kopieren und Abhängigkeiten installieren
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Kopiere den gesamten Code ins Image
+COPY . /app
+
+# Port freigeben
+EXPOSE 3000
+
+# Startbefehl
+CMD ["node", "server.js"]

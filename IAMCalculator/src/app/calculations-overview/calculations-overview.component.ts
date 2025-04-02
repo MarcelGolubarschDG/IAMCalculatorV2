@@ -51,11 +51,11 @@ export class CalculationsOverviewComponent implements OnInit {
     })
   }
 
-  amountOfTargetsystems (id:number) {
+  amountOfTargetsystems (id:string) {
     let counter = 0;
     let amount = 0;
     for (let i = 0; i < this.calculations.length; i++) {
-      if (this.calculations[i].id === id)
+      if (this.calculations[i]._id.oid === id)
       {
         amount = Number(this.calculations[i].targetsystemsform.amountMSAD)
                + Number(this.calculations[i].targetsystemsform.amountMSAAD)
@@ -80,10 +80,10 @@ export class CalculationsOverviewComponent implements OnInit {
   }*/
 
   // get all servers from array server for specific calcid ### source https://www.freecodecamp.org/news/how-to-count-objects-in-an-array/
-  amountOfServerByCalcID(id:number) {
+  amountOfServerByCalcID(id:string) {
     let counter = 0;
     for (let i = 0; i < this.calculations.length; i++) {
-      if (this.calculations[i].id === id) {
+      if (this.calculations[i]._id.oid === id) {
         counter = this.calculations[i].servers.length
       };
     }
@@ -94,7 +94,7 @@ export class CalculationsOverviewComponent implements OnInit {
   // delete calculation via API
   delete(calculation: Calculation): void {
     this.calculations = this.calculations.filter(h => h !== calculation);
-    this.apiService.deleteCalculation(calculation.id).subscribe();
+    this.apiService.deleteCalculation(calculation._id.oid).subscribe();
     this.toastr.error('Deleted successfully', 'Calculation Detail Register')
   }
 

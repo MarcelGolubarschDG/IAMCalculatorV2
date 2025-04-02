@@ -12,7 +12,7 @@ interface server {
     addBackupstorage:number
 }
 export interface Calculation {
-    id:number;
+    _id: { oid: string };
     basicform:{
         calculationName:string;
         calculationDesc:string;

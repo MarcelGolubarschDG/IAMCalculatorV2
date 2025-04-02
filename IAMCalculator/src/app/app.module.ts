@@ -7,8 +7,6 @@ import { NewCalculationDetailComponent } from './new-calculation-detail/new-calc
 import { HomeComponent } from './home/home.component';
 import { CalculationDetailComponent } from './calculation-detail/calculation-detail.component';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './in-memory-data.service';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditCalculationDetailComponent } from './edit-calculation-detail/edit-calculation-detail.component';

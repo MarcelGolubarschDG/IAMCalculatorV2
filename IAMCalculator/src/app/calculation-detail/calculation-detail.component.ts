@@ -50,8 +50,9 @@ constructor(
   }
 
   // nagivate fuction
-  goToPage(value:any) {
-    this.router.navigateByUrl(value)
+  goToPage() {
+    const id = String(this.route.snapshot.paramMap.get('id'));
+    this.router.navigateByUrl(`/Edit/Calculation/${id}`)
   }
   
   goBack(): void {
@@ -68,7 +69,7 @@ constructor(
   }
 
   getCalculation() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = String(this.route.snapshot.paramMap.get('id'));
     this.apiService.getCalculationByCalcID(id)
     .subscribe(calculations => this.calculations = calculations);
   }
@@ -201,14 +202,5 @@ constructor(
     return this.SAPHCMCSV
   }
 
-  // get servercount from array server for specific calcid ### source https://www.freecodecamp.org/news/how-to-count-objects-in-an-array/
-  /*amountOfServerByCalcID() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    let counter = 0;
-    for (let i = 0; i < this.calculations.servers.length; i++) {
-      if (this.calculations?.servers[i]) counter++;
-    }
-    return counter
-  }*/
 
 }

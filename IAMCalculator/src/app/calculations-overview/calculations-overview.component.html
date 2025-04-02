@@ -4,7 +4,7 @@
 </div>
 <div class="row">
     <div class="col ownCol" *ngFor="let calc of calculations">
-        <a (click)="goToPage('/Calculation/' + calc.id);">
+        <a (click)="goToPage('/Calculation/' + calc._id);">
             <div class="ITSs">
                 <div class="ITSg">{{ calc.basicform.calculationName }}</div>
                 <div class="ITSr1">
@@ -13,11 +13,11 @@
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Zielsysteme</div>
-                    <div class="ITSv">{{ this.amountOfTargetsystems(calc.id) || 0 }}</div>
+                    <div class="ITSv">{{ this.amountOfTargetsystems(calc._id.oid) || 0 }}</div>
                 </div>
                 <div class="ITSr1">
                     <div class="ITSn">Server</div>
-                    <div class="ITSv"> {{ this.amountOfServerByCalcID(calc.id) || 0 }}</div>
+                    <div class="ITSv"> {{ this.amountOfServerByCalcID(calc._id.oid) || 0 }}</div>
                 </div>
             </div>
         </a>

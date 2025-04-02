@@ -43,9 +43,9 @@ export class EditCalculationDetailComponent implements OnInit{
   //ngsubmit function
   onSubmit(data: any) {
     //console.log(this.EditCalcForm.value);
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = String(this.route.snapshot.paramMap.get('id'));
     
-    var int_calculationID:number = id
+    var int_calculationID:String = id
 
     var string_basic_calculationName = JSON.stringify(data.basicform.calculationName).replaceAll('"', '')
     var string_basic_calculationDesc = JSON.stringify(data.basicform.calculationDesc).replaceAll('"', '')
@@ -730,7 +730,7 @@ export class EditCalculationDetailComponent implements OnInit{
   }
 
   loadForm() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = String(this.route.snapshot.paramMap.get('id'));
     this.apiService.getCalculationByCalcID(id)
     .subscribe(
       calculation => this.EditCalcForm.patchValue({
@@ -790,7 +790,7 @@ export class EditCalculationDetailComponent implements OnInit{
     )
   }
 
-  onPutForm(data: any, id: number) {
+  onPutForm(data: any, id: string) {
     this.apiService.updateCalculation(data, id)
   }
 
@@ -825,7 +825,7 @@ export class EditCalculationDetailComponent implements OnInit{
   }
 
   EditCalcForm : FormGroup = new FormGroup({
-    id: new FormControl(Number(this.route.snapshot.paramMap.get('id'))),
+    id: new FormControl(String(this.route.snapshot.paramMap.get('id'))),
     basicform: new FormGroup({
       calculationName: new FormControl(null, []),
       calculationDesc: new FormControl(null,[]),

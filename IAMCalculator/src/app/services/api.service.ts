@@ -13,8 +13,9 @@ export class ApiService {
   constructor(    private http: HttpClient    ) { }
 
     // URL to web api
-    private APIUrl = 'http://localhost:5067/api/';
-    private CalcUrl = this.APIUrl + 'Calculations'
+    private APIUrl = 'http://localhost:3000/api/';
+    private CalcUrl = this.APIUrl + 'calculation';
+    private CalcUrlID = this.CalcUrl + '/id'
 
     // http header options
     httpOptions = {
@@ -28,15 +29,16 @@ export class ApiService {
     /** GET every calculation in database for navigation bar */
     getCalculations(): Observable<Calculation[]> {
       return this.http.get<Calculation[]>(this.CalcUrl).pipe(
+        tap(data => console.log('Erhaltene Daten:', data)), // Log der empfangenen Daten
         catchError(this.handleError<Calculation[]>('getCalculations', []))
       );
     }
 
     /** GET calculation by id. Will 404 if id not found */
-    getCalculationByCalcID(id: number): Observable<Calculation> {
-      const url = `${this.CalcUrl}/${id}`;
+    getCalculationByCalcID(id: string): Observable<Calculation> {
+      const url = `${this.CalcUrlID}/${id}`;
       return this.http.get<Calculation>(url).pipe(
-        catchError(this.handleError<Calculation>(`getCalculationByCalcID calculationid=${id}`))
+        catchError(this.handleError<Calculation>(`getCalculationByCalcID id=${id}`))
       );
     }
 
@@ -54,7 +56,7 @@ export class ApiService {
     ////////////// DELETE METHODS //////////////
 
     /** DELETE: delete the calculation from database */
-    deleteCalculation(id: number): Observable<Calculation> {
+    deleteCalculation(id: string): Observable<Calculation> {
       const url = `${this.CalcUrl}/${id}`;
 
       return this.http.delete<Calculation>(url, this.httpOptions).pipe(
@@ -91,7 +93,7 @@ export class ApiService {
     }*/
 
     /** PUT: update the calculation in database */
-    updateCalculation(data: string, id: number) {
+    updateCalculation(data: string, id: string) {
       // Send Http request
       this.http.put(this.CalcUrl + "/" + id, JSON.parse(data), this.httpOptions).subscribe(
         responseData => {

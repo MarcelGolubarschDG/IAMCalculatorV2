@@ -1,10 +1,37 @@
-version: '3.8'
-
 services:
+
+  mongodb:
+    image: mongo
+    container_name: mongodb-container_backend
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - MONGO_INITDB_DATABASE=IAMCalculator
+    restart: always
+
+  backend:
+    image: iambackend:latest
+    container_name: node-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb-container_backend:27017/IAMCalculator?authSource=admin
+
+      
+    volumes:
+      - /app/node_modules
+      - ./IAMCalculatorV2_Backend/server.js:/app/server.js
+    restart: always
+
+    
   angular-app:
-    build:
-      context: .
-      dockerfile: Dockerfile  # Pfad zur Dockerfile, falls sie nicht im Hauptverzeichnis liegt
+    image: iamcalculator:latest
     ports:
       - "4200:4200"  # Bindet Port 4200 des Containers an Port 4200 des Hosts
     volumes:
@@ -13,3 +40,6 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true  # Ermöglicht das Überwachen von Dateiänderungen (z.B. für Angular-CLI)
     command: ["ng", "serve", "--host", "0.0.0.0", "--disable-host-check"]
+
+volumes:
+  mongo-data:
