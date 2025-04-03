@@ -1,11 +1,25 @@
 .btn-primary {
-background-color: #767676;
-border-color: #cccccc;
-}
+    background-color: #767676;
+    border-color: #cccccc;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.1),0 5px 5px 0 rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    }
+.btn-primary:hover {
+    background-color: #3e3e3e;
+    border-color: #cccccc;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.50),0 5px 5px 0 rgba(0,0,0,0.50);
+    }
 .btn-danger {
-background-color: #ff003e;
-border-color: #cccccc;
-}    
+    background-color: #ff003e;
+    border-color: #cccccc;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.1),0 5px 5px 0 rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    }
+.btn-danger:hover {
+    background-color: #ff003e;
+    border-color: #cccccc;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.50),0 5px 5px 0 rgba(0,0,0,0.50);
+    }  
 
 .spacer-xs {
 height: 10px;

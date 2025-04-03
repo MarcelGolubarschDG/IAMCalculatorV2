@@ -1,11 +1,9 @@
-<div class="row">
-    <div class="col spacer-xl"></div>
-</div>
-<button class="btn btn-danger" type="button" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
-<button class="btn btn-primary" type="button" (click)="goToPage()"><i class="bi bi-pencil-fill"></i></button>
-<button class="btn btn-primary d-inline-flex align-items-center" type="button" (click)="onExportXLSX()"><i class="bi bi-filetype-xlsx"></i></button>
-<button class="btn btn-primary d-inline-flex align-items-center" type="button" (click)="onExportCSV()"><i class="bi bi-filetype-csv"></i></button>
-<button class="btn btn-primary d-inline-flex align-items-center" type="button" (click)="delete()"><i class="bi bi-trash"></i></button>
+
+<button class="btn btn-danger btn-lg me-2" type="button" (click)="goBack()"><i class="fa-solid fa-arrow-left fa-2x"></i></button>
+<button class="btn btn-primary btn-lg me-2" type="button" (click)="goToPage()"><i class="fa-solid fa-pen fa-2x"></i></button>
+<button class="btn btn-primary btn-lg me-2" type="button" (click)="onExportXLSX()"><i class="fa-solid fa-file-excel fa-2x"></i></button>
+<button class="btn btn-primary btn-lg me-2" type="button" (click)="onExportCSV()"><i class="fa-solid fa-file-csv fa-2x"></i></button>
+<button class="btn btn-danger btn-lg me-2" type="button" (click)="delete()"><i class="fa-solid fa-trash-can fa-2x"></i></button>
 
 <div class="row">
     <div class="col spacer-xl"></div>
@@ -14,7 +12,7 @@
     <!-- Container Header-->
     <div class="row">
         <div class="col d-flex align-items-center justify-content-start">
-            <div style="font-weight: bold;">{{ calculations?.basicform?.calculationName }}</div>
+            <div style="font-weight: bold;font-size: large;text-shadow: #e0e0e0 1px 1px 0;">{{ calculations?.basicform?.calculationName }}</div>
         </div>
     </div>
 
