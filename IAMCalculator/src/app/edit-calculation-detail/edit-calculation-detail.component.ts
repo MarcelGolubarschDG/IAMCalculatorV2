@@ -4,7 +4,7 @@ import { ApiService } from '../services/api.service';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Calculation } from '../interfaces/calculation';
-import { FormGroup, FormControl, FormArray, Validators} from '@angular/forms';
+import { FormGroup, FormControl, FormArray, Validators, FormsModule} from '@angular/forms';
 
 
 

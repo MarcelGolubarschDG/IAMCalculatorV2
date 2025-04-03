@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -10,7 +11,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditCalculationDetailComponent } from './edit-calculation-detail/edit-calculation-detail.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,8 +24,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CalculationsOverviewComponent } from './calculations-overview/calculations-overview.component';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
-@NgModule({ declarations: [
+
+@NgModule({
+  declarations: [
         AppComponent,
         NavbarComponent,
         NewCalculationDetailComponent,
@@ -34,33 +37,39 @@ import { CalculationsOverviewComponent } from './calculations-overview/calculati
         EditCalculationDetailComponent,
         CalculationsOverviewComponent
     ],
-    bootstrap: [AppComponent], imports: [FormsModule,
-        ReactiveFormsModule,
-        BrowserModule,
-        AppRoutingModule,
-        // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
-        // and returns simulated server responses.
-        // Remove it when a real server is ready to receive requests.
-        /*HttpClientInMemoryWebApiModule.forRoot(
-          InMemoryDataService, { dataEncapsulation: false },
-        ),*/
-        // required animations module
-        BrowserAnimationsModule,
-        ToastrModule.forRoot({
-            timeOut: 10000,
-            positionClass: 'toast-bottom-center',
-            preventDuplicates: true,
-        }), // ToastrModule added
-        MatStepperModule,
-        MatButtonModule,
-        MatRadioModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatIconModule,
-        MatSelectModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatCheckboxModule,
-        MatGridListModule,
-        MatTooltipModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+    bootstrap: [
+      AppComponent
+    ], imports: [
+      BrowserModule,
+      FormsModule,
+      ReactiveFormsModule,
+      AppRoutingModule,
+      OAuthModule.forRoot({
+        resourceServer: {
+          sendAccessToken: true,
+          allowedUrls: ['http://www.angular.at/api/'] 
+        }
+      }),
+      BrowserAnimationsModule,
+      ToastrModule.forRoot({
+          timeOut: 10000,
+          positionClass: 'toast-bottom-center',
+          preventDuplicates: true,
+      }),
+      MatStepperModule,
+      MatButtonModule,
+      MatRadioModule,
+      MatDatepickerModule,
+      MatNativeDateModule,
+      MatIconModule,
+      MatSelectModule,
+      MatInputModule,
+      MatFormFieldModule,
+      MatCheckboxModule,
+      MatGridListModule,
+      MatTooltipModule
+    ], providers: [
+        provideHttpClient(withInterceptorsFromDi())
+      ]
+    })
 export class AppModule { }
