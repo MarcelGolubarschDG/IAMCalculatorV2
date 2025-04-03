@@ -6,7 +6,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { NewCalculationDetailComponent } from './new-calculation-detail/new-calculation-detail.component';
 import { HomeComponent } from './home/home.component';
 import { CalculationDetailComponent } from './calculation-detail/calculation-detail.component';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditCalculationDetailComponent } from './edit-calculation-detail/edit-calculation-detail.component';
@@ -25,51 +25,42 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CalculationsOverviewComponent } from './calculations-overview/calculations-overview.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    NavbarComponent,
-    NewCalculationDetailComponent,
-    HomeComponent,
-    CalculationDetailComponent,
-    EditCalculationDetailComponent,
-    CalculationsOverviewComponent
-  ],
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
-    // and returns simulated server responses.
-    // Remove it when a real server is ready to receive requests.
-    /*HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryDataService, { dataEncapsulation: false },
-    ),*/
-    // required animations module
-    BrowserAnimationsModule,
-    ToastrModule.forRoot({
-      timeOut: 10000,
-      positionClass: 'toast-bottom-center',
-      preventDuplicates: true,
-    }), // ToastrModule added
-    
-    MatStepperModule,
-    MatButtonModule,
-    MatRadioModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatIconModule,
-    MatSelectModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatCheckboxModule,
-    MatGridListModule,
-    MatTooltipModule,
-
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        NavbarComponent,
+        NewCalculationDetailComponent,
+        HomeComponent,
+        CalculationDetailComponent,
+        EditCalculationDetailComponent,
+        CalculationsOverviewComponent
+    ],
+    bootstrap: [AppComponent], imports: [FormsModule,
+        ReactiveFormsModule,
+        BrowserModule,
+        AppRoutingModule,
+        // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
+        // and returns simulated server responses.
+        // Remove it when a real server is ready to receive requests.
+        /*HttpClientInMemoryWebApiModule.forRoot(
+          InMemoryDataService, { dataEncapsulation: false },
+        ),*/
+        // required animations module
+        BrowserAnimationsModule,
+        ToastrModule.forRoot({
+            timeOut: 10000,
+            positionClass: 'toast-bottom-center',
+            preventDuplicates: true,
+        }), // ToastrModule added
+        MatStepperModule,
+        MatButtonModule,
+        MatRadioModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatSelectModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatCheckboxModule,
+        MatGridListModule,
+        MatTooltipModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
