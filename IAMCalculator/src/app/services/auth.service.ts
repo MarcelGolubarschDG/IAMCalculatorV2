@@ -27,9 +27,11 @@ export class AuthService {
   }
 
   logout() {
-    this.oauthService.logOut();
-    this.isAuthenticatedSubject.next(false);
+    this.oauthService.logOut({
+      postLogoutRedirectUri: authConfig.postLogoutRedirectUri
+    });
   }
+  
 
   getAccessToken(): string | null {
     return this.oauthService.getAccessToken();
