@@ -24,9 +24,10 @@ export class CalculationsOverviewComponent implements OnInit {
     private location: Location
     ) { 
       route.params.subscribe(val => {
-      // put the code from `ngOnInit` here
+
       this.getCalculations();
       //this.getServers();
+
     }); }
 
     ngOnInit(): void {
@@ -36,7 +37,8 @@ export class CalculationsOverviewComponent implements OnInit {
   goToPage(value:any) {
     this.router.navigateByUrl(value)
   }
-  
+
+  // nagivate fuction
   goBack(): void {
     this.location.back();
   }
@@ -51,6 +53,7 @@ export class CalculationsOverviewComponent implements OnInit {
     })
   }
 
+  // calculate amout of Targetsystems for overview cards
   amountOfTargetsystems (id:string) {
     let counter = 0;
     let amount = 0;
@@ -74,7 +77,7 @@ export class CalculationsOverviewComponent implements OnInit {
     return amount
   }
 
-  // get all servers from array server for specific calcid ### source https://www.freecodecamp.org/news/how-to-count-objects-in-an-array/
+  // calculate amout of servers for overview cards
   amountOfServerByCalcID(id:string) {
     let counter = 0;
     for (let i = 0; i < this.calculations.length; i++) {
@@ -84,6 +87,4 @@ export class CalculationsOverviewComponent implements OnInit {
     }
     return counter
   }
-  
-
 }
