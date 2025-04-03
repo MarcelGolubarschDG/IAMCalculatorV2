@@ -6,9 +6,10 @@ import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-calculations-overview',
-  templateUrl: './calculations-overview.component.html',
-  styleUrl: './calculations-overview.component.css'
+    selector: 'app-calculations-overview',
+    templateUrl: './calculations-overview.component.html',
+    styleUrl: './calculations-overview.component.css',
+    standalone: false
 })
 export class CalculationsOverviewComponent implements OnInit {
 

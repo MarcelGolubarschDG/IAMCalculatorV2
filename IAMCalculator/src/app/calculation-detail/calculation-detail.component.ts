@@ -8,9 +8,10 @@ import { CsvExportServiceService } from '../services/csv-export-service.service'
 import { ExcelExportServiceService } from '../services/excel-export-service.service';
 
 @Component({
-  selector: 'app-calculation-detail',
-  templateUrl: './calculation-detail.component.html',
-  styleUrl: './calculation-detail.component.css'
+    selector: 'app-calculation-detail',
+    templateUrl: './calculation-detail.component.html',
+    styleUrl: './calculation-detail.component.css',
+    standalone: false
 })
 
 @Injectable()

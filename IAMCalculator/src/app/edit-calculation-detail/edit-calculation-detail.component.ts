@@ -9,9 +9,10 @@ import { FormGroup, FormControl, FormArray, Validators} from '@angular/forms';
 
 
 @Component({
-  selector: 'app-edit-calculation-detail',
-  templateUrl: './edit-calculation-detail.component.html',
-  styleUrl: './edit-calculation-detail.component.css'
+    selector: 'app-edit-calculation-detail',
+    templateUrl: './edit-calculation-detail.component.html',
+    styleUrl: './edit-calculation-detail.component.css',
+    standalone: false
 })
 
 export class EditCalculationDetailComponent implements OnInit{

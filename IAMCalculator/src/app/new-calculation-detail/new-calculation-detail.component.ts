@@ -7,9 +7,10 @@ import { Calculation } from '../interfaces/calculation';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-new-calculation-detail',
-  templateUrl: './new-calculation-detail.component.html',
-  styleUrl: './new-calculation-detail.component.css'
+    selector: 'app-new-calculation-detail',
+    templateUrl: './new-calculation-detail.component.html',
+    styleUrl: './new-calculation-detail.component.css',
+    standalone: false
 })
 
 export class NewCalculationDetailComponent implements OnInit{
