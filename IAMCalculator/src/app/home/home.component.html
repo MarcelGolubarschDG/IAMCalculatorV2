@@ -2,6 +2,5 @@
   <button *ngIf="!(isAuthenticated$ | async)" (click)="login()">Login</button>
   <button *ngIf="isAuthenticated$ | async" (click)="logout()">Logout</button>
   <p *ngIf="user$ | async as user">Hallo, {{ user.name }}</p>
-  lol
 </div>
   
