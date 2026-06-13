@@ -1,28 +1,39 @@
+<div class="ov-container">
+  <div class="ov-header">
+    <h5 class="ov-title">Kalkulationen</h5>
+  </div>
 
-<div class="row">
-    <div class="col spacer-xl"></div>
-</div>
-<div class="row">
-    <div class="col ownCol" *ngFor="let calc of calculations">
-        <a (click)="goToPage('/Calculation/' + calc._id);">
-            <div class="ITSs">
-                <div class="ITSg">{{ calc.basicform.calculationName }}</div>
-                <div class="ITSr1">
-                    <div class="ITSn">Identitäten</div>
-                    <div class="ITSv">{{ calc.customerform.customerEmployees}}</div>
-                </div>
-                <div class="ITSr1">
-                    <div class="ITSn">Zielsysteme</div>
-                    <div class="ITSv">{{ this.amountOfTargetsystems(calc._id.oid) || 0 }}</div>
-                </div>
-                <div class="ITSr1">
-                    <div class="ITSn">Server</div>
-                    <div class="ITSv"> {{ calc.servers.length }}</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col spacer-s"></div>
-            </div>
-        </a>
+  <div class="ov-grid" *ngIf="calculations.length > 0; else emptyState">
+    <div class="ov-card" *ngFor="let calc of calculations" (click)="goToPage('/Edit/Calculation/' + calc._id)">
+      <div class="ov-card-header">
+        <div class="ov-calc-name">{{ calc.basicform.calculationName || '(Ohne Name)' }}</div>
+      </div>
+      <div class="ov-customer">{{ calc.customerform.customerName || '–' }}</div>
+      <div class="ov-stats">
+        <div class="ov-stat">
+          <i class="fa-solid fa-users"></i>
+          <span>{{ calc.customerform.customerEmployees }}</span>
+          <small>Identitäten</small>
+        </div>
+        <div class="ov-stat">
+          <i class="fa-solid fa-plug"></i>
+          <span>{{ amountOfTargetsystems(calc._id) }}</span>
+          <small>Zielsysteme</small>
+        </div>
+        <div class="ov-stat">
+          <i class="fa-solid fa-server"></i>
+          <span>{{ calc.servers.length }}</span>
+          <small>Server</small>
+        </div>
+      </div>
+      <div class="ov-cost">Kosten: <em>{{ costForCalc(calc) }}</em></div>
     </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="ov-empty">
+      <i class="fa-solid fa-folder-open"></i>
+      <p>Noch keine Kalkulationen vorhanden.</p>
+    </div>
+  </ng-template>
 </div>

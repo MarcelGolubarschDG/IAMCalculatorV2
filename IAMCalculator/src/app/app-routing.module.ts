@@ -5,6 +5,7 @@ import { EditCalculationDetailComponent } from './edit-calculation-detail/edit-c
 import { HomeComponent } from './home/home.component';
 import { NewCalculationDetailComponent } from './new-calculation-detail/new-calculation-detail.component';
 import { CalculationsOverviewComponent } from './calculations-overview/calculations-overview.component';
+import { PricingConfigComponent } from './pricing-config/pricing-config.component';
 
 const routes: Routes = [
 
@@ -28,6 +29,9 @@ const routes: Routes = [
 },
 {
     path: 'NewCalculationIAMonDemand', component: NewCalculationDetailComponent,
+},
+{
+    path: 'Admin/Pricing', component: PricingConfigComponent,
 },
 {
     path: '', pathMatch: 'full', redirectTo: 'Home',

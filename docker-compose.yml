@@ -31,14 +31,13 @@ services:
   angular-app:
     image: iamcalculator:latest
     ports:
-      - "80:80"
+      - "4200:4200"  # Bindet Port 4200 des Containers an Port 4200 des Hosts
     volumes:
-      - ./IAMCalculator:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./IAMCalculator:/usr/src/app  # Bindet den Code der Angular-App in den Container
+      - /usr/src/app/node_modules  # Verhindert, dass node_modules überschrieben wird
     environment:
-      - CHOKIDAR_USEPOLLING=true
-    command: ["ng", "serve", "--host", "0.0.0.0", "--disable-host-check"]
-    restart: always
+      - CHOKIDAR_USEPOLLING=true  # Ermöglicht das Überwachen von Dateiänderungen (z.B. für Angular-CLI)
+    command: /bin/sh -c "npm install && ng serve --host 0.0.0.0"
 
 volumes:
   mongo-data:

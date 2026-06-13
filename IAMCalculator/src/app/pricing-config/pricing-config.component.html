@@ -1,0 +1,254 @@
+<div class="ac-container">
+
+  <!-- Header -->
+  <div class="ac-header">
+    <div class="ac-header-left">
+      <button class="ac-back-btn" type="button" (click)="goBack()">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div>
+        <h5 class="ac-title"><i class="fa-solid fa-gear"></i> Preiskonfiguration</h5>
+        <span class="ac-oidc-hint"><i class="fa-solid fa-lock"></i> Wird später per OIDC-Claim geschützt</span>
+      </div>
+    </div>
+    <button class="ac-save-btn" [class.ac-saved]="saved" (click)="save()">
+      <i class="fa-solid fa-check" *ngIf="saved"></i>
+      <i class="fa-solid fa-floppy-disk" *ngIf="!saved"></i>
+      {{ saved ? 'Gespeichert' : 'Speichern' }}
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="ac-loading">
+    <i class="fa-solid fa-spinner fa-spin"></i> Preiskonfiguration wird geladen…
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- ── Größendefinitionen ──────────────────────────────────────────────── -->
+    <div class="ac-panel ac-matrix-panel">
+      <div class="ac-section-title"><i class="fa-solid fa-microchip"></i> Größendefinitionen</div>
+      <p class="ac-desc">Hardware-Specs und SLA-Klassen pro Sizing — Bezeichnung (z.&nbsp;B. XS) dient als Schlüssel</p>
+
+      <div class="ac-table-wrap">
+        <table class="ac-sizing-table">
+          <thead>
+            <tr>
+              <th class="ac-th-key">Größe</th>
+              <th class="ac-th-num">CPU<br><span class="ac-th-unit">Kerne</span></th>
+              <th class="ac-th-num">RAM<br><span class="ac-th-unit">GB</span></th>
+              <th class="ac-th-num">Storage<br><span class="ac-th-unit">GB</span></th>
+              <th class="ac-th-num">Backup<br><span class="ac-th-unit">GB</span></th>
+              <th class="ac-th-sla">SLA BS</th>
+              <th class="ac-th-sla">SLA BC</th>
+              <th class="ac-th-del"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let size of pricing.sizingDefs; let i = index; trackBy: trackByKey">
+              <td class="ac-td-input">
+                <input type="text" maxlength="6"
+                       [ngModel]="sizingKeyDraft[i]"
+                       (ngModelChange)="sizingKeyDraft[i] = $event"
+                       (blur)="applySizeKey(i)"
+                       class="ac-key-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="number" min="0" [(ngModel)]="size.cpu" class="ac-num-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="number" min="0" [(ngModel)]="size.ram" class="ac-num-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="number" min="0" [(ngModel)]="size.storage" class="ac-num-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="number" min="0" [(ngModel)]="size.backupStorage" class="ac-num-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="text" maxlength="8" [(ngModel)]="size.slaBs" class="ac-sla-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="text" maxlength="8" [(ngModel)]="size.slaBc" class="ac-sla-input">
+              </td>
+              <td class="ac-td-del">
+                <button class="ac-del-btn" type="button" (click)="deleteSize(i)" title="Größe löschen">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="ac-add-btn" type="button" (click)="addSize()">
+        <i class="fa-solid fa-plus"></i> Größe hinzufügen
+      </button>
+    </div>
+
+    <!-- ── Serverrollen ───────────────────────────────────────────────────── -->
+    <div class="ac-panel ac-matrix-panel">
+      <div class="ac-section-title"><i class="fa-solid fa-server"></i> Serverrollen</div>
+      <p class="ac-desc">Mindestgröße und Ressourcenskalierung pro Rolle bei wachsender Identitätszahl</p>
+
+      <div class="ac-table-wrap">
+        <table class="ac-roles-table">
+          <thead>
+            <tr>
+              <th class="ac-th-label">Bezeichnung</th>
+              <th class="ac-th-toggle">Singleton</th>
+              <th class="ac-th-minsize">Min. Größe</th>
+              <th class="ac-th-factor">+CPU / 1.000 Ident.</th>
+              <th class="ac-th-factor">+RAM / 1.000 Ident.</th>
+              <th class="ac-th-del"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let role of pricing.roleDefs; let i = index; trackBy: trackByKey"
+                [class.ac-row-singleton]="role.singleton">
+              <td class="ac-td-input">
+                <input type="text" [(ngModel)]="role.label" class="ac-label-input">
+              </td>
+              <td class="ac-td-toggle">
+                <label class="ac-toggle">
+                  <input type="checkbox" [(ngModel)]="role.singleton">
+                  <span class="ac-toggle-slider"></span>
+                </label>
+              </td>
+              <td class="ac-td-input">
+                <select [(ngModel)]="role.minSize" class="ac-select">
+                  <option *ngFor="let s of pricing.sizingDefs" [value]="s.key">{{ s.key }}</option>
+                </select>
+              </td>
+              <td class="ac-td-input">
+                <div class="ac-factor-row">
+                  <input type="number" min="0" step="0.1"
+                         [(ngModel)]="role.cpuPer1000"
+                         class="ac-factor-input">
+                  <span class="ac-unit">Kerne</span>
+                </div>
+              </td>
+              <td class="ac-td-input">
+                <div class="ac-factor-row">
+                  <input type="number" min="0" step="0.1"
+                         [(ngModel)]="role.ramPer1000"
+                         class="ac-factor-input">
+                  <span class="ac-unit">GB</span>
+                </div>
+              </td>
+              <td class="ac-td-del">
+                <button class="ac-del-btn" type="button" (click)="deleteRole(i)" title="Rolle löschen">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="ac-add-btn" type="button" (click)="addRole()">
+        <i class="fa-solid fa-plus"></i> Rolle hinzufügen
+      </button>
+    </div>
+
+    <!-- ── Stundensätze + Sizing-Vorschau ─────────────────────────────────── -->
+    <div class="ac-bottom-grid">
+
+      <!-- Beratungskonfiguration -->
+      <div class="ac-panel">
+        <div class="ac-section-title"><i class="fa-solid fa-user-tie"></i> Beratungskonfiguration</div>
+        <p class="ac-desc">IAM Consultant Stundensatz und Aufwandskalkulation (netto)</p>
+
+        <div class="ac-rate-field">
+          <label>IAM Consultant Stundensatz</label>
+          <div class="ac-rate-row">
+            <input type="number" min="0" [(ngModel)]="pricing.consulting.iamConsultantRate" class="ac-rate-input">
+            <span class="ac-unit">€ / Stunde</span>
+          </div>
+          <div class="ac-pt-hint">1 PT = 8h × {{ pricing.consulting.iamConsultantRate }} € = <strong>{{ fmt(ptValue) }}</strong></div>
+        </div>
+
+        <div class="ac-rate-field">
+          <label>PT pro Stage / Monat</label>
+          <div class="ac-rate-row">
+            <input type="number" min="0" step="0.5" [(ngModel)]="pricing.consulting.ptPerStage" class="ac-rate-input">
+            <span class="ac-unit">PT</span>
+          </div>
+          <div class="ac-pt-hint">Gilt pro Stage (Prod, QS, Dev) — Anzahl Stages wird pro Kalkulation festgelegt</div>
+        </div>
+
+        <div class="ac-rate-field">
+          <label>PT pro Server / Monat</label>
+          <div class="ac-rate-row">
+            <input type="number" min="0" step="0.1" [(ngModel)]="pricing.consulting.ptPerServerPerMonth" class="ac-rate-input">
+            <span class="ac-unit">PT</span>
+          </div>
+        </div>
+
+        <div class="ac-rate-field">
+          <label>PT pro 1.000 Identitäten / Monat</label>
+          <div class="ac-rate-row">
+            <input type="number" min="0" step="0.05" [(ngModel)]="pricing.consulting.ptPer1000IdentitiesPerMonth" class="ac-rate-input">
+            <span class="ac-unit">PT</span>
+          </div>
+        </div>
+
+        <div class="ac-rate-field" style="margin-bottom:0">
+          <label>Jobserver-Schwelle</label>
+          <div class="ac-rate-row">
+            <input type="number" min="1" step="1" [(ngModel)]="pricing.consulting.jobServerThreshold" class="ac-rate-input">
+            <span class="ac-unit">Zielsysteme / Server</span>
+          </div>
+          <div class="ac-pt-hint">Ab je {{ pricing.consulting.jobServerThreshold }} Zielsystemen wird ein weiterer Jobserver kalkuliert</div>
+        </div>
+      </div>
+
+      <!-- Sizing-Vorschau -->
+      <div class="ac-panel">
+        <div class="ac-section-title"><i class="fa-solid fa-magnifying-glass-chart"></i> Sizing-Vorschau</div>
+        <div class="ac-preview-header">
+          <p class="ac-desc" style="margin-bottom:0">Empfohlene Größe je Identitätszahl</p>
+          <select [(ngModel)]="previewRoleKey" class="ac-select ac-preview-select">
+            <option *ngFor="let r of pricing.roleDefs" [value]="r.key">{{ r.label }}</option>
+          </select>
+        </div>
+
+        <div class="ac-table-wrap" style="margin-top:14px">
+          <table class="ac-preview-table">
+            <thead>
+              <tr>
+                <th>Identitäten</th>
+                <th>Benötigt</th>
+                <th>Größe</th>
+                <th>Overflow</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of sizingPreview"
+                  [class.ac-preview-overflow]="row.overflowCpu > 0 || row.overflowRam > 0">
+                <td class="ac-pv-count">{{ fmtNum(row.count) }}</td>
+                <td class="ac-pv-req">{{ row.reqCpu }}&nbsp;CPU · {{ row.reqRam }}&nbsp;GB</td>
+                <td class="ac-pv-size">
+                  <span class="ac-size-badge" *ngIf="row.size">{{ row.size.key }}</span>
+                  <span *ngIf="!row.size">–</span>
+                </td>
+                <td class="ac-pv-overflow">
+                  <ng-container *ngIf="row.overflowCpu > 0 || row.overflowRam > 0">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    +{{ row.overflowCpu }}&nbsp;CPU · +{{ row.overflowRam }}&nbsp;GB
+                  </ng-container>
+                  <span class="ac-pv-ok" *ngIf="row.overflowCpu === 0 && row.overflowRam === 0">
+                    <i class="fa-solid fa-check"></i>
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="sizingPreview.length === 0">
+                <td colspan="4" class="ac-pv-empty">Keine Rolle ausgewählt</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="ac-footnote">Basis: CPU + RAM des Mindest-Sizings + Faktor × (Identitäten / 1.000)</p>
+      </div>
+
+    </div>
+
+  </ng-container>
+</div>

@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Calculation } from '../interfaces/calculation';
+import { Pricing, DEFAULT_PRICING } from '../interfaces/pricing';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class ApiService {
     // URL to web api
     private APIUrl = 'http://localhost:3000/api/';
     private CalcUrl = this.APIUrl + 'calculation';
-    private CalcUrlID = this.CalcUrl + '/id'
+    private CalcUrlID = this.CalcUrl + '/id';
+    private PricingUrl = this.APIUrl + 'pricing';
 
     // http header options
     httpOptions = {
@@ -91,6 +93,20 @@ export class ApiService {
     }
 
     
+
+    /** GET pricing configuration */
+    getPricing(): Observable<Pricing> {
+      return this.http.get<Pricing>(this.PricingUrl).pipe(
+        catchError(this.handleError<Pricing>('getPricing', { ...DEFAULT_PRICING }))
+      );
+    }
+
+    /** PUT pricing configuration */
+    updatePricing(pricing: Pricing): Observable<Pricing> {
+      return this.http.put<Pricing>(this.PricingUrl, pricing, this.httpOptions).pipe(
+        catchError(this.handleError<Pricing>('updatePricing'))
+      );
+    }
 
   /** Fehlerbehandlung für HTTP-Anfragen */
   private handleError<T>(operation = 'operation', result?: T) {

@@ -1,137 +1,59 @@
-.ownDeleteButtonMenu {
-   width: 100%;
-   height: 30px;
-   border: 0;
-   background-color: #ff003e;
-   color: #fff;
-   border-radius: 2%;
+.ov-container { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+
+.ov-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #ff003e;
+}
+.ov-title { margin: 0; font-size: 18px; font-weight: 700; color: #222; }
+
+.ov-new-btn {
+  background: #ff003e; color: white; border: none; padding: 8px 18px;
+  border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s; display: inline-flex; align-items: center; gap: 8px;
+}
+.ov-new-btn:hover { background: #cc0032; }
+
+.ov-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
 }
 
-.ownDownloadButtonMenu {
-   width: 100%;
-   height: 30px;
-   border: 0;
-   background-color: #767676;
-   color: #fff;
+.ov-card {
+  background: white; border-radius: 10px; padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07); cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.15s; border: 2px solid transparent;
+}
+.ov-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.14); transform: translateY(-2px);
+  border-color: #ff003e;
 }
 
-.ownCol {
-   margin: 10px;
-   padding: 10px;
-   border: 2px solid ccc;
-   border-radius: 5px; /* Rundung der Ecken */
-   background-color: #f0f0f0;
-   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.1),0 5px 5px 0 rgba(0,0,0,0.1);
-   transition: box-shadow 0.3s ease-in-out;
-   position: relative;
+.ov-card-header { margin-bottom: 4px; }
+.ov-calc-name { font-size: 14px; font-weight: 700; color: #222; }
+.ov-customer { font-size: 12px; color: #888; margin-bottom: 14px; }
+
+.ov-stats { display: flex; gap: 16px; margin-bottom: 12px; }
+.ov-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.ov-stat i { font-size: 14px; color: #ff003e; }
+.ov-stat span { font-size: 16px; font-weight: 700; color: #333; }
+.ov-stat small { font-size: 10px; color: #aaa; }
+
+.ov-cost { font-size: 11px; color: #bbb; border-top: 1px solid #f0f0f0; padding-top: 10px; }
+.ov-cost em { font-style: italic; }
+
+.ov-empty { text-align: center; padding: 60px 20px; color: #bbb; }
+.ov-empty i { font-size: 48px; display: block; margin-bottom: 16px; }
+.ov-empty p { font-size: 14px; margin-bottom: 20px; }
+
+@media (max-width: 900px) {
+  .ov-container { padding: 20px 24px; }
+  .ov-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 }
 
-.ownCol:hover {
-   border: 5px solid 000;
-   border-radius: 5px; /* Rundung der Ecken */
-   background-color: #fff;
-   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.50),0 5px 5px 0 rgba(0,0,0,0.50);
-}
-
-.bottombutton {
-  position: absolute; /* Setze das innere Div auf absolute Position */
-  bottom: 0; /* An den unteren Rand setzen */
-  width: 100%; /* Vollständige Breite innerhalb des äußeren Divs */
-  left: 0;
-}
-
-
-/* Responsive columns - one column layout (vertical) on small screens */
-@media screen and (max-width: 600px) {
-   .column {
-     width: 100%;
-     display: block;
-     margin-bottom: 20px;
-   }
- }
- 
-
- .ITSs {
-   /* Sektion */
-   display: table;
-   width: 100%;
-}
-
-.ITSr1 {
-   /* ungerade Zeile */
-   display: table-row;
-   padding: 4px 20px;
-}
-
-.ITSr0 {
-   /* gerade Zeile */
-   display: table-row;
-   padding: 4px 20px;
-}
-
-.ITSg {
-   /* Gruppe */
-   font-weight: bold;
-   font-size: medium;
-   padding: 10px 20px;
-   display: block;
-}
-
-.ITSn {
-   /* Name */
-   display: table-cell;
-   color: #555;
-   vertical-align: top;
-   padding: 4px 20px;
-   white-space: nowrap;
-   overflow: hidden;
-   width: 50%;
-   font-weight: bold;
-   font-size: small;
-}
-
-.ITSnSpecial {
-   /* Name */
-   display: table-cell;
-   color: #555;
-   vertical-align: top;
-   padding: 4px 20px;
-   white-space: nowrap;
-   overflow: hidden;
-   width: 25%;
-   font-weight: bold;
-   font-size: small;
-}
-
-.ITSv {
-   /* Wert */
-   display: table-cell;
-   color: #555;
-   vertical-align: top;
-   padding: 4px 20px;
-   font-size: small;
-}
-
-.spacer-xs {
-height: 10px;
-}
-
-.spacer-s {
-height: 17.5px;
-}
-
-.spacer-m {
-height: 25px;
-}
-
-.spacer-l {
-height: 37.5px;
-}
-
-.spacer-xl {
-height: 50px;
-}
-
-.spacer-xxl {
-height: 75px;
+@media (max-width: 576px) {
+  .ov-container { padding: 14px 16px; }
+  .ov-grid { grid-template-columns: 1fr; }
+  .ov-title { font-size: 16px; }
+  .ov-stat span { font-size: 14px; }
 }

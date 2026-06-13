@@ -4,6 +4,7 @@ import { ApiService } from '../services/api.service';
 import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Pricing, DEFAULT_PRICING, CALC_ROLE_MAP } from '../interfaces/pricing';
 
 @Component({
     selector: 'app-calculations-overview',
@@ -13,8 +14,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class CalculationsOverviewComponent implements OnInit {
 
-  // init empty array with interface (defined in interfaces) 
   calculations: Calculation[] = [];
+  pricing: Pricing = {
+    serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v }])),
+    roleDefs: DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
+    sizingDefs: DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
+    consulting: { ...DEFAULT_PRICING.consulting },
+    currency: 'EUR'
+  };
 
   
   constructor(
@@ -27,7 +34,17 @@ export class CalculationsOverviewComponent implements OnInit {
       route.params.subscribe(val => {
 
       this.getCalculations();
-      //this.getServers();
+      this.apiService.getPricing().subscribe(p => {
+        if (p && p.serverRoles) {
+          this.pricing = {
+            serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v, ...(p.serverRoles[k] || {}) }])),
+            roleDefs: (p.roleDefs?.length > 0) ? p.roleDefs.map((r: any) => ({ ...r })) : DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
+            sizingDefs: (p.sizingDefs?.length > 0) ? p.sizingDefs.map((s: any) => ({ ...s })) : DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
+            consulting: { ...DEFAULT_PRICING.consulting, ...(p.consulting || {}) },
+            currency: p.currency || 'EUR'
+          };
+        }
+      });
 
     }); }
 
@@ -59,7 +76,7 @@ export class CalculationsOverviewComponent implements OnInit {
     let counter = 0;
     let amount = 0;
     for (let i = 0; i < this.calculations.length; i++) {
-      if (this.calculations[i]._id.oid === id)
+      if (this.calculations[i]._id === id)
       {
         amount = Number(this.calculations[i].targetsystemsform.amountMSAD)
                + Number(this.calculations[i].targetsystemsform.amountMSAAD)
@@ -78,11 +95,23 @@ export class CalculationsOverviewComponent implements OnInit {
     return amount
   }
 
+  costForCalc(calc: Calculation): string {
+    if (!calc.servers || calc.servers.length === 0) return 'auf Anfrage';
+    const total = calc.servers.reduce((sum, srv) => {
+      const roleKey = CALC_ROLE_MAP[srv.role] || 'jobservice';
+      return sum + (this.pricing.serverRoles[roleKey]?.[srv.size] || 0);
+    }, 0);
+    if (total === 0) return 'auf Anfrage';
+    return new Intl.NumberFormat('de-DE', {
+      style: 'currency', currency: 'EUR', maximumFractionDigits: 0
+    }).format(total) + ' / Monat';
+  }
+
   // calculate amout of servers for overview cards
   amountOfServerByCalcID(id:string) {
     let counter = 0;
     for (let i = 0; i < this.calculations.length; i++) {
-      if (this.calculations[i]._id.oid === id) {
+      if (this.calculations[i]._id === id) {
         counter = this.calculations[i].servers.length
       };
     }

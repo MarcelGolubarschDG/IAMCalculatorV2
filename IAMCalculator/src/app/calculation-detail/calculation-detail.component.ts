@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../services/api.service';
 import { Calculation } from '../interfaces/calculation';
@@ -13,25 +13,15 @@ import { ExcelExportServiceService } from '../services/excel-export-service.serv
     styleUrl: './calculation-detail.component.css',
     standalone: false
 })
-
-@Injectable()
-
 export class CalculationDetailComponent implements OnInit {
 
 calculations: Calculation | undefined;
 
-//return variables for converting to human readable output
-servicelevel:string = ""
-stages:string = ""
-licenseOIM:string = ""
-antivirSrv: string = ""
-dedicatedSrv: string = ""
-dedicatedStages: string = ""
+servicelevel: string = ""
+stages: string = ""
+licenseOIM: string = ""
 SAPHCM: string = ""
 SAPHCMCSV: string = ""
-
-// div toggle variables
-showMyContainer: boolean = false;
 
 constructor(
   private toastr: ToastrService,
@@ -93,12 +83,6 @@ constructor(
     .subscribe(calculations => this.calculations = calculations);
   }
 
-  CalculateIdentities() {
-    let internal = Number(this.calculations?.customerform.customerEmployees)
-    let result = internal
-    return result
-  }
-
   CalculateTargetsystems() {
     let result = Number(this.calculations?.targetsystemsform.amountMSAD)
                + Number(this.calculations?.targetsystemsform.amountMSAAD)
@@ -145,54 +129,15 @@ constructor(
 
   CalculateStages() {
     switch(this.calculations?.targetsystemsform.stages) {
-      case 1:
+      case 2:
         this.stages = "Produktion, Entwicklung"
         break;
-      case 2:
+      case 3:
         this.stages = "Produktion, Qualitätssicherung, Entwicklung"
         break;
       default:
     }
     return this.stages
-  }
-
-  CalculateDedicatedSrv() {
-    switch(this.calculations?.targetsystemsform.dedicatedSrv) {
-      case true:
-        this.dedicatedSrv = "Ja"
-        break;
-      case false:
-        this.dedicatedSrv = "Nein"
-        break;
-      default:
-    }
-    return this.dedicatedSrv
-  }
-
-  CalculateDedicatedStages() {
-    switch(this.calculations?.targetsystemsform.dedicatedStages) {
-      case true:
-        this.dedicatedStages = "Ja"
-        break;
-      case false:
-        this.dedicatedStages = "Nein"
-        break;
-      default:
-    }
-    return this.dedicatedStages
-  }
-
-  CalculateAntivirSrv() {
-    switch(this.calculations?.targetsystemsform.antivirSrv) {
-      case true:
-        this.antivirSrv = "Ja"
-        break;
-      case false:
-        this.antivirSrv = "Nein"
-        break;
-      default:
-    }
-    return this.antivirSrv
   }
 
   CalculateSAPHCM() {

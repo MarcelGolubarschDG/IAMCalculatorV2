@@ -22,7 +22,7 @@
     "@angular/router": "^19.2.5",
     "angular-in-memory-web-api": "^0.19.0",
     "angular-oauth2-oidc": "^19.0.0",
-    "bootstrap": "^5.3.5",
+    "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "bourbon": "^7.3.0",
     "file-saver": "^2.0.5",

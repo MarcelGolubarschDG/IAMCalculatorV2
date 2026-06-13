@@ -1,446 +1,250 @@
-<form [formGroup]="EditCalcForm" (ngSubmit)="onSubmit(EditCalcForm.value)" #f="ngForm" (change)="calcServerSize(EditCalcForm.value)">
-    <button class="btn btn-danger btn-lg me-2" type="button" (click)="goBack()"><i class="fa-solid fa-arrow-left fa-2x"></i></button>
-    <button class="btn btn-primary btn-lg me-2" type="submit" (click)="goBack()"><i class="fa-solid fa-floppy-disk fa-2x"></i></button>
-    
-<div class="row">
-    <div class="col spacer-l"></div>
-</div>
+<div class="ps-container">
+  <form [formGroup]="EditCalcForm" (ngSubmit)="onSubmit()">
 
-
-    <!-- Projekt -->
-    <div class="row">
-        <div class="col-4" formGroupName="basicform">
-            <div class="ITSs">
-                <div class="ITSg">Kalkulation</div>
-                <div class="ITSr1">
-                    <div class="ITSn">Kalkulationame</div>
-                    <div class="ITSv"><input class="form-control" type="text" formControlName="calculationName" formControlName="calculationName"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-8" formGroupName="basicform">
-            <div class="ITSs">
-                <div class="ITSg">Projekt</div>
-                <div class="ITSr1">
-                    <div class="ITSnSpecial">Anforderungsbeschreibung</div>
-                    <div class="ITSv">
-                        <textarea class="form-control textareasize" formControlName="calculationDesc"></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Top bar -->
+    <div class="ps-topbar">
+      <div class="ps-topbar-left">
+        <button class="ps-back-btn" type="button" (click)="goBack()">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h5 class="ps-title">{{ calcName || 'Kalkulation bearbeiten' }}</h5>
+      </div>
+      <button class="ps-save-btn" type="submit">
+        <i class="fa-solid fa-floppy-disk"></i> Aktualisieren
+      </button>
     </div>
 
-    
-<div class="row">
-    <div class="col spacer-l"></div>
-</div>
+    <!-- Two-column grid -->
+    <div class="ps-grid">
 
+      <!-- Left: Config -->
+      <div class="ps-panel">
 
-    <!-- Kunde / Markteinheit -->
-    <div class="row">
-        <div class="col-4" formGroupName="customerform">
-            <div class="ITSs">
-                <div class="ITSg">Kunde</div>
-                <div class="ITSr1">
-                    <div class="ITSn">Kundenname</div>
-                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerName"></div>
-                </div>
-                <div class="ITSr0">
-                    <div class="ITSn">Kundennummer</div>
-                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerNumber"></div>
-                </div>
-                <div class="ITSr1">
-                    <div class="ITSn">Mitarbeiter</div>
-                    <div class="ITSv"><input class="form-control" type="text" formControlName="customerEmployees"></div>
-                </div>
-            </div>
+        <div class="ps-section" formGroupName="basicform">
+          <div class="ps-section-title">Kalkulation</div>
+          <div class="ps-field">
+            <label>Name</label>
+            <input formControlName="calculationName" class="form-control" placeholder="z.B. Erstangebot ACME AG">
+          </div>
         </div>
-        <div class="col-4" formGroupName="marketunitform">
-            <div class="ITSs">
-                <div class="ITSg">Markteinheit</div>
-                <div class="ITSr0">
-                    <div class="ITSn">Name</div>
-                    <div class="ITSv"><input class="form-control" type="text" formControlName="marketunitName"></div>
-                </div>
-                <div class="ITSr1">
-                    <div class="ITSn">Ansprechpartner</div>
-                    <div class="ITSv"><input class="form-control" type="text" formControlName="marketunitResponsible"></div>
-                </div>
+
+        <div class="ps-section" formGroupName="customerform">
+          <div class="ps-section-title">Kunde</div>
+          <div class="ps-field">
+            <label>Kundenname</label>
+            <input formControlName="customerName" class="form-control" placeholder="Firmenname">
+          </div>
+          <div class="ps-field">
+            <label>Anzahl Identitäten</label>
+            <input formControlName="customerEmployees" class="form-control" type="number" min="0" placeholder="z.B. 3000">
+            <div class="ps-hint" *ngIf="getEmployeeHint()">
+              <i class="fa-solid fa-circle-info"></i> {{ getEmployeeHint() }}
             </div>
+          </div>
         </div>
+
+        <div class="ps-section" formGroupName="targetsystemsform">
+          <div class="ps-section-title">Service-Konfiguration</div>
+
+          <div class="ps-field">
+            <label>IAM Lizenz</label>
+            <div class="ps-toggle-group">
+              <div class="ps-toggle-btn"
+                   [class.active]="EditCalcForm.get('targetsystemsform.licenseOIM')?.value == 1"
+                   [class.disabled]="disabledLicense"
+                   (click)="setLicense(1)">Standard</div>
+              <div class="ps-toggle-btn"
+                   [class.active]="EditCalcForm.get('targetsystemsform.licenseOIM')?.value == 2"
+                   (click)="setLicense(2)">Data Governance Edition</div>
+            </div>
+            <div class="ps-hint" *ngIf="disabledLicense">
+              <i class="fa-solid fa-lock"></i> File System erfordert Data Governance Edition
+            </div>
+          </div>
+
+          <div class="ps-field">
+            <label>Service Level</label>
+            <select formControlName="servicelevel" class="form-select">
+              <option value="1">Business Standard</option>
+              <option value="2">Business Critical</option>
+              <option value="3">Business Critical Plus</option>
+            </select>
+          </div>
+
+          <div class="ps-field">
+            <label>Umgebungen</label>
+            <div class="ps-toggle-group">
+              <div class="ps-toggle-btn"
+                   [class.active]="EditCalcForm.get('targetsystemsform.stages')?.value == 2"
+                   (click)="setStages(2)">Prod + Dev</div>
+              <div class="ps-toggle-btn"
+                   [class.active]="EditCalcForm.get('targetsystemsform.stages')?.value == 3"
+                   (click)="setStages(3)">Prod + QS + Dev</div>
+            </div>
+          </div>
+
+          <div class="ps-field">
+            <label>Hardware-Sizing</label>
+            <div class="ps-toggle-group">
+              <div class="ps-toggle-btn"
+                   [class.active]="!EditCalcForm.get('targetsystemsform.minimalistic')?.value"
+                   (click)="EditCalcForm.get('targetsystemsform.minimalistic')?.setValue(false)">Best Practice</div>
+              <div class="ps-toggle-btn"
+                   [class.active]="EditCalcForm.get('targetsystemsform.minimalistic')?.value"
+                   (click)="EditCalcForm.get('targetsystemsform.minimalistic')?.setValue(true)">Minimalistic</div>
+            </div>
+            <div class="ps-hint">
+              <i class="fa-solid fa-circle-info"></i>
+              Minimalistic: halbe HW-Anforderungen, nächst höhere T-Shirt-Größe
+            </div>
+          </div>
+        </div>
+
+        <div class="ps-section" formGroupName="consultingform">
+          <div class="ps-section-title">Beratungsaufwand</div>
+          <div class="ps-field">
+            <label>Inkludierte PT / Monat</label>
+            <input formControlName="includedPtPerMonth" class="form-control" type="number" min="0" step="0.5">
+            <div class="ps-hint">
+              <i class="fa-solid fa-circle-info"></i> Personentage (à 8h) pro Monat vertraglich inkludiert
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Target Systems -->
+      <div class="ps-panel">
+        <div class="ps-section-title">Zielsysteme</div>
+
+        <!-- Microsoft -->
+        <div class="ps-target-group">
+          <div class="ps-target-label"><i class="fa-brands fa-windows"></i> Microsoft</div>
+          <div class="ps-tiles">
+            <div class="ps-tile" [class.active]="isActive('amountMSAD')" (click)="toggleTarget('amountMSAD')">
+              <i class="fa-solid fa-server"></i><span>Active Directory</span>
+            </div>
+            <div class="ps-tile" [class.active]="isActive('amountMSAAD')" (click)="toggleTarget('amountMSAAD')">
+              <i class="fa-solid fa-cloud"></i><span>Azure AD</span>
+            </div>
+            <div class="ps-tile" [class.active]="isActive('amountMSEX')" (click)="toggleTarget('amountMSEX')">
+              <i class="fa-solid fa-envelope"></i><span>Exchange</span>
+            </div>
+            <div class="ps-tile" [class.active]="isActive('amountMSEXO')" (click)="toggleTarget('amountMSEXO')">
+              <i class="fa-solid fa-envelope-open-text"></i><span>Exchange Online</span>
+            </div>
+            <div class="ps-tile" [class.active]="isActive('amountMSSP')" (click)="toggleTarget('amountMSSP')">
+              <i class="fa-solid fa-share-nodes"></i><span>SharePoint</span>
+            </div>
+            <div class="ps-tile" [class.active]="isActive('amountMSSPO')" (click)="toggleTarget('amountMSSPO')">
+              <i class="fa-solid fa-cloud-arrow-up"></i><span>SharePoint Online</span>
+            </div>
+            <div class="ps-tile" [class.active]="isActive('amountMSTEAMS')" (click)="toggleTarget('amountMSTEAMS')">
+              <i class="fa-solid fa-users"></i><span>Teams</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SAP -->
+        <div class="ps-target-group">
+          <div class="ps-target-label"><i class="fa-solid fa-database"></i> SAP</div>
+          <div class="ps-sap-row">
+            <div>
+              <div class="ps-sublabel">HCM Anbindung</div>
+              <div class="ps-radio-group">
+                <label class="ps-radio-btn" [class.active]="sapHCMMode === 'none'" (click)="setSAPHCM('none')">
+                  <input type="radio" name="sapHCM"> Keine
+                </label>
+                <label class="ps-radio-btn" [class.active]="sapHCMMode === 'csv'" (click)="setSAPHCM('csv')">
+                  <input type="radio" name="sapHCM"> HCM CSV
+                </label>
+                <label class="ps-radio-btn" [class.active]="sapHCMMode === 'connector'" (click)="setSAPHCM('connector')">
+                  <input type="radio" name="sapHCM"> HCM Konnektor
+                </label>
+              </div>
+            </div>
+            <div>
+              <div class="ps-sublabel">SAP R3 Systeme</div>
+              <div class="ps-counter">
+                <button type="button" class="ps-counter-btn" (click)="adjustSAPR3(-1)">−</button>
+                <span class="ps-counter-val">{{ EditCalcForm.get('targetsystemsform.amountSAPAPP')?.value || 0 }}</span>
+                <button type="button" class="ps-counter-btn" (click)="adjustSAPR3(1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Andere -->
+        <div class="ps-target-group">
+          <div class="ps-target-label"><i class="fa-solid fa-network-wired"></i> Andere</div>
+          <div class="ps-tiles">
+            <div class="ps-tile" [class.active]="isActive('amountFS')" (click)="toggleTarget('amountFS')">
+              <i class="fa-solid fa-folder"></i><span>File System</span>
+            </div>
+            <div class="ps-tile" [class.active]="isActive('amountLDAP')" (click)="toggleTarget('amountLDAP')">
+              <i class="fa-solid fa-sitemap"></i><span>LDAP</span>
+            </div>
+            <div class="ps-tile" [class.active]="isActive('amountSTAR')" (click)="toggleTarget('amountSTAR')">
+              <i class="fa-solid fa-star"></i><span>Starling</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
+    <!-- Server Results -->
+    <div class="ps-results">
+      <div class="ps-results-header">
+        <div class="ps-results-title">
+          <i class="fa-solid fa-server"></i> Infrastruktur-Schätzung
+        </div>
+        <div class="ps-results-meta" *ngIf="serverControls.length > 0">
+          <span class="ps-badge">{{ serverControls.length }} Server</span>
+          <span class="ps-cost">{{ fmt(totalMonthlyCost) }} <em>/ Monat</em></span>
+        </div>
+      </div>
 
-<div class="row">
-    <div class="col spacer-l"></div>
-</div>
+      <div class="ps-stages" *ngIf="serverControls.length > 0; else emptyState">
+        <div class="ps-stage" *ngIf="getServersByStage('Prod').length > 0">
+          <div class="ps-stage-label prod">Produktion</div>
+          <div class="ps-server-cards">
+            <div class="ps-server-card" *ngFor="let srv of getServersByStage('Prod')">
+              <div class="ps-srv-role">{{ srv.value.role }}</div>
+              <div class="ps-srv-size">{{ srv.value.size }}</div>
+              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+            </div>
+          </div>
+        </div>
+        <div class="ps-stage" *ngIf="getServersByStage('DEV').length > 0">
+          <div class="ps-stage-label dev">Entwicklung (DEV)</div>
+          <div class="ps-server-cards">
+            <div class="ps-server-card" *ngFor="let srv of getServersByStage('DEV')">
+              <div class="ps-srv-role">{{ srv.value.role }}</div>
+              <div class="ps-srv-size">{{ srv.value.size }}</div>
+              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+            </div>
+          </div>
+        </div>
+        <div class="ps-stage" *ngIf="getServersByStage('QS').length > 0">
+          <div class="ps-stage-label qs">Qualitätssicherung (QS)</div>
+          <div class="ps-server-cards">
+            <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS')">
+              <div class="ps-srv-role">{{ srv.value.role }}</div>
+              <div class="ps-srv-size">{{ srv.value.size }}</div>
+              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- Service und Zielsysteme -->
-    <div class="row">
-        <div class="col-4" formGroupName="targetsystemsform">
-            <div class="ITSs">
-                <div class="ITSg">Service</div>
-                    <div class="ITSr0">
-                        <div class="ITSn">IAM Lizenz</div>
-                        <div class="ITSv">
-                            <fieldset [disabled]="this.disabledLicense">
-                                <select class="form-control" formControlName="licenseOIM" >
-                                    <option value="1">Standard</option>
-                                    <option value="2">Data Governance Editon</option>
-                                </select>
-                            </fieldset>
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Servicelevel</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="servicelevel">
-                                <option value="1">Business Standard</option>
-                                <option value="2">Business Critical</option>
-                                <!--<option value="3">Business Critical +</option>-->
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr1">
-                        <div class="ITSn">Stages</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="stages">
-                                <option value="1">P D</option>
-                                <option value="2">P Q D</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Dedizierte Jobserver</div>
-                        <div class="ITSv">
-                            <input type="checkbox" formControlName="dedicatedSrv">
-                        </div>
-                    </div>
-                    <div class="ITSr1">
-                        <div class="ITSn">Dedizierte Stages</div>
-                        <div class="ITSv">
-                            <input type="checkbox" formControlName="dedicatedStages">
-                        </div>
-                    </div>
-                    <div class="ITSr1">
-                        <div class="ITSn">Server Antivirus</div>
-                        <div class="ITSv">
-                            <input type="checkbox" formControlName="antivirSrv">
-                        </div>
-                    </div>
-            </div>
+      <ng-template #emptyState>
+        <div class="ps-empty-state">
+          <i class="fa-solid fa-calculator"></i>
+          <p>Infrastruktur wird aus den gespeicherten Daten geladen…</p>
         </div>
-        <div class="col-4" formGroupName="targetsystemsform">
-            <div class="ITSs">
-                <div class="ITSg">Microsoft Applikationen</div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Anzahl Active Directories</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountMSAD">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Anzahl Azure Active Directories</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountMSAAD">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr1">
-                        <div class="ITSn">Anzahl Microsoft Exchange</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountMSEX">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Anzahl Microsoft Exchange Online</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountMSEXO">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr1">
-                        <div class="ITSn">Anzahl Microsoft Sharepoint</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountMSSP">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Anzahl Microsoft Sharepoint Online</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountMSSPO">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Anzahl Microsoft Teams</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountMSTEAMS">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-            </div>
-        </div>
-        <div class="col-4" formGroupName="targetsystemsform">
-            <div class="ITSs">
-                <div class="ITSg">SAP Applikationen</div>
-                    <div class="ITSr1">
-                        <div class="ITSn">SAP HCM per CSV</div>
-                        <div class="ITSv">
-                            <input type="checkbox" formControlName="SAPHCMCSV" (change)="checkSAPHCMCSV(EditCalcForm.value)">
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">SAP HCM per Konnektor</div>
-                        <div class="ITSv">
-                            <input type="checkbox" formControlName="SAPHCM" (change)="checkSAPHCM(EditCalcForm.value)">
-                        </div>
-                    </div>
-                    <div class="ITSr1">
-                        <div class="ITSn">Anzahl SAP R3 Applikation</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountSAPAPP">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                <div class="ITSg">Andere Applikationen</div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Anzahl File Systeme</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountFS" (change)="checkLicense(EditCalcForm.value)">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Anzahl LDAP Systeme</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountLDAP">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Anzahl Starling Konnektoren</div>
-                        <div class="ITSv">
-                            <select class="form-control" formControlName="amountSTAR">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Cloudsysteme Starling Konnektoren</div>
-                        <div class="ITSv">
-                            <input class="form-control divtextarea_Cloud" contenteditable="true" aria-multiline="true" formControlName="cloudProducts">
-                        </div>
-                    </div>
-            </div>
-        </div>
+      </ng-template>
     </div>
 
-
-<div class="row">
-    <div class="col spacer-l"></div>
+  </form>
 </div>
-
-
-
-    <!-- Hardware -->
-    <div class="row" formGroupName="servers">
-        <div class="col">
-            <div class="ITSs">
-                <div class="ITSg">
-                    Hardware <!--<button class="btn btn-outline-danger btn-sm border-0" (click)="calcServerSize(EditCalcForm.value)">Automatisch berechnen</button>
-                    <button class="btn btn-outline-danger btn-sm border-0" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapseAddServer'">Server hinzufügen</button>-->
-                </div>
-                <!--<div class="ITSr">
-                    <div class="accordian-body collapse p-2" id="collapseAddServer">
-                        <div class="col d-flex align-items-center">
-                            <div class="input-group">
-                                <select class="form-control">
-                                    <option value="PROD">PROD</option>
-                                    <option value="QS" *ngIf="calculations?.targetsystemsform?.stages==2">QS</option>
-                                    <option value="DEV">DEV</option>
-                                </select>
-                                <select class="form-control">
-                                    <option value="XL">XL</option>
-                                    <option value="L">L</option>
-                                    <option value="M">M</option>
-                                    <option value="S">S</option>
-                                    <option value="XS">XS</option>
-                                </select>
-                                <select class="form-control">
-                                    <option value="DB">DB</option>
-                                    <option value="Web">Web</option>
-                                    <option value="Job">Job</option>
-                                    <option value="DC">DC</option>
-                                    <option value="All">All</option>
-                                </select>
-                                <input type="text" class="form-control">
-                                <input type="text" class="form-control">
-                                <input type="text" class="form-control">
-                                <input type="text" class="form-control">
-                                <button class="btn btn-success" type="submit">Speichern</button>
-                                <button class="btn btn-danger" type="reset">Abbruch</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
-            </div>
-            <div class="ITSrSpecial">
-                    <div class="ITSn">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="dgth" width="2%">#.</th>
-                                    <th class="dgth" width="2%">Stage</th>
-                                    <th class="dgth" width="2%">Size</th>
-                                    <th class="dgth" width="2%">Rolle</th>
-                                    <th class="dgth" width="2%">CPU</th>
-                                    <th class="dgth" width="2%">RAM</th>
-                                    <th class="dgth" width="2%">Speicher</th>
-                                    <th class="dgth" width="2%">Backupspeicher</th>
-                                    <th class="dgth" width="2%">+CPU</th>
-                                    <th class="dgth" width="2%">+RAM</th>
-                                    <th class="dgth" width="2%">+Speicher</th>
-                                    <th class="dgth" width="2%">+Backupspeicher</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let srv of serversArr.controls; index as i" [formGroupName]="i">
-                                    <td>{{ i }}</td>
-                                    <td>{{srv.get('stage')?.value}}</td>
-                                    <td>{{srv.get('size')?.value}}</td>
-                                    <td>{{srv.get('role')?.value}}</td>
-                                    <td>{{srv.get('cpu')?.value}}</td>
-                                    <td>{{srv.get('ram')?.value}}</td>
-                                    <td>{{srv.get('storage')?.value}}</td>
-                                    <td>{{srv.get('backupstorage')?.value}}</td>
-                                    <td>{{srv.get('addCPU')?.value}}</td>
-                                    <td>{{srv.get('addRAM')?.value}}</td>
-                                    <td>{{srv.get('addStorage')?.value}}</td>
-                                    <td>{{srv.get('addBackupstorage')?.value}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-            </div>
-        </div>
-    </div>
-    
-
-<div class="row">
-    <div class="col spacer-l"></div>
-</div>
-</form>

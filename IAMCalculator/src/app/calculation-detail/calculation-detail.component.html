@@ -68,25 +68,8 @@
                     <div class="ITSv">{{ calculations?.customerform?.customerName }}</div>
                 </div>
                 <div class="ITSr0">
-                    <div class="ITSn">Kundennummer</div>
-                    <div class="ITSv">{{ calculations?.customerform?.customerNumber }}</div>
-                </div>
-                <div class="ITSr0">
                     <div class="ITSn">Mitarbeiter</div>
                     <div class="ITSv">{{ calculations?.customerform?.customerEmployees }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="ITSs">
-                <div class="ITSg">Markteinheit</div>
-                <div class="ITSr0">
-                    <div class="ITSn">Name</div>
-                    <div class="ITSv">{{ calculations?.marketunitform?.marketunitName }}</div>
-                </div>
-                <div class="ITSr1">
-                    <div class="ITSn">Ansprechpartner</div>
-                    <div class="ITSv">{{ calculations?.marketunitform?.marketunitResponsible }}</div>
                 </div>
             </div>
         </div>
@@ -113,18 +96,6 @@
                     <div class="ITSr1">
                         <div class="ITSn">Stages</div>
                         <div class="ITSv">{{ CalculateStages() }}</div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Dedizierte Jobserver</div>
-                        <div class="ITSv">{{ CalculateDedicatedSrv() }}</div>
-                    </div>
-                    <div class="ITSr0">
-                        <div class="ITSn">Dedizierte Stages</div>
-                        <div class="ITSv">{{ CalculateDedicatedStages() }}</div>
-                    </div>
-                    <div class="ITSr1">
-                        <div class="ITSn">Server Antivirus</div>
-                        <div class="ITSv">{{ CalculateAntivirSrv() }}</div>
                     </div>
             </div>
         </div>
@@ -187,7 +158,7 @@
                     </div>
                     <div class="ITSr0">
                         <div class="ITSn">Anzahl Starling Konnektoren</div>
-                        <div class="ITSv">{{ calculations?.targetsystemsform?.cloudProducts || calculations?.targetsystemsform?.amountSTAR }}</div>
+                        <div class="ITSv">{{ calculations?.targetsystemsform?.amountSTAR }}</div>
                     </div>
             </div>
         </div>
@@ -228,13 +199,13 @@
                                     
                                     <td>{{srv.role}}</td>
 
-                                    <td>{{srv.cpu }} + {{ srv.addCPU || null }}</td>
+                                    <td>{{ srv.cpu }}</td>
 
-                                    <td>{{srv.ram }} + {{ srv.addRAM || null }}</td>
+                                    <td>{{ srv.ram }}</td>
 
-                                    <td>{{srv.storage }} + {{ srv.addStorage || null }}</td>
+                                    <td>{{ srv.storage }}</td>
 
-                                    <td>{{srv.backupstorage }} + {{ srv.addBackupstorage || null }}</td>
+                                    <td>{{ srv.backupstorage }}</td>
                                 </tr>
                             </tbody>
                         </table>
