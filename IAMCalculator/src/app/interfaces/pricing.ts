@@ -8,6 +8,17 @@ export interface SizingDef {
   slaBc: string;
 }
 
+export interface ContainerSizingDef {
+  key: string;
+  cpu: number;
+  ram: number;
+  storage: number;
+}
+
+export interface DockerClusterConfig {
+  nodes: number;
+}
+
 export interface ServerRoleDef {
   key: string;
   label: string;
@@ -29,6 +40,8 @@ export interface Pricing {
   serverRoles: { [role: string]: { [size: string]: number } };
   roleDefs: ServerRoleDef[];
   sizingDefs: SizingDef[];
+  containerSizingDefs: ContainerSizingDef[];
+  dockerCluster: DockerClusterConfig;
   consulting: ConsultingConfig;
   currency: string;
 }
@@ -53,6 +66,17 @@ export const DEFAULT_ROLE_DEFS: ServerRoleDef[] = [
   { key: 'mssql',               label: 'MSSQL Server',           singleton: false, minSize: 'M',  cpuPer1000: 0.5, ramPer1000: 1.0  },
 ];
 
+export const DEFAULT_CONTAINER_SIZING_DEFS: ContainerSizingDef[] = [
+  { key: 'S',  cpu: 4,  ram: 8,  storage: 200  },
+  { key: 'M',  cpu: 8,  ram: 16, storage: 300  },
+  { key: 'L',  cpu: 16, ram: 32, storage: 500  },
+  { key: 'XL', cpu: 32, ram: 64, storage: 1000 },
+];
+
+export const DEFAULT_DOCKER_CLUSTER: DockerClusterConfig = {
+  nodes: 2
+};
+
 export const DEFAULT_CONSULTING: ConsultingConfig = {
   iamConsultantRate: 150,
   ptPerStage: 5,
@@ -71,6 +95,7 @@ export const CALC_ROLE_MAP: Record<string, string> = {
   'SAP Job':     'jobservice',
   'Generic Job': 'jobservice',
   'DC':          'appserver',
+  'Node':        'containerNode',
 };
 
 export const DEFAULT_PRICING: Pricing = {
@@ -82,9 +107,12 @@ export const DEFAULT_PRICING: Pricing = {
     webserver_appserver: { XS: 400, S: 650, M: 1100, L: 1800, XL: 3000 },
     jobservice_dbagent:  { XS: 450, S: 700, M: 1200, L: 1900, XL: 3200 },
     mssql:               { XS: 350, S: 550, M: 900,  L: 1400, XL: 2400 },
+    containerNode:       { S: 600, M: 1000, L: 1800, XL: 3200 },
   },
   roleDefs: DEFAULT_ROLE_DEFS,
   sizingDefs: DEFAULT_SIZING_DEFS,
+  containerSizingDefs: DEFAULT_CONTAINER_SIZING_DEFS,
+  dockerCluster: DEFAULT_DOCKER_CLUSTER,
   consulting: DEFAULT_CONSULTING,
   currency: 'EUR'
 };

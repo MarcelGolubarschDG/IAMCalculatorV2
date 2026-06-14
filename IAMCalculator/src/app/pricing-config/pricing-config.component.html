@@ -24,10 +24,10 @@
 
   <ng-container *ngIf="!loading">
 
-    <!-- ── Größendefinitionen ──────────────────────────────────────────────── -->
+    <!-- ── Größendefinitionen VM ─────────────────────────────────────────────── -->
     <div class="ac-panel ac-matrix-panel">
-      <div class="ac-section-title"><i class="fa-solid fa-microchip"></i> Größendefinitionen</div>
-      <p class="ac-desc">Hardware-Specs und SLA-Klassen pro Sizing — Bezeichnung (z.&nbsp;B. XS) dient als Schlüssel</p>
+      <div class="ac-section-title"><i class="fa-solid fa-microchip"></i> Größendefinitionen VM</div>
+      <p class="ac-desc">Hardware-Specs und SLA-Klassen pro VM-Sizing — Bezeichnung (z.&nbsp;B. XS) dient als Schlüssel</p>
 
       <div class="ac-table-wrap">
         <table class="ac-sizing-table">
@@ -82,6 +82,74 @@
       <button class="ac-add-btn" type="button" (click)="addSize()">
         <i class="fa-solid fa-plus"></i> Größe hinzufügen
       </button>
+    </div>
+
+    <!-- ── Größendefinitionen Container ─────────────────────────────────────── -->
+    <div class="ac-panel ac-matrix-panel">
+      <div class="ac-section-title"><i class="fa-solid fa-cube"></i> Größendefinitionen Container</div>
+      <p class="ac-desc">Resource-Profile für Container-Nodes im Docker Cluster — Bezeichnung dient als Schlüssel</p>
+
+      <div class="ac-table-wrap">
+        <table class="ac-sizing-table">
+          <thead>
+            <tr>
+              <th class="ac-th-key">Größe</th>
+              <th class="ac-th-num">CPU<br><span class="ac-th-unit">Kerne</span></th>
+              <th class="ac-th-num">RAM<br><span class="ac-th-unit">GB</span></th>
+              <th class="ac-th-num">Storage<br><span class="ac-th-unit">GB</span></th>
+              <th class="ac-th-num">Preis / Node<br><span class="ac-th-unit">€ / Monat</span></th>
+              <th class="ac-th-del"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of pricing.containerSizingDefs; let i = index; trackBy: trackByKey">
+              <td class="ac-td-input">
+                <input type="text" maxlength="6"
+                       [ngModel]="containerSizingKeyDraft[i]"
+                       (ngModelChange)="containerSizingKeyDraft[i] = $event"
+                       (blur)="applyContainerSizeKey(i)"
+                       class="ac-key-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="number" min="0" [(ngModel)]="c.cpu" class="ac-num-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="number" min="0" [(ngModel)]="c.ram" class="ac-num-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="number" min="0" [(ngModel)]="c.storage" class="ac-num-input">
+              </td>
+              <td class="ac-td-input">
+                <input type="number" min="0"
+                       [ngModel]="pricing.serverRoles['containerNode']?.[c.key] || 0"
+                       (ngModelChange)="pricing.serverRoles['containerNode'] = pricing.serverRoles['containerNode'] || {}; pricing.serverRoles['containerNode'][c.key] = +$event"
+                       class="ac-num-input">
+              </td>
+              <td class="ac-td-del">
+                <button class="ac-del-btn" type="button" (click)="deleteContainerSize(i)" title="Größe löschen">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="ac-add-btn" type="button" (click)="addContainerSize()">
+        <i class="fa-solid fa-plus"></i> Größe hinzufügen
+      </button>
+
+      <!-- Docker Cluster Konfiguration -->
+      <div style="margin-top:20px; border-top: 1px solid var(--ac-border, #e0e0e0); padding-top:16px;">
+        <div class="ac-section-subtitle"><i class="fa-brands fa-docker"></i> Docker Cluster</div>
+        <div class="ac-rate-field" style="margin-bottom:0">
+          <label>Cluster Nodes</label>
+          <div class="ac-rate-row">
+            <input type="number" min="1" step="1" [(ngModel)]="pricing.dockerCluster.nodes" class="ac-rate-input">
+            <span class="ac-unit">Nodes / Cluster</span>
+          </div>
+          <div class="ac-pt-hint">Pro Stage wird ein Cluster mit dieser Anzahl Nodes kalkuliert (Standard: 2)</div>
+        </div>
+      </div>
     </div>
 
     <!-- ── Serverrollen ───────────────────────────────────────────────────── -->

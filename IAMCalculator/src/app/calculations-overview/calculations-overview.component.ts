@@ -19,6 +19,8 @@ export class CalculationsOverviewComponent implements OnInit {
     serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v }])),
     roleDefs: DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
     sizingDefs: DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
+    containerSizingDefs: DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
+    dockerCluster: { ...DEFAULT_PRICING.dockerCluster },
     consulting: { ...DEFAULT_PRICING.consulting },
     currency: 'EUR'
   };
@@ -40,6 +42,8 @@ export class CalculationsOverviewComponent implements OnInit {
             serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v, ...(p.serverRoles[k] || {}) }])),
             roleDefs: (p.roleDefs?.length > 0) ? p.roleDefs.map((r: any) => ({ ...r })) : DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
             sizingDefs: (p.sizingDefs?.length > 0) ? p.sizingDefs.map((s: any) => ({ ...s })) : DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
+            containerSizingDefs: (p.containerSizingDefs?.length > 0) ? p.containerSizingDefs.map((c: any) => ({ ...c })) : DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
+            dockerCluster: p.dockerCluster ? { ...p.dockerCluster } : { ...DEFAULT_PRICING.dockerCluster },
             consulting: { ...DEFAULT_PRICING.consulting, ...(p.consulting || {}) },
             currency: p.currency || 'EUR'
           };

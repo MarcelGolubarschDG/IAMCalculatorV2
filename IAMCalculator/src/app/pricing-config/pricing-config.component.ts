@@ -3,7 +3,8 @@ import { Location } from '@angular/common';
 import { ApiService } from '../services/api.service';
 import {
   Pricing, DEFAULT_PRICING, DEFAULT_ROLE_DEFS, DEFAULT_SIZING_DEFS, DEFAULT_CONSULTING,
-  ServerRoleDef, SizingDef, ConsultingConfig, recommendSize
+  DEFAULT_CONTAINER_SIZING_DEFS, DEFAULT_DOCKER_CLUSTER,
+  ServerRoleDef, SizingDef, ContainerSizingDef, ConsultingConfig, recommendSize
 } from '../interfaces/pricing';
 
 interface PreviewRow {
@@ -28,6 +29,7 @@ export class PricingConfigComponent implements OnInit {
   saved = false;
 
   sizingKeyDraft: string[] = [];
+  containerSizingKeyDraft: string[] = [];
   previewRoleKey = 'webserver';
 
   readonly previewCounts = [500, 1000, 2500, 5000, 10000];
@@ -38,6 +40,7 @@ export class PricingConfigComponent implements OnInit {
     this.apiService.getPricing().subscribe(p => {
       if (p) this.pricing = this.merge(p);
       this.sizingKeyDraft = this.pricing.sizingDefs.map(s => s.key);
+      this.containerSizingKeyDraft = this.pricing.containerSizingDefs.map(c => c.key);
       if (!this.pricing.roleDefs.find(r => r.key === this.previewRoleKey)) {
         this.previewRoleKey = this.pricing.roleDefs[0]?.key || '';
       }
@@ -79,6 +82,34 @@ export class PricingConfigComponent implements OnInit {
     }
     this.pricing.sizingDefs[idx].key = newKey;
     this.sizingKeyDraft[idx] = newKey;
+  }
+
+  // ─── Container Sizing CRUD ──────────────────────────────────────────────────
+
+  addContainerSize() {
+    const newKey = 'NEW';
+    this.pricing.containerSizingDefs.push({ key: newKey, cpu: 0, ram: 0, storage: 0 });
+    this.containerSizingKeyDraft.push(newKey);
+  }
+
+  deleteContainerSize(idx: number) {
+    this.pricing.containerSizingDefs.splice(idx, 1);
+    this.containerSizingKeyDraft.splice(idx, 1);
+  }
+
+  applyContainerSizeKey(idx: number) {
+    const oldKey = this.pricing.containerSizingDefs[idx].key;
+    const newKey = (this.containerSizingKeyDraft[idx] || '').trim().toUpperCase();
+    if (!newKey || newKey === oldKey) {
+      this.containerSizingKeyDraft[idx] = oldKey;
+      return;
+    }
+    if (this.pricing.serverRoles['containerNode']) {
+      this.pricing.serverRoles['containerNode'][newKey] = this.pricing.serverRoles['containerNode'][oldKey] ?? 0;
+      delete this.pricing.serverRoles['containerNode'][oldKey];
+    }
+    this.pricing.containerSizingDefs[idx].key = newKey;
+    this.containerSizingKeyDraft[idx] = newKey;
   }
 
   // ─── Role CRUD ──────────────────────────────────────────────────────────────
@@ -155,10 +186,13 @@ export class PricingConfigComponent implements OnInit {
     for (const r of DEFAULT_ROLE_DEFS) {
       roles[r.key] = { ...DEFAULT_PRICING.serverRoles[r.key] };
     }
+    roles['containerNode'] = { ...DEFAULT_PRICING.serverRoles['containerNode'] };
     return {
       serverRoles: roles,
       roleDefs: DEFAULT_ROLE_DEFS.map(r => ({ ...r })),
       sizingDefs: DEFAULT_SIZING_DEFS.map(s => ({ ...s })),
+      containerSizingDefs: DEFAULT_CONTAINER_SIZING_DEFS.map(c => ({ ...c })),
+      dockerCluster: { ...DEFAULT_DOCKER_CLUSTER },
       consulting: { ...DEFAULT_CONSULTING },
       currency: 'EUR'
     };
@@ -171,6 +205,9 @@ export class PricingConfigComponent implements OnInit {
     const sizingDefs = (p.sizingDefs && p.sizingDefs.length > 0)
       ? p.sizingDefs.map(s => ({ ...s }))
       : DEFAULT_SIZING_DEFS.map(s => ({ ...s }));
+    const containerSizingDefs = (p.containerSizingDefs && p.containerSizingDefs.length > 0)
+      ? p.containerSizingDefs.map(c => ({ ...c }))
+      : DEFAULT_CONTAINER_SIZING_DEFS.map(c => ({ ...c }));
     const roles: Pricing['serverRoles'] = {};
     for (const r of roleDefs) {
       roles[r.key] = {};
@@ -179,6 +216,12 @@ export class PricingConfigComponent implements OnInit {
           ?? DEFAULT_PRICING.serverRoles[r.key]?.[s.key]
           ?? 0;
       }
+    }
+    roles['containerNode'] = {};
+    for (const c of containerSizingDefs) {
+      roles['containerNode'][c.key] = p.serverRoles?.['containerNode']?.[c.key]
+        ?? DEFAULT_PRICING.serverRoles['containerNode']?.[c.key]
+        ?? 0;
     }
     // backward compat: old docs have hourlyRates.berater instead of consulting
     const legacyRate = (p as any).hourlyRates?.berater;
@@ -189,6 +232,8 @@ export class PricingConfigComponent implements OnInit {
       serverRoles: roles,
       roleDefs,
       sizingDefs,
+      containerSizingDefs,
+      dockerCluster: p.dockerCluster ? { ...p.dockerCluster } : { ...DEFAULT_DOCKER_CLUSTER },
       consulting,
       currency: p.currency || 'EUR'
     };

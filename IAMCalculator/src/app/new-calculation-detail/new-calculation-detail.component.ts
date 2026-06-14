@@ -19,6 +19,8 @@ export class NewCalculationDetailComponent implements OnInit {
     serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v }])),
     roleDefs: DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
     sizingDefs: DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
+    containerSizingDefs: DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
+    dockerCluster: { ...DEFAULT_PRICING.dockerCluster },
     consulting: { ...DEFAULT_PRICING.consulting },
     currency: 'EUR'
   };
@@ -53,6 +55,8 @@ export class NewCalculationDetailComponent implements OnInit {
           serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v, ...(p.serverRoles[k] || {}) }])),
           roleDefs: (p.roleDefs?.length > 0) ? p.roleDefs.map((r: any) => ({ ...r })) : DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
           sizingDefs: (p.sizingDefs?.length > 0) ? p.sizingDefs.map((s: any) => ({ ...s })) : DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
+          containerSizingDefs: (p.containerSizingDefs?.length > 0) ? p.containerSizingDefs.map((c: any) => ({ ...c })) : DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
+          dockerCluster: p.dockerCluster ? { ...p.dockerCluster } : { ...DEFAULT_PRICING.dockerCluster },
           consulting: { ...DEFAULT_PRICING.consulting, ...(p.consulting || {}) },
           currency: p.currency || 'EUR'
         };
@@ -90,7 +94,7 @@ export class NewCalculationDetailComponent implements OnInit {
         licenseOIM: parseInt(tf.licenseOIM) || 1,
         servicelevel: parseInt(tf.servicelevel) || 1,
         stages: parseInt(tf.stages) || 2,
-        minimalistic: Boolean(tf.minimalistic),
+        sizingMode: tf.sizingMode || 'vm',
         amountMSAD: parseInt(tf.amountMSAD) || 0,
         amountMSAAD: parseInt(tf.amountMSAAD) || 0,
         amountMSEX: parseInt(tf.amountMSEX) || 0,
@@ -138,6 +142,10 @@ export class NewCalculationDetailComponent implements OnInit {
     });
   }
 
+  toggleSAPHCM(mode: 'csv' | 'connector') {
+    this.setSAPHCM(this.sapHCMMode === mode ? 'none' : mode);
+  }
+
   setLicense(value: number) {
     if (this.disabledLicense && value === 1) return;
     this.NewCalcForm.get('targetsystemsform.licenseOIM')?.setValue(value);
@@ -165,6 +173,19 @@ export class NewCalculationDetailComponent implements OnInit {
   getEmployeeHint(): string {
     const n = parseInt(this.NewCalcForm.get('customerform.customerEmployees')?.value);
     if (!n || isNaN(n)) return '';
+    const mode = this.NewCalcForm.get('targetsystemsform.sizingMode')?.value || 'vm';
+    if (mode === 'container') {
+      if (n < 2500) return 'Docker Cluster — Prod (S) + QS/DEV (S)';
+      if (n < 5000) return 'Docker Cluster — Prod (M) + QS/DEV (M)';
+      if (n < 8500) return 'Docker Cluster — Prod (L) + QS/DEV (L)';
+      return 'Docker Cluster — Prod (XL) + QS/DEV (XL)';
+    }
+    if (mode === 'container-minimalistic') {
+      if (n < 2500) return 'Docker Cluster — 1× Cluster (S), alle Stages';
+      if (n < 5000) return 'Docker Cluster — 1× Cluster (M), alle Stages';
+      if (n < 8500) return 'Docker Cluster — 1× Cluster (L), alle Stages';
+      return 'Docker Cluster — 1× Cluster (XL), alle Stages';
+    }
     if (n < 2500) return 'Tier S — 1× DB (XL), 1× Web (M)';
     if (n < 5000) return 'Tier M — 1× DB (XL), 1× Web (L)';
     if (n < 8500) return 'Tier L — 1× DB (XL), 2× Web (L)';
@@ -181,7 +202,7 @@ export class NewCalculationDetailComponent implements OnInit {
     const stages = parseInt(tf.stages);
     const servicelevel = parseInt(tf.servicelevel);
     const amountIdentities = parseInt(data.customerform.customerEmployees);
-    const minimalistic = Boolean(tf.minimalistic);
+    const sizingMode: string = tf.sizingMode || 'vm';
 
     const amountSAPHCM = (tf.SAPHCMCSV || tf.SAPHCM) ? 1 : 0;
     const totalSystems =
@@ -192,30 +213,7 @@ export class NewCalculationDetailComponent implements OnInit {
       (parseInt(tf.amountSAPAPP) || 0) + (parseInt(tf.amountLDAP) || 0) +
       (parseInt(tf.amountSTAR) || 0) + amountSAPHCM;
 
-    const jobThreshold = this.pricing.consulting.jobServerThreshold || 5;
-    const amountJobServerProd = totalSystems > 0 ? Math.ceil(totalSystems / jobThreshold) : 0;
-    const amountDBServerProd = servicelevel === 3 ? 2 : 1;
-
-    // T-shirt size picker
-    const sizeDefs = this.pricing.sizingDefs;
-    const byKey = (key: string): SizingDef => sizeDefs.find(s => s.key === key) ?? sizeDefs[sizeDefs.length - 1];
-    const halfOf = (def: SizingDef): SizingDef =>
-      sizeDefs.find(s => s.cpu >= def.cpu / 2 && s.ram >= def.ram / 2) ?? sizeDefs[sizeDefs.length - 1];
-    const pick = (key: string): SizingDef => { const bp = byKey(key); return minimalistic ? halfOf(bp) : bp; };
-
-    // Best-practice tier sizes for DB and Web
-    let webSizeKey: string, webCount: number;
-    if (amountIdentities < 2500)      { webSizeKey = 'M'; webCount = 1; }
-    else if (amountIdentities < 5000) { webSizeKey = 'L'; webCount = 1; }
-    else if (amountIdentities < 8500) { webSizeKey = 'L'; webCount = 2; }
-    else                              { webSizeKey = 'XL'; webCount = 2; }
-
-    const dbDef  = pick('XL');
-    const webDef = pick(webSizeKey);
-    const jobDef = pick('L');
-    const envDef = pick('L');
-
-    const addSrv = (role: string, stage: string, def: SizingDef, sto: number, bsto: number) => {
+    const addSrv = (role: string, stage: string, def: { key: string; cpu: number; ram: number }, sto: number, bsto: number) => {
       arr.push(new FormGroup({
         role: new FormControl(role), stage: new FormControl(stage), size: new FormControl(def.key),
         cpu: new FormControl(def.cpu), ram: new FormControl(def.ram),
@@ -223,15 +221,61 @@ export class NewCalculationDetailComponent implements OnInit {
       }), { emitEvent: false });
     };
 
-    // Prod: DB-Agent + Webserver always, job servers by target system count
-    for (let i = 0; i < amountDBServerProd; i++) addSrv('DB',  'Prod', dbDef,  500, 1000);
-    for (let i = 0; i < webCount;           i++) addSrv('Web', 'Prod', webDef, 100,  200);
-    for (let i = 0; i < amountJobServerProd; i++) addSrv('Job', 'Prod', jobDef, 100, 200);
+    if (sizingMode === 'container' || sizingMode === 'container-minimalistic') {
+      const containerDefs = (this.pricing.containerSizingDefs?.length > 0)
+        ? this.pricing.containerSizingDefs
+        : DEFAULT_PRICING.containerSizingDefs;
+      const nodeCount = this.pricing.dockerCluster?.nodes || 2;
 
-    // DEV: always 1× L server (stages 2 or 3)
-    if (stages >= 2) addSrv('DEV', 'DEV', envDef, 200, 500);
-    // QS: always 1× L server (stages 3 only)
-    if (stages === 3) addSrv('QS', 'QS', envDef, 200, 500);
+      let nodeSizeKey: string;
+      if (amountIdentities < 2500)      nodeSizeKey = 'S';
+      else if (amountIdentities < 5000) nodeSizeKey = 'M';
+      else if (amountIdentities < 8500) nodeSizeKey = 'L';
+      else                              nodeSizeKey = 'XL';
+
+      const nodeDef = containerDefs.find(c => c.key === nodeSizeKey) ?? containerDefs[containerDefs.length - 1];
+
+      if (sizingMode === 'container-minimalistic') {
+        for (let i = 0; i < nodeCount; i++) addSrv('Node', 'All', nodeDef, nodeDef.storage, Math.round(nodeDef.storage / 2));
+      } else {
+        for (let i = 0; i < nodeCount; i++) addSrv('Node', 'Prod', nodeDef, nodeDef.storage, Math.round(nodeDef.storage / 2));
+        if (stages === 3) {
+          for (let i = 0; i < nodeCount; i++) addSrv('Node', 'QS/DEV', nodeDef, nodeDef.storage, Math.round(nodeDef.storage / 2));
+        } else if (stages >= 2) {
+          for (let i = 0; i < nodeCount; i++) addSrv('Node', 'DEV', nodeDef, nodeDef.storage, Math.round(nodeDef.storage / 2));
+        }
+      }
+
+    } else {
+      const minimalistic = sizingMode === 'vm-minimalistic';
+      const jobThreshold = this.pricing.consulting.jobServerThreshold || 5;
+      const amountJobServerProd = totalSystems > 0 ? Math.ceil(totalSystems / jobThreshold) : 0;
+      const amountDBServerProd = servicelevel === 3 ? 2 : 1;
+
+      const sizeDefs = this.pricing.sizingDefs;
+      const byKey = (key: string): SizingDef => sizeDefs.find(s => s.key === key) ?? sizeDefs[sizeDefs.length - 1];
+      const halfOf = (def: SizingDef): SizingDef =>
+        sizeDefs.find(s => s.cpu >= def.cpu / 2 && s.ram >= def.ram / 2) ?? sizeDefs[sizeDefs.length - 1];
+      const pick = (key: string): SizingDef => { const bp = byKey(key); return minimalistic ? halfOf(bp) : bp; };
+
+      let webSizeKey: string, webCount: number;
+      if (amountIdentities < 2500)      { webSizeKey = 'M'; webCount = 1; }
+      else if (amountIdentities < 5000) { webSizeKey = 'L'; webCount = 1; }
+      else if (amountIdentities < 8500) { webSizeKey = 'L'; webCount = 2; }
+      else                              { webSizeKey = 'XL'; webCount = 2; }
+
+      const dbDef  = pick('XL');
+      const webDef = pick(webSizeKey);
+      const jobDef = pick('L');
+      const envDef = pick('L');
+
+      for (let i = 0; i < amountDBServerProd; i++) addSrv('DB',  'Prod', dbDef,  500, 1000);
+      for (let i = 0; i < webCount;           i++) addSrv('Web', 'Prod', webDef, 100,  200);
+      for (let i = 0; i < amountJobServerProd; i++) addSrv('Job', 'Prod', jobDef, 100, 200);
+
+      if (stages >= 2) addSrv('DEV', 'DEV', envDef, 200, 500);
+      if (stages === 3) addSrv('QS', 'QS', envDef, 200, 500);
+    }
   }
 
   generateID(): number {
@@ -246,14 +290,13 @@ export class NewCalculationDetailComponent implements OnInit {
     }),
     customerform: new FormGroup({
       customerName: new FormControl(null),
-      customerNumber: new FormControl(0),
       customerEmployees: new FormControl(null)
     }),
     targetsystemsform: new FormGroup({
       licenseOIM: new FormControl(1),
       servicelevel: new FormControl('1'),
       stages: new FormControl(2),
-      minimalistic: new FormControl(false),
+      sizingMode: new FormControl('vm'),
       amountMSAD: new FormControl(0),
       amountMSAAD: new FormControl(0),
       amountMSEX: new FormControl(0),

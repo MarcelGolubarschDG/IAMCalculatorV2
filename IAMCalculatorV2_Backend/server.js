@@ -33,7 +33,8 @@ const DEFAULT_PRICING = {
     appserver:           { XS: 250, S: 400, M: 700,  L: 1100, XL: 1900 },
     webserver_appserver: { XS: 400, S: 650, M: 1100, L: 1800, XL: 3000 },
     jobservice_dbagent:  { XS: 450, S: 700, M: 1200, L: 1900, XL: 3200 },
-    mssql:               { XS: 350, S: 550, M: 900,  L: 1400, XL: 2400 }
+    mssql:               { XS: 350, S: 550, M: 900,  L: 1400, XL: 2400 },
+    containerNode:       { S: 600, M: 1000, L: 1800, XL: 3200 }
   },
   sizingDefs: [
     { key: 'XS', cpu: 2,  ram: 4,   storage: 50,   backupStorage: 25,  slaBs: '99.0%', slaBc: '99.5%'  },
@@ -42,6 +43,13 @@ const DEFAULT_PRICING = {
     { key: 'L',  cpu: 16, ram: 32,  storage: 500,  backupStorage: 250, slaBs: '99.9%', slaBc: '99.99%' },
     { key: 'XL', cpu: 32, ram: 64,  storage: 1000, backupStorage: 500, slaBs: '99.9%', slaBc: '99.99%' }
   ],
+  containerSizingDefs: [
+    { key: 'S',  cpu: 4,  ram: 8,  storage: 200  },
+    { key: 'M',  cpu: 8,  ram: 16, storage: 300  },
+    { key: 'L',  cpu: 16, ram: 32, storage: 500  },
+    { key: 'XL', cpu: 32, ram: 64, storage: 1000 }
+  ],
+  dockerCluster: { nodes: 2 },
   roleDefs: [
     { key: 'jobservice',          label: 'Jobservice',             singleton: false, minSize: 'XS', cpuPer1000: 0.5, ramPer1000: 0.5  },
     { key: 'dbagent',             label: 'DB-Agent',               singleton: true,  minSize: 'S',  cpuPer1000: 1.0, ramPer1000: 2.0  },

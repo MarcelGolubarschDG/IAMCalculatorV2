@@ -36,6 +36,10 @@
           </div>
           <div class="ps-field">
             <label>Anzahl Identitäten</label>
+            <input type="range"
+                   [value]="NewCalcForm.get('customerform.customerEmployees')?.value || 0"
+                   (input)="NewCalcForm.get('customerform.customerEmployees')?.setValue(+$any($event.target).value)"
+                   min="0" max="20000" step="100" class="ps-slider">
             <input formControlName="customerEmployees" class="form-control" type="number" min="0" placeholder="z.B. 3000">
             <div class="ps-hint" *ngIf="getEmployeeHint()">
               <i class="fa-solid fa-circle-info"></i> {{ getEmployeeHint() }}
@@ -67,7 +71,6 @@
             <select formControlName="servicelevel" class="form-select">
               <option value="1">Business Standard</option>
               <option value="2">Business Critical</option>
-              <option value="3">Business Critical Plus</option>
             </select>
           </div>
 
@@ -87,15 +90,21 @@
             <label>Hardware-Sizing</label>
             <div class="ps-toggle-group">
               <div class="ps-toggle-btn"
-                   [class.active]="!NewCalcForm.get('targetsystemsform.minimalistic')?.value"
-                   (click)="NewCalcForm.get('targetsystemsform.minimalistic')?.setValue(false)">Best Practice</div>
+                   [class.active]="NewCalcForm.get('targetsystemsform.sizingMode')?.value === 'vm'"
+                   (click)="NewCalcForm.get('targetsystemsform.sizingMode')?.setValue('vm')">VM Based</div>
               <div class="ps-toggle-btn"
-                   [class.active]="NewCalcForm.get('targetsystemsform.minimalistic')?.value"
-                   (click)="NewCalcForm.get('targetsystemsform.minimalistic')?.setValue(true)">Minimalistic</div>
+                   [class.active]="NewCalcForm.get('targetsystemsform.sizingMode')?.value === 'vm-minimalistic'"
+                   (click)="NewCalcForm.get('targetsystemsform.sizingMode')?.setValue('vm-minimalistic')">VM Based Minimalistic</div>
+              <div class="ps-toggle-btn"
+                   [class.active]="NewCalcForm.get('targetsystemsform.sizingMode')?.value === 'container'"
+                   (click)="NewCalcForm.get('targetsystemsform.sizingMode')?.setValue('container')">Container Based</div>
+              <div class="ps-toggle-btn"
+                   [class.active]="NewCalcForm.get('targetsystemsform.sizingMode')?.value === 'container-minimalistic'"
+                   (click)="NewCalcForm.get('targetsystemsform.sizingMode')?.setValue('container-minimalistic')">Container Based Minimalistic</div>
             </div>
             <div class="ps-hint">
               <i class="fa-solid fa-circle-info"></i>
-              Minimalistic: halbe HW-Anforderungen, nächst höhere T-Shirt-Größe
+              VM Min.: halbe HW · Container: Prod-Cluster + QS/DEV-Cluster · Container Min.: 1× Cluster alle Stages
             </div>
           </div>
         </div>
@@ -147,28 +156,21 @@
 
         <!-- SAP -->
         <div class="ps-target-group">
-          <div class="ps-target-label"><i class="fa-solid fa-database"></i> SAP</div>
-          <div class="ps-sap-row">
-            <div>
-              <div class="ps-sublabel">HCM Anbindung</div>
-              <div class="ps-radio-group">
-                <label class="ps-radio-btn" [class.active]="sapHCMMode === 'none'" (click)="setSAPHCM('none')">
-                  <input type="radio" name="sapHCM"> Keine
-                </label>
-                <label class="ps-radio-btn" [class.active]="sapHCMMode === 'csv'" (click)="setSAPHCM('csv')">
-                  <input type="radio" name="sapHCM"> HCM CSV
-                </label>
-                <label class="ps-radio-btn" [class.active]="sapHCMMode === 'connector'" (click)="setSAPHCM('connector')">
-                  <input type="radio" name="sapHCM"> HCM Konnektor
-                </label>
-              </div>
+          <div class="ps-target-label"><i class="fa-brands fa-sap"></i> SAP</div>
+          <div class="ps-tiles">
+            <div class="ps-tile" [class.active]="sapHCMMode === 'csv'" (click)="toggleSAPHCM('csv')">
+              <i class="fa-solid fa-file-csv"></i><span>HCM via CSV</span>
             </div>
-            <div>
-              <div class="ps-sublabel">SAP R3 Systeme</div>
-              <div class="ps-counter">
-                <button type="button" class="ps-counter-btn" (click)="adjustSAPR3(-1)">−</button>
-                <span class="ps-counter-val">{{ NewCalcForm.get('targetsystemsform.amountSAPAPP')?.value || 0 }}</span>
-                <button type="button" class="ps-counter-btn" (click)="adjustSAPR3(1)">+</button>
+            <div class="ps-tile" [class.active]="sapHCMMode === 'connector'" (click)="toggleSAPHCM('connector')">
+              <i class="fa-solid fa-plug"></i><span>HCM Konnektor</span>
+            </div>
+            <div class="ps-tile ps-tile-r3" [class.active]="isActive('amountSAPAPP')">
+              <i class="fa-solid fa-cubes"></i>
+              <span>SAP R3</span>
+              <div class="ps-r3-counter">
+                <button type="button" (click)="adjustSAPR3(-1)">−</button>
+                <b>{{ NewCalcForm.get('targetsystemsform.amountSAPAPP')?.value || 0 }}</b>
+                <button type="button" (click)="adjustSAPR3(1)">+</button>
               </div>
             </div>
           </div>
@@ -230,6 +232,26 @@
           <div class="ps-stage-label qs">Qualitätssicherung (QS)</div>
           <div class="ps-server-cards">
             <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS')">
+              <div class="ps-srv-role">{{ srv.value.role }}</div>
+              <div class="ps-srv-size">{{ srv.value.size }}</div>
+              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+            </div>
+          </div>
+        </div>
+        <div class="ps-stage" *ngIf="getServersByStage('QS/DEV').length > 0">
+          <div class="ps-stage-label qs">QS / Entwicklung (geteilt)</div>
+          <div class="ps-server-cards">
+            <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS/DEV')">
+              <div class="ps-srv-role">{{ srv.value.role }}</div>
+              <div class="ps-srv-size">{{ srv.value.size }}</div>
+              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+            </div>
+          </div>
+        </div>
+        <div class="ps-stage" *ngIf="getServersByStage('All').length > 0">
+          <div class="ps-stage-label" style="background:#6c757d;color:#fff;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px">Alle Stages (geteilt)</div>
+          <div class="ps-server-cards">
+            <div class="ps-server-card" *ngFor="let srv of getServersByStage('All')">
               <div class="ps-srv-role">{{ srv.value.role }}</div>
               <div class="ps-srv-size">{{ srv.value.size }}</div>
               <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>

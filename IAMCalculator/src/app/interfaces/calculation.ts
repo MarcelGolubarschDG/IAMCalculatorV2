@@ -22,7 +22,7 @@ export interface Calculation {
         licenseOIM: number;
         servicelevel: number;
         stages: number;
-        minimalistic: boolean;
+        sizingMode: string;
         SAPHCMCSV: boolean;
         SAPHCM: boolean;
         amountMSAD: number;

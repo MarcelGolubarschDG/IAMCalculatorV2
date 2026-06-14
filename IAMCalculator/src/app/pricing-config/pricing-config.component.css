@@ -37,6 +37,11 @@
 }
 .ac-section-title i { margin-right: 6px; }
 .ac-desc { font-size: 12px; color: #999; margin-bottom: 18px; margin-top: 0; }
+.ac-section-subtitle {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: #666; margin-bottom: 10px;
+}
+.ac-section-subtitle i { margin-right: 6px; }
 
 /* ── Shared table chrome ─────────────────────────────────────────────────── */
 .ac-table-wrap { overflow-x: auto; margin-bottom: 12px; }
