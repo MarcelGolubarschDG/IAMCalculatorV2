@@ -176,9 +176,9 @@
   height: 4px; margin-bottom: 8px; display: block;
 }
 
-/* SAP R3 tile variant */
-.ps-tile-r3 { height: auto; min-height: 82px; padding: 8px 10px; gap: 4px; }
-.ps-r3-counter { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+/* SAP R3 tile + counter below */
+.ps-tile-r3-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.ps-r3-counter { display: flex; align-items: center; gap: 6px; }
 .ps-r3-counter button {
   width: 22px; height: 22px; border: 1.5px solid #ddd; border-radius: 50%;
   background: white; cursor: pointer; font-size: 14px; font-weight: 700;
@@ -186,6 +186,4 @@
   color: #555; padding: 0; transition: all 0.15s;
 }
 .ps-r3-counter button:hover { border-color: #ff003e; color: #ff003e; }
-.ps-tile-r3.active .ps-r3-counter button { border-color: rgba(255,0,62,0.5); color: #cc0032; }
 .ps-r3-counter b { font-size: 14px; font-weight: 700; color: #333; min-width: 16px; text-align: center; }
-.ps-tile-r3.active .ps-r3-counter b { color: #cc0032; }

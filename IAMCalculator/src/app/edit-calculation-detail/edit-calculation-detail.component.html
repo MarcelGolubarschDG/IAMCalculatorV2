@@ -164,9 +164,11 @@
             <div class="ps-tile" [class.active]="sapHCMMode === 'connector'" (click)="toggleSAPHCM('connector')">
               <i class="fa-solid fa-plug"></i><span>HCM Konnektor</span>
             </div>
-            <div class="ps-tile ps-tile-r3" [class.active]="isActive('amountSAPAPP')">
-              <i class="fa-solid fa-cubes"></i>
-              <span>SAP R3</span>
+            <div class="ps-tile-r3-wrap">
+              <div class="ps-tile" [class.active]="isActive('amountSAPAPP')">
+                <i class="fa-solid fa-cubes"></i>
+                <span>SAP R3</span>
+              </div>
               <div class="ps-r3-counter">
                 <button type="button" (click)="adjustSAPR3(-1)">−</button>
                 <b>{{ EditCalcForm.get('targetsystemsform.amountSAPAPP')?.value || 0 }}</b>
