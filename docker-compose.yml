@@ -14,6 +14,9 @@ services:
     restart: always
 
   backend:
+    build:
+      context: ./IAMCalculatorV2_Backend
+      dockerfile: dockerfile
     image: iambackend:latest
     container_name: node-backend
     ports:
@@ -21,23 +24,27 @@ services:
     depends_on:
       - mongodb
     environment:
-      - MONGO_URI=mongodb://mongodb-container_backend:27017/IAMCalculator?authSource=admin
+#      - MONGO_URI=mongodb://mongodb-container_backend:27017/IAMCalculator?authSource=admin
+      - MONGO_URI=mongodb://admin:secret@mongodb-container_backend:27017/IAMCalculator?authSource=admin
     volumes:
       - ./IAMCalculatorV2_Backend/server.js:/app/server.js
     command: /bin/bash -c "npm install && node server.js"
     restart: always
 
-    
   angular-app:
+    build:
+      context: ./IAMCalculator
+      dockerfile: Dockerfile
     image: iamcalculator:latest
     ports:
-      - "4200:4200"  # Bindet Port 4200 des Containers an Port 4200 des Hosts
+      - "4200:4200"
     volumes:
-      - ./IAMCalculator:/usr/src/app  # Bindet den Code der Angular-App in den Container
-      - /usr/src/app/node_modules  # Verhindert, dass node_modules überschrieben wird
+      - ./IAMCalculator:/usr/src/app
+      - /usr/src/app/node_modules
     environment:
-      - CHOKIDAR_USEPOLLING=true  # Ermöglicht das Überwachen von Dateiänderungen (z.B. für Angular-CLI)
-    command: /bin/sh -c "npm install && ng serve --host 0.0.0.0 --disable-host-check"
+      - CHOKIDAR_USEPOLLING=true
+    # Add --proxy-config proxy.conf.json to the command:
+    command: /bin/sh -c "npm install && ng serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json"
 
 volumes:
   mongo-data:
