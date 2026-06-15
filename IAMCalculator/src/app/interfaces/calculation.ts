@@ -1,3 +1,5 @@
+import { Pricing } from './pricing';
+
 interface server {
     role: string;
     stage: string;
@@ -41,4 +43,5 @@ export interface Calculation {
     consultingform?: {
         includedPtPerMonth: number;
     };
+    pricingSnapshot?: Pricing;
 }

@@ -4,7 +4,6 @@ import { ApiService } from '../services/api.service';
 import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Pricing, DEFAULT_PRICING, CALC_ROLE_MAP } from '../interfaces/pricing';
 
 @Component({
     selector: 'app-calculations-overview',
@@ -15,42 +14,16 @@ import { Pricing, DEFAULT_PRICING, CALC_ROLE_MAP } from '../interfaces/pricing';
 export class CalculationsOverviewComponent implements OnInit {
 
   calculations: Calculation[] = [];
-  pricing: Pricing = {
-    serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v }])),
-    roleDefs: DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
-    sizingDefs: DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
-    containerSizingDefs: DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
-    dockerCluster: { ...DEFAULT_PRICING.dockerCluster },
-    consulting: { ...DEFAULT_PRICING.consulting },
-    currency: 'EUR'
-  };
 
-  
   constructor(
     private apiService: ApiService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location
-    ) { 
-      route.params.subscribe(val => {
-
-      this.getCalculations();
-      this.apiService.getPricing().subscribe(p => {
-        if (p && p.serverRoles) {
-          this.pricing = {
-            serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v, ...(p.serverRoles[k] || {}) }])),
-            roleDefs: (p.roleDefs?.length > 0) ? p.roleDefs.map((r: any) => ({ ...r })) : DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
-            sizingDefs: (p.sizingDefs?.length > 0) ? p.sizingDefs.map((s: any) => ({ ...s })) : DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
-            containerSizingDefs: (p.containerSizingDefs?.length > 0) ? p.containerSizingDefs.map((c: any) => ({ ...c })) : DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
-            dockerCluster: p.dockerCluster ? { ...p.dockerCluster } : { ...DEFAULT_PRICING.dockerCluster },
-            consulting: { ...DEFAULT_PRICING.consulting, ...(p.consulting || {}) },
-            currency: p.currency || 'EUR'
-          };
-        }
-      });
-
-    }); }
+    ) {
+      route.params.subscribe(() => { this.getCalculations(); });
+    }
 
     ngOnInit(): void {
     }
@@ -97,18 +70,6 @@ export class CalculationsOverviewComponent implements OnInit {
       
     }
     return amount
-  }
-
-  costForCalc(calc: Calculation): string {
-    if (!calc.servers || calc.servers.length === 0) return 'auf Anfrage';
-    const total = calc.servers.reduce((sum, srv) => {
-      const roleKey = CALC_ROLE_MAP[srv.role] || 'jobservice';
-      return sum + (this.pricing.serverRoles[roleKey]?.[srv.size] || 0);
-    }, 0);
-    if (total === 0) return 'auf Anfrage';
-    return new Intl.NumberFormat('de-DE', {
-      style: 'currency', currency: 'EUR', maximumFractionDigits: 0
-    }).format(total) + ' / Monat';
   }
 
   // calculate amout of servers for overview cards

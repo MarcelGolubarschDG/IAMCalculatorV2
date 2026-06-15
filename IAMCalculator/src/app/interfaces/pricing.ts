@@ -29,7 +29,6 @@ export interface ServerRoleDef {
 }
 
 export interface ConsultingConfig {
-  iamConsultantRate: number;
   ptPerStage: number;
   ptPerServerPerMonth: number;
   ptPer1000IdentitiesPerMonth: number;
@@ -37,7 +36,6 @@ export interface ConsultingConfig {
 }
 
 export interface Pricing {
-  serverRoles: { [role: string]: { [size: string]: number } };
   roleDefs: ServerRoleDef[];
   sizingDefs: SizingDef[];
   containerSizingDefs: ContainerSizingDef[];
@@ -78,37 +76,13 @@ export const DEFAULT_DOCKER_CLUSTER: DockerClusterConfig = {
 };
 
 export const DEFAULT_CONSULTING: ConsultingConfig = {
-  iamConsultantRate: 150,
   ptPerStage: 5,
   ptPerServerPerMonth: 0.5,
   ptPer1000IdentitiesPerMonth: 0.1,
   jobServerThreshold: 5,
 };
 
-export const CALC_ROLE_MAP: Record<string, string> = {
-  'DB':          'dbagent',
-  'Web':         'webserver',
-  'Job':         'jobservice',
-  'DEV':         'appserver',
-  'QS':          'appserver',
-  'MS Job':      'jobservice',
-  'SAP Job':     'jobservice',
-  'Generic Job': 'jobservice',
-  'DC':          'appserver',
-  'Node':        'containerNode',
-};
-
 export const DEFAULT_PRICING: Pricing = {
-  serverRoles: {
-    jobservice:          { XS: 200, S: 350, M: 600,  L: 1000, XL: 1800 },
-    dbagent:             { XS: 300, S: 500, M: 800,  L: 1200, XL: 2000 },
-    webserver:           { XS: 200, S: 350, M: 600,  L: 1000, XL: 1800 },
-    appserver:           { XS: 250, S: 400, M: 700,  L: 1100, XL: 1900 },
-    webserver_appserver: { XS: 400, S: 650, M: 1100, L: 1800, XL: 3000 },
-    jobservice_dbagent:  { XS: 450, S: 700, M: 1200, L: 1900, XL: 3200 },
-    mssql:               { XS: 350, S: 550, M: 900,  L: 1400, XL: 2400 },
-    containerNode:       { S: 600, M: 1000, L: 1800, XL: 3200 },
-  },
   roleDefs: DEFAULT_ROLE_DEFS,
   sizingDefs: DEFAULT_SIZING_DEFS,
   containerSizingDefs: DEFAULT_CONTAINER_SIZING_DEFS,
@@ -150,6 +124,5 @@ export function recommendSize(
   };
 }
 
-// Kept for backward compatibility
 export const SERVER_SIZES: ServerSize[] = DEFAULT_SIZING_DEFS.map(s => s.key);
 export const SERVER_ROLE_DEFS = DEFAULT_ROLE_DEFS;

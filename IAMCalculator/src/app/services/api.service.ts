@@ -14,7 +14,7 @@ export class ApiService {
   constructor(    private http: HttpClient    ) { }
 
     // URL to web api
-    private APIUrl = 'http://localhost:3000/api/';
+    private APIUrl = `http://localhost:3000/api/`;
     private CalcUrl = this.APIUrl + 'calculation';
     private CalcUrlID = this.CalcUrl + '/id';
     private PricingUrl = this.APIUrl + 'pricing';

@@ -63,7 +63,7 @@ interface ServerData {
 export class CsvExportServiceService {
 
   constructor(private http: HttpClient) {}
-  private APIUrl = 'http://localhost:3000/api/Calculation/id/'
+  private APIUrl = `http://localhost:3000/api/Calculation/id/`
 
   exportCsv(id: string) {
     this.http.get<any[]>(this.APIUrl+id).pipe(

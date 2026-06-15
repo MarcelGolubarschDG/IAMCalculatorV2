@@ -37,7 +37,7 @@ services:
       - /usr/src/app/node_modules  # Verhindert, dass node_modules überschrieben wird
     environment:
       - CHOKIDAR_USEPOLLING=true  # Ermöglicht das Überwachen von Dateiänderungen (z.B. für Angular-CLI)
-    command: /bin/sh -c "npm install && ng serve --host 0.0.0.0"
+    command: /bin/sh -c "npm install && ng serve --host 0.0.0.0 --disable-host-check"
 
 volumes:
   mongo-data:

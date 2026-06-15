@@ -97,7 +97,6 @@
               <th class="ac-th-num">CPU<br><span class="ac-th-unit">Kerne</span></th>
               <th class="ac-th-num">RAM<br><span class="ac-th-unit">GB</span></th>
               <th class="ac-th-num">Storage<br><span class="ac-th-unit">GB</span></th>
-              <th class="ac-th-num">Preis / Node<br><span class="ac-th-unit">€ / Monat</span></th>
               <th class="ac-th-del"></th>
             </tr>
           </thead>
@@ -118,12 +117,6 @@
               </td>
               <td class="ac-td-input">
                 <input type="number" min="0" [(ngModel)]="c.storage" class="ac-num-input">
-              </td>
-              <td class="ac-td-input">
-                <input type="number" min="0"
-                       [ngModel]="pricing.serverRoles['containerNode']?.[c.key] || 0"
-                       (ngModelChange)="pricing.serverRoles['containerNode'] = pricing.serverRoles['containerNode'] || {}; pricing.serverRoles['containerNode'][c.key] = +$event"
-                       class="ac-num-input">
               </td>
               <td class="ac-td-del">
                 <button class="ac-del-btn" type="button" (click)="deleteContainerSize(i)" title="Größe löschen">
@@ -222,16 +215,7 @@
       <!-- Beratungskonfiguration -->
       <div class="ac-panel">
         <div class="ac-section-title"><i class="fa-solid fa-user-tie"></i> Beratungskonfiguration</div>
-        <p class="ac-desc">IAM Consultant Stundensatz und Aufwandskalkulation (netto)</p>
-
-        <div class="ac-rate-field">
-          <label>IAM Consultant Stundensatz</label>
-          <div class="ac-rate-row">
-            <input type="number" min="0" [(ngModel)]="pricing.consulting.iamConsultantRate" class="ac-rate-input">
-            <span class="ac-unit">€ / Stunde</span>
-          </div>
-          <div class="ac-pt-hint">1 PT = 8h × {{ pricing.consulting.iamConsultantRate }} € = <strong>{{ fmt(ptValue) }}</strong></div>
-        </div>
+        <p class="ac-desc">Aufwandskalkulation — PT-Faktoren für Beratungsleistungen</p>
 
         <div class="ac-rate-field">
           <label>PT pro Stage / Monat</label>

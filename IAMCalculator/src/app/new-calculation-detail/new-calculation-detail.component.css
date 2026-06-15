@@ -97,11 +97,34 @@
 .ps-counter-btn:hover { border-color: #ff003e; color: #ff003e; }
 .ps-counter-val { font-size: 18px; font-weight: 700; min-width: 28px; text-align: center; color: #333; }
 
+/* Bottom grid: server results + PT panel */
+.ps-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 16px;
+  align-items: start;
+}
+
 /* Results panel */
 .ps-results {
   background: white; border-radius: 10px; padding: 20px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.07);
 }
+
+/* PT breakdown panel */
+.ps-pt-panel {
+  background: white; border-radius: 10px; padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+}
+.ps-pt-rows { display: flex; flex-direction: column; gap: 9px; margin-top: 4px; }
+.ps-pt-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ps-pt-label { font-size: 12px; color: #666; flex: 1; }
+.ps-pt-val { font-size: 12px; font-weight: 700; color: #333; white-space: nowrap; }
+.ps-pt-divider { border: none; border-top: 1px solid #f0f0f0; margin: 2px 0; }
+.ps-pt-subtotal .ps-pt-label { font-weight: 700; color: #333; font-size: 12px; }
+.ps-pt-subtotal .ps-pt-val { font-size: 14px; color: #222; }
+.ps-pt-included .ps-pt-label { color: #888; }
+.ps-pt-included .ps-pt-val { color: #4caf50; }
 .ps-results-header {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0;
@@ -113,8 +136,8 @@
   background: #ff003e; color: white; font-size: 11px; font-weight: 700;
   padding: 3px 10px; border-radius: 12px;
 }
-.ps-cost { font-size: 12px; color: #999; }
-.ps-cost em { font-style: italic; }
+.ps-pt-total { font-size: 13px; color: #555; font-weight: 600; }
+.ps-pt-total em { font-style: italic; font-weight: 400; color: #999; }
 
 /* Server stages */
 .ps-stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
@@ -124,8 +147,9 @@
   letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #eee;
 }
 .ps-stage-label.prod { color: #1976D2; }
-.ps-stage-label.dev { color: #388E3C; }
-.ps-stage-label.qs  { color: #F57C00; }
+.ps-stage-label.dev  { color: #388E3C; }
+.ps-stage-label.qs   { color: #F57C00; }
+.ps-stage-label.all  { color: #6c757d; }
 
 .ps-server-cards { display: flex; flex-wrap: wrap; gap: 8px; }
 .ps-server-card {
@@ -147,6 +171,7 @@
 /* Tablet: collapse two-column to single column */
 @media (max-width: 960px) {
   .ps-grid { grid-template-columns: 1fr; }
+  .ps-bottom-grid { grid-template-columns: 1fr; }
   .ps-stages { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 }
 
@@ -175,6 +200,61 @@
   width: 100%; accent-color: #ff003e; cursor: pointer;
   height: 4px; margin-bottom: 8px; display: block;
 }
+
+/* Sync button in topbar */
+.ps-topbar-right { display: flex; align-items: center; gap: 10px; }
+.ps-sync-btn {
+  background: white; color: #ff003e; border: 1.5px solid #ff003e;
+  padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 7px;
+}
+.ps-sync-btn:hover { background: #fff0f3; }
+
+/* Modal overlay */
+.ps-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.ps-modal {
+  background: white; border-radius: 12px; width: 520px; max-width: calc(100vw - 32px);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18); overflow: hidden;
+}
+.ps-modal-header {
+  padding: 18px 22px; background: #ff003e; color: white;
+  font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+}
+.ps-modal-body { padding: 20px 22px; }
+.ps-modal-desc { font-size: 13px; color: #555; margin-bottom: 14px; }
+.ps-modal-no-changes {
+  font-size: 13px; color: #2e7d32; background: #f1f8f1; border-radius: 6px;
+  padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+}
+.ps-diff-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ps-diff-table th {
+  text-align: left; font-weight: 700; color: #888; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .8px;
+  padding: 6px 8px; border-bottom: 2px solid #eee;
+}
+.ps-diff-table td { padding: 7px 8px; border-bottom: 1px solid #f2f2f2; color: #333; vertical-align: middle; }
+.ps-diff-table tr:last-child td { border-bottom: none; }
+.ps-diff-old { color: #999; text-decoration: line-through; }
+.ps-diff-new { color: #e53935; font-weight: 700; }
+.ps-modal-footer {
+  padding: 14px 22px; background: #fafafa; border-top: 1px solid #f0f0f0;
+  display: flex; justify-content: flex-end; gap: 10px;
+}
+.ps-modal-cancel {
+  background: white; border: 1.5px solid #ddd; color: #555;
+  padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.ps-modal-cancel:hover { border-color: #aaa; color: #333; }
+.ps-modal-confirm {
+  background: #ff003e; border: none; color: white;
+  padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s; display: flex; align-items: center; gap: 7px;
+}
+.ps-modal-confirm:hover { background: #cc0032; }
 
 /* SAP R3 tile + counter below */
 .ps-tile-r3-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }

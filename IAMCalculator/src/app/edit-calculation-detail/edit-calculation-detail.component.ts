@@ -3,7 +3,8 @@ import { ApiService } from '../services/api.service';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Pricing, DEFAULT_PRICING, CALC_ROLE_MAP, SizingDef } from '../interfaces/pricing';
+import { Pricing, DEFAULT_PRICING, SizingDef } from '../interfaces/pricing';
+import { SyncChange } from '../new-calculation-detail/new-calculation-detail.component';
 
 @Component({
   selector: 'app-edit-calculation-detail',
@@ -17,16 +18,14 @@ export class EditCalculationDetailComponent implements OnInit {
   disabledLicense = false;
   calcName = '';
   isLoading = false;
+  hasPricingSnapshot = false;
 
-  pricing: Pricing = {
-    serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v }])),
-    roleDefs: DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
-    sizingDefs: DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
-    containerSizingDefs: DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
-    dockerCluster: { ...DEFAULT_PRICING.dockerCluster },
-    consulting: { ...DEFAULT_PRICING.consulting },
-    currency: 'EUR'
-  };
+  pricing: Pricing = this.normalizePricing(DEFAULT_PRICING);
+  adminPricing: Pricing = this.normalizePricing(DEFAULT_PRICING);
+
+  showSyncConfirm = false;
+  showSaveConfirm = false;
+  syncChanges: SyncChange[] = [];
 
   get serverControls() {
     return (this.EditCalcForm.get('servers') as FormArray).controls;
@@ -41,16 +40,11 @@ export class EditCalculationDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.apiService.getPricing().subscribe(p => {
-      if (p && p.serverRoles) {
-        this.pricing = {
-          serverRoles: Object.fromEntries(Object.entries(DEFAULT_PRICING.serverRoles).map(([k, v]) => [k, { ...v, ...(p.serverRoles[k] || {}) }])),
-          roleDefs: (p.roleDefs?.length > 0) ? p.roleDefs.map((r: any) => ({ ...r })) : DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
-          sizingDefs: (p.sizingDefs?.length > 0) ? p.sizingDefs.map((s: any) => ({ ...s })) : DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
-          containerSizingDefs: (p.containerSizingDefs?.length > 0) ? p.containerSizingDefs.map((c: any) => ({ ...c })) : DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
-          dockerCluster: p.dockerCluster ? { ...p.dockerCluster } : { ...DEFAULT_PRICING.dockerCluster },
-          consulting: { ...DEFAULT_PRICING.consulting, ...(p.consulting || {}) },
-          currency: p.currency || 'EUR'
-        };
+      if (p && p.sizingDefs) {
+        this.adminPricing = this.normalizePricing(p);
+        if (!this.hasPricingSnapshot) {
+          this.pricing = this.normalizePricing(p);
+        }
       }
     });
 
@@ -69,6 +63,12 @@ export class EditCalculationDetailComponent implements OnInit {
       this.isLoading = true;
 
       this.calcName = calc.basicform.calculationName;
+
+      // Use saved pricingSnapshot if present; otherwise fall back to admin pricing
+      if ((calc as any).pricingSnapshot) {
+        this.hasPricingSnapshot = true;
+        this.pricing = this.normalizePricing((calc as any).pricingSnapshot);
+      }
 
       const tf = calc.targetsystemsform;
       this.EditCalcForm.patchValue({
@@ -132,7 +132,32 @@ export class EditCalculationDetailComponent implements OnInit {
   goBack(): void { this.location.back(); }
   goToPage(value: any) { this.router.navigateByUrl(value); }
 
-  onSubmit() {
+  // --- Sync confirm ---
+
+  openSyncConfirm() {
+    this.syncChanges = this.computeSyncChanges(this.pricing, this.adminPricing);
+    this.showSyncConfirm = true;
+  }
+
+  cancelSync() { this.showSyncConfirm = false; }
+
+  confirmSync() {
+    this.pricing = this.normalizePricing(this.adminPricing);
+    this.hasPricingSnapshot = true;
+    if (this.EditCalcForm.get('customerform.customerEmployees')?.value) {
+      this.calcServerSize(this.EditCalcForm.value);
+    }
+    this.showSyncConfirm = false;
+  }
+
+  // --- Save confirm ---
+
+  openSaveConfirm() { this.showSaveConfirm = true; }
+
+  cancelSave() { this.showSaveConfirm = false; }
+
+  confirmSave() {
+    this.showSaveConfirm = false;
     const id = String(this.route.snapshot.paramMap.get('id'));
     const data = this.EditCalcForm.value;
     const tf = data.targetsystemsform;
@@ -168,7 +193,8 @@ export class EditCalculationDetailComponent implements OnInit {
       servers: data.servers,
       consultingform: {
         includedPtPerMonth: parseFloat(data.consultingform?.includedPtPerMonth) || 0
-      }
+      },
+      pricingSnapshot: this.normalizePricing(this.pricing)
     });
     this.apiService.updateCalculation(jsonObject, id);
     this.router.navigateByUrl('/OverviewManagedIAM');
@@ -249,18 +275,14 @@ export class EditCalculationDetailComponent implements OnInit {
     return 'Tier XL — 1× DB (XL), 2× Web (XL)';
   }
 
-  get totalMonthlyCost(): number {
-    return this.serverControls.reduce((sum, ctrl) => {
-      const roleKey = CALC_ROLE_MAP[ctrl.value.role] || 'jobservice';
-      return sum + (this.pricing.serverRoles[roleKey]?.[ctrl.value.size] || 0);
-    }, 0);
-  }
-
-  fmt(val: number): string {
-    return new Intl.NumberFormat('de-DE', {
-      style: 'currency', currency: 'EUR', maximumFractionDigits: 0
-    }).format(val);
-  }
+  get ptStages(): number { return parseInt(this.EditCalcForm.get('targetsystemsform.stages')?.value) || 2; }
+  get ptIdentitiesK(): number { return Math.round((parseInt(this.EditCalcForm.get('customerform.customerEmployees')?.value) || 0) / 100) / 10; }
+  get isContainerMode(): boolean { const m = this.EditCalcForm.get('targetsystemsform.sizingMode')?.value || 'vm'; return m === 'container' || m === 'container-minimalistic'; }
+  get ptForStages(): number { return Math.round(this.pricing.consulting.ptPerStage * this.ptStages * 10) / 10; }
+  get ptForServers(): number { return this.isContainerMode ? 2 : Math.round(this.pricing.consulting.ptPerServerPerMonth * this.serverControls.length * 10) / 10; }
+  get ptForIdentities(): number { return Math.round(this.pricing.consulting.ptPer1000IdentitiesPerMonth * this.ptIdentitiesK * 10) / 10; }
+  get ptIncluded(): number { return parseFloat(this.EditCalcForm.get('consultingform.includedPtPerMonth')?.value) || 0; }
+  get totalMonthlyPT(): number { return Math.round((this.ptForStages + this.ptForServers + this.ptForIdentities) * 10) / 10; }
 
   // --- Server calculation ---
 
@@ -346,6 +368,42 @@ export class EditCalculationDetailComponent implements OnInit {
       if (stages >= 2) addSrv('DEV', 'DEV', envDef, 200, 500);
       if (stages === 3) addSrv('QS', 'QS', envDef, 200, 500);
     }
+  }
+
+  // --- Helpers ---
+
+  normalizePricing(p: Partial<Pricing>): Pricing {
+    return {
+      roleDefs: (p.roleDefs && p.roleDefs.length > 0) ? p.roleDefs.map(r => ({ ...r })) : DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
+      sizingDefs: (p.sizingDefs && p.sizingDefs.length > 0) ? p.sizingDefs.map(s => ({ ...s })) : DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
+      containerSizingDefs: (p.containerSizingDefs && p.containerSizingDefs.length > 0) ? p.containerSizingDefs.map(c => ({ ...c })) : DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
+      dockerCluster: p.dockerCluster ? { ...p.dockerCluster } : { ...DEFAULT_PRICING.dockerCluster },
+      consulting: { ...DEFAULT_PRICING.consulting, ...(p.consulting || {}) },
+      currency: p.currency || 'EUR'
+    };
+  }
+
+  computeSyncChanges(current: Pricing, admin: Pricing): SyncChange[] {
+    const changes: SyncChange[] = [];
+    const c = current.consulting;
+    const a = admin.consulting;
+
+    if (c.ptPerStage !== a.ptPerStage)
+      changes.push({ label: 'PT pro Stage', oldVal: String(c.ptPerStage), newVal: String(a.ptPerStage) });
+    if (c.ptPerServerPerMonth !== a.ptPerServerPerMonth)
+      changes.push({ label: 'PT pro Server / Monat', oldVal: String(c.ptPerServerPerMonth), newVal: String(a.ptPerServerPerMonth) });
+    if (c.ptPer1000IdentitiesPerMonth !== a.ptPer1000IdentitiesPerMonth)
+      changes.push({ label: 'PT pro 1000 Identitäten / Monat', oldVal: String(c.ptPer1000IdentitiesPerMonth), newVal: String(a.ptPer1000IdentitiesPerMonth) });
+    if (c.jobServerThreshold !== a.jobServerThreshold)
+      changes.push({ label: 'Jobserver-Schwelle', oldVal: `${c.jobServerThreshold} Sys./Server`, newVal: `${a.jobServerThreshold} Sys./Server` });
+    if (current.dockerCluster?.nodes !== admin.dockerCluster?.nodes)
+      changes.push({ label: 'Docker Cluster Nodes', oldVal: String(current.dockerCluster?.nodes), newVal: String(admin.dockerCluster?.nodes) });
+    if (JSON.stringify(current.sizingDefs) !== JSON.stringify(admin.sizingDefs))
+      changes.push({ label: 'VM-Sizing Definitionen', oldVal: `${current.sizingDefs?.length} Größen`, newVal: `${admin.sizingDefs?.length} Größen (geändert)` });
+    if (JSON.stringify(current.containerSizingDefs) !== JSON.stringify(admin.containerSizingDefs))
+      changes.push({ label: 'Container-Sizing Definitionen', oldVal: `${current.containerSizingDefs?.length} Größen`, newVal: `${admin.containerSizingDefs?.length} Größen (geändert)` });
+
+    return changes;
   }
 
   EditCalcForm: FormGroup = new FormGroup({

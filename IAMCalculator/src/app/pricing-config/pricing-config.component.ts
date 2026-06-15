@@ -104,10 +104,6 @@ export class PricingConfigComponent implements OnInit {
       this.containerSizingKeyDraft[idx] = oldKey;
       return;
     }
-    if (this.pricing.serverRoles['containerNode']) {
-      this.pricing.serverRoles['containerNode'][newKey] = this.pricing.serverRoles['containerNode'][oldKey] ?? 0;
-      delete this.pricing.serverRoles['containerNode'][oldKey];
-    }
     this.pricing.containerSizingDefs[idx].key = newKey;
     this.containerSizingKeyDraft[idx] = newKey;
   }
@@ -163,16 +159,6 @@ export class PricingConfigComponent implements OnInit {
     });
   }
 
-  get ptValue(): number {
-    return 8 * (this.pricing.consulting?.iamConsultantRate || 0);
-  }
-
-  fmt(val: number): string {
-    return new Intl.NumberFormat('de-DE', {
-      style: 'currency', currency: 'EUR', maximumFractionDigits: 0
-    }).format(val);
-  }
-
   fmtNum(val: number): string {
     return new Intl.NumberFormat('de-DE').format(val);
   }
@@ -182,13 +168,7 @@ export class PricingConfigComponent implements OnInit {
   // ─── Init helpers ────────────────────────────────────────────────────────────
 
   private deepDefault(): Pricing {
-    const roles: Pricing['serverRoles'] = {};
-    for (const r of DEFAULT_ROLE_DEFS) {
-      roles[r.key] = { ...DEFAULT_PRICING.serverRoles[r.key] };
-    }
-    roles['containerNode'] = { ...DEFAULT_PRICING.serverRoles['containerNode'] };
     return {
-      serverRoles: roles,
       roleDefs: DEFAULT_ROLE_DEFS.map(r => ({ ...r })),
       sizingDefs: DEFAULT_SIZING_DEFS.map(s => ({ ...s })),
       containerSizingDefs: DEFAULT_CONTAINER_SIZING_DEFS.map(c => ({ ...c })),
@@ -199,40 +179,13 @@ export class PricingConfigComponent implements OnInit {
   }
 
   private merge(p: Partial<Pricing>): Pricing {
-    const roleDefs = (p.roleDefs && p.roleDefs.length > 0)
-      ? p.roleDefs.map(r => ({ ...r }))
-      : DEFAULT_ROLE_DEFS.map(r => ({ ...r }));
-    const sizingDefs = (p.sizingDefs && p.sizingDefs.length > 0)
-      ? p.sizingDefs.map(s => ({ ...s }))
-      : DEFAULT_SIZING_DEFS.map(s => ({ ...s }));
-    const containerSizingDefs = (p.containerSizingDefs && p.containerSizingDefs.length > 0)
-      ? p.containerSizingDefs.map(c => ({ ...c }))
-      : DEFAULT_CONTAINER_SIZING_DEFS.map(c => ({ ...c }));
-    const roles: Pricing['serverRoles'] = {};
-    for (const r of roleDefs) {
-      roles[r.key] = {};
-      for (const s of sizingDefs) {
-        roles[r.key][s.key] = p.serverRoles?.[r.key]?.[s.key]
-          ?? DEFAULT_PRICING.serverRoles[r.key]?.[s.key]
-          ?? 0;
-      }
-    }
-    roles['containerNode'] = {};
-    for (const c of containerSizingDefs) {
-      roles['containerNode'][c.key] = p.serverRoles?.['containerNode']?.[c.key]
-        ?? DEFAULT_PRICING.serverRoles['containerNode']?.[c.key]
-        ?? 0;
-    }
-    // backward compat: old docs have hourlyRates.berater instead of consulting
-    const legacyRate = (p as any).hourlyRates?.berater;
     const consulting: ConsultingConfig = p.consulting
       ? { ...DEFAULT_CONSULTING, ...p.consulting }
-      : { ...DEFAULT_CONSULTING, ...(legacyRate ? { iamConsultantRate: legacyRate } : {}) };
+      : { ...DEFAULT_CONSULTING };
     return {
-      serverRoles: roles,
-      roleDefs,
-      sizingDefs,
-      containerSizingDefs,
+      roleDefs: (p.roleDefs && p.roleDefs.length > 0) ? p.roleDefs.map(r => ({ ...r })) : DEFAULT_ROLE_DEFS.map(r => ({ ...r })),
+      sizingDefs: (p.sizingDefs && p.sizingDefs.length > 0) ? p.sizingDefs.map(s => ({ ...s })) : DEFAULT_SIZING_DEFS.map(s => ({ ...s })),
+      containerSizingDefs: (p.containerSizingDefs && p.containerSizingDefs.length > 0) ? p.containerSizingDefs.map(c => ({ ...c })) : DEFAULT_CONTAINER_SIZING_DEFS.map(c => ({ ...c })),
       dockerCluster: p.dockerCluster ? { ...p.dockerCluster } : { ...DEFAULT_DOCKER_CLUSTER },
       consulting,
       currency: p.currency || 'EUR'

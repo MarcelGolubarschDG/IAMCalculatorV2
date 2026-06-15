@@ -1,5 +1,5 @@
 <div class="ps-container">
-  <form [formGroup]="EditCalcForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="EditCalcForm">
 
     <!-- Top bar -->
     <div class="ps-topbar">
@@ -9,9 +9,14 @@
         </button>
         <h5 class="ps-title">{{ calcName || 'Kalkulation bearbeiten' }}</h5>
       </div>
-      <button class="ps-save-btn" type="submit">
-        <i class="fa-solid fa-floppy-disk"></i> Aktualisieren
-      </button>
+      <div class="ps-topbar-right">
+        <button class="ps-sync-btn" type="button" (click)="openSyncConfirm()" title="Aktuelle Konstanten aus dem Admin-Bereich übernehmen">
+          <i class="fa-solid fa-rotate"></i> Aus Admin aktualisieren
+        </button>
+        <button class="ps-save-btn" type="button" (click)="openSaveConfirm()">
+          <i class="fa-solid fa-floppy-disk"></i> Aktualisieren
+        </button>
+      </div>
     </div>
 
     <!-- Two-column grid -->
@@ -197,78 +202,183 @@
       </div>
     </div>
 
-    <!-- Server Results -->
-    <div class="ps-results">
-      <div class="ps-results-header">
-        <div class="ps-results-title">
-          <i class="fa-solid fa-server"></i> Infrastruktur-Schätzung
+    <!-- Bottom: Server Results + PT Breakdown -->
+    <div class="ps-bottom-grid">
+
+      <!-- Server Results (links) -->
+      <div class="ps-results">
+        <div class="ps-results-header">
+          <div class="ps-results-title">
+            <i class="fa-solid fa-server"></i> Infrastruktur-Schätzung
+          </div>
+          <div class="ps-results-meta" *ngIf="serverControls.length > 0">
+            <span class="ps-badge">{{ serverControls.length }} Server</span>
+          </div>
         </div>
-        <div class="ps-results-meta" *ngIf="serverControls.length > 0">
-          <span class="ps-badge">{{ serverControls.length }} Server</span>
-          <span class="ps-cost">{{ fmt(totalMonthlyCost) }} <em>/ Monat</em></span>
+
+        <div class="ps-stages" *ngIf="serverControls.length > 0; else emptyState">
+          <div class="ps-stage" *ngIf="getServersByStage('Prod').length > 0">
+            <div class="ps-stage-label prod">Produktion</div>
+            <div class="ps-server-cards">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('Prod')">
+                <div class="ps-srv-role">{{ srv.value.role }}</div>
+                <div class="ps-srv-size">{{ srv.value.size }}</div>
+                <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+              </div>
+            </div>
+          </div>
+          <div class="ps-stage" *ngIf="getServersByStage('DEV').length > 0">
+            <div class="ps-stage-label dev">Entwicklung (DEV)</div>
+            <div class="ps-server-cards">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('DEV')">
+                <div class="ps-srv-role">{{ srv.value.role }}</div>
+                <div class="ps-srv-size">{{ srv.value.size }}</div>
+                <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+              </div>
+            </div>
+          </div>
+          <div class="ps-stage" *ngIf="getServersByStage('QS').length > 0">
+            <div class="ps-stage-label qs">Qualitätssicherung (QS)</div>
+            <div class="ps-server-cards">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS')">
+                <div class="ps-srv-role">{{ srv.value.role }}</div>
+                <div class="ps-srv-size">{{ srv.value.size }}</div>
+                <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+              </div>
+            </div>
+          </div>
+          <div class="ps-stage" *ngIf="getServersByStage('QS/DEV').length > 0">
+            <div class="ps-stage-label qs">QS / Entwicklung (geteilt)</div>
+            <div class="ps-server-cards">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS/DEV')">
+                <div class="ps-srv-role">{{ srv.value.role }}</div>
+                <div class="ps-srv-size">{{ srv.value.size }}</div>
+                <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+              </div>
+            </div>
+          </div>
+          <div class="ps-stage" *ngIf="getServersByStage('All').length > 0">
+            <div class="ps-stage-label all">Alle Stages (geteilt)</div>
+            <div class="ps-server-cards">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('All')">
+                <div class="ps-srv-role">{{ srv.value.role }}</div>
+                <div class="ps-srv-size">{{ srv.value.size }}</div>
+                <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #emptyState>
+          <div class="ps-empty-state">
+            <i class="fa-solid fa-calculator"></i>
+            <p>Infrastruktur wird aus den gespeicherten Daten geladen…</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- PT Breakdown (rechts) -->
+      <div class="ps-pt-panel" *ngIf="serverControls.length > 0">
+        <div class="ps-section-title"><i class="fa-solid fa-person-digging"></i> Beratungsaufwand</div>
+        <div class="ps-pt-rows">
+
+          <div class="ps-pt-row">
+            <span class="ps-pt-label">{{ pricing.consulting.ptPerStage }} PT × {{ ptStages }} Stages</span>
+            <span class="ps-pt-val">{{ ptForStages }} PT</span>
+          </div>
+
+          <div class="ps-pt-row">
+            <span class="ps-pt-label">
+              <ng-container *ngIf="isContainerMode">Container-Cluster (2 PT pauschal)</ng-container>
+              <ng-container *ngIf="!isContainerMode">{{ pricing.consulting.ptPerServerPerMonth }} PT × {{ serverControls.length }} Server</ng-container>
+            </span>
+            <span class="ps-pt-val">{{ ptForServers }} PT</span>
+          </div>
+
+          <div class="ps-pt-row">
+            <span class="ps-pt-label">{{ pricing.consulting.ptPer1000IdentitiesPerMonth }} PT × {{ ptIdentitiesK }} Tsd. Ids</span>
+            <span class="ps-pt-val">{{ ptForIdentities }} PT</span>
+          </div>
+
+          <div class="ps-pt-divider"></div>
+
+          <div class="ps-pt-row ps-pt-subtotal">
+            <span class="ps-pt-label">Gesamt benötigt</span>
+            <span class="ps-pt-val">{{ totalMonthlyPT }} PT</span>
+          </div>
+
+          <div class="ps-pt-row ps-pt-included">
+            <span class="ps-pt-label">Inkludiert (Vertrag)</span>
+            <span class="ps-pt-val">{{ ptIncluded }} PT</span>
+          </div>
+
         </div>
       </div>
 
-      <div class="ps-stages" *ngIf="serverControls.length > 0; else emptyState">
-        <div class="ps-stage" *ngIf="getServersByStage('Prod').length > 0">
-          <div class="ps-stage-label prod">Produktion</div>
-          <div class="ps-server-cards">
-            <div class="ps-server-card" *ngFor="let srv of getServersByStage('Prod')">
-              <div class="ps-srv-role">{{ srv.value.role }}</div>
-              <div class="ps-srv-size">{{ srv.value.size }}</div>
-              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
-            </div>
-          </div>
-        </div>
-        <div class="ps-stage" *ngIf="getServersByStage('DEV').length > 0">
-          <div class="ps-stage-label dev">Entwicklung (DEV)</div>
-          <div class="ps-server-cards">
-            <div class="ps-server-card" *ngFor="let srv of getServersByStage('DEV')">
-              <div class="ps-srv-role">{{ srv.value.role }}</div>
-              <div class="ps-srv-size">{{ srv.value.size }}</div>
-              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
-            </div>
-          </div>
-        </div>
-        <div class="ps-stage" *ngIf="getServersByStage('QS').length > 0">
-          <div class="ps-stage-label qs">Qualitätssicherung (QS)</div>
-          <div class="ps-server-cards">
-            <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS')">
-              <div class="ps-srv-role">{{ srv.value.role }}</div>
-              <div class="ps-srv-size">{{ srv.value.size }}</div>
-              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
-            </div>
-          </div>
-        </div>
-        <div class="ps-stage" *ngIf="getServersByStage('QS/DEV').length > 0">
-          <div class="ps-stage-label qs">QS / Entwicklung (geteilt)</div>
-          <div class="ps-server-cards">
-            <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS/DEV')">
-              <div class="ps-srv-role">{{ srv.value.role }}</div>
-              <div class="ps-srv-size">{{ srv.value.size }}</div>
-              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
-            </div>
-          </div>
-        </div>
-        <div class="ps-stage" *ngIf="getServersByStage('All').length > 0">
-          <div class="ps-stage-label" style="background:#6c757d;color:#fff;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px">Alle Stages (geteilt)</div>
-          <div class="ps-server-cards">
-            <div class="ps-server-card" *ngFor="let srv of getServersByStage('All')">
-              <div class="ps-srv-role">{{ srv.value.role }}</div>
-              <div class="ps-srv-size">{{ srv.value.size }}</div>
-              <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <ng-template #emptyState>
-        <div class="ps-empty-state">
-          <i class="fa-solid fa-calculator"></i>
-          <p>Infrastruktur wird aus den gespeicherten Daten geladen…</p>
-        </div>
-      </ng-template>
     </div>
 
   </form>
+
+  <!-- Sync Confirm Modal -->
+  <div class="ps-modal-overlay" *ngIf="showSyncConfirm">
+    <div class="ps-modal">
+      <div class="ps-modal-header">
+        <i class="fa-solid fa-rotate"></i> Konstanten aus Admin-Bereich übernehmen
+      </div>
+      <div class="ps-modal-body">
+        <div *ngIf="syncChanges.length === 0" class="ps-modal-no-changes">
+          <i class="fa-solid fa-circle-check"></i> Alle Konstanten sind bereits aktuell — keine Änderungen gefunden.
+        </div>
+        <div *ngIf="syncChanges.length > 0">
+          <p class="ps-modal-desc">Folgende Werte werden aus dem Admin-Bereich übernommen:</p>
+          <table class="ps-diff-table">
+            <thead><tr><th>Konstante</th><th>Gespeichert</th><th>Neu (Admin)</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let ch of syncChanges">
+                <td>{{ ch.label }}</td>
+                <td class="ps-diff-old">{{ ch.oldVal }}</td>
+                <td class="ps-diff-new">{{ ch.newVal }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="ps-modal-footer">
+        <button class="ps-modal-cancel" type="button" (click)="cancelSync()">Abbrechen</button>
+        <button class="ps-modal-confirm" type="button" (click)="confirmSync()">
+          <i class="fa-solid fa-rotate"></i> Übernehmen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Confirm Modal -->
+  <div class="ps-modal-overlay" *ngIf="showSaveConfirm">
+    <div class="ps-modal">
+      <div class="ps-modal-header">
+        <i class="fa-solid fa-floppy-disk"></i> Kalkulation aktualisieren
+      </div>
+      <div class="ps-modal-body">
+        <p class="ps-modal-desc">Die folgenden Konstanten werden dauerhaft mit der Kalkulation gespeichert:</p>
+        <table class="ps-diff-table">
+          <tbody>
+            <tr><td>PT pro Stage</td><td><strong>{{ pricing.consulting.ptPerStage }}</strong></td></tr>
+            <tr><td>PT pro Server / Monat</td><td><strong>{{ pricing.consulting.ptPerServerPerMonth }}</strong></td></tr>
+            <tr><td>PT pro 1000 Identitäten / Monat</td><td><strong>{{ pricing.consulting.ptPer1000IdentitiesPerMonth }}</strong></td></tr>
+            <tr><td>Jobserver-Schwelle</td><td><strong>{{ pricing.consulting.jobServerThreshold }} Systeme/Server</strong></td></tr>
+            <tr><td>Docker Cluster Nodes</td><td><strong>{{ pricing.dockerCluster.nodes }}</strong></td></tr>
+            <tr><td>VM-Sizing Definitionen</td><td><strong>{{ pricing.sizingDefs.length }} Größen</strong></td></tr>
+            <tr><td>Container-Sizing Definitionen</td><td><strong>{{ pricing.containerSizingDefs.length }} Größen</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ps-modal-footer">
+        <button class="ps-modal-cancel" type="button" (click)="cancelSave()">Abbrechen</button>
+        <button class="ps-modal-confirm" type="button" (click)="confirmSave()">
+          <i class="fa-solid fa-floppy-disk"></i> Aktualisieren
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
