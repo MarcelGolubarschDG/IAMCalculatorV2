@@ -11,7 +11,7 @@
       </div>
       <div class="ps-topbar-right">
         <button class="ps-sync-btn" type="button" (click)="openSyncConfirm()" title="Aktuelle Konstanten aus dem Admin-Bereich übernehmen">
-          <i class="fa-solid fa-rotate"></i> Aus Admin aktualisieren
+          <i class="fa-solid fa-rotate"></i> Preise aktualisieren
         </button>
         <button class="ps-save-btn" type="button" (click)="openSaveConfirm()">
           <i class="fa-solid fa-floppy-disk"></i> Aktualisieren
@@ -366,7 +366,8 @@
             <tr><td>PT pro Server / Monat</td><td><strong>{{ pricing.consulting.ptPerServerPerMonth }}</strong></td></tr>
             <tr><td>PT pro 1000 Identitäten / Monat</td><td><strong>{{ pricing.consulting.ptPer1000IdentitiesPerMonth }}</strong></td></tr>
             <tr><td>Jobserver-Schwelle</td><td><strong>{{ pricing.consulting.jobServerThreshold }} Systeme/Server</strong></td></tr>
-            <tr><td>Docker Cluster Nodes</td><td><strong>{{ pricing.dockerCluster.nodes }}</strong></td></tr>
+            <tr><td>Docker Cluster</td><td><strong>{{ pricing.dockerCluster.nodes }} Nodes / {{ pricing.dockerCluster.nodeRoleLabel }}</strong></td></tr>
+            <tr><td>Serverrollen</td><td><strong>{{ pricing.roleDefs.length }} Rollen</strong></td></tr>
             <tr><td>VM-Sizing Definitionen</td><td><strong>{{ pricing.sizingDefs.length }} Größen</strong></td></tr>
             <tr><td>Container-Sizing Definitionen</td><td><strong>{{ pricing.containerSizingDefs.length }} Größen</strong></td></tr>
           </tbody>

@@ -29,8 +29,19 @@
   border-color: #ff003e;
 }
 
-.ov-card-header { margin-bottom: 4px; }
-.ov-calc-name { font-size: 14px; font-weight: 700; color: #222; }
+.ov-card-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin-bottom: 4px;
+}
+.ov-calc-name { font-size: 14px; font-weight: 700; color: #222; min-width: 0; overflow-wrap: anywhere; }
+.ov-delete-btn {
+  flex: 0 0 28px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: none; border-radius: 6px; color: #c9c9c9; cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.ov-delete-btn:hover,
+.ov-delete-btn:focus-visible { background: #fff0f4; color: #ff003e; outline: none; }
+.ov-delete-btn i { font-size: 13px; }
 .ov-customer { font-size: 12px; color: #888; margin-bottom: 14px; }
 
 .ov-stats { display: flex; gap: 16px; margin-bottom: 12px; }

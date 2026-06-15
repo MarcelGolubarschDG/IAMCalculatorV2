@@ -142,6 +142,10 @@
           </div>
           <div class="ac-pt-hint">Pro Stage wird ein Cluster mit dieser Anzahl Nodes kalkuliert (Standard: 2)</div>
         </div>
+        <div class="ac-rate-field" style="margin-top:14px; margin-bottom:0">
+          <label>Node-Rolle</label>
+          <input type="text" [(ngModel)]="pricing.dockerCluster.nodeRoleLabel" class="ac-label-input ac-node-role-input">
+        </div>
       </div>
     </div>
 
@@ -155,6 +159,7 @@
           <thead>
             <tr>
               <th class="ac-th-label">Bezeichnung</th>
+              <th class="ac-th-usage">Verwendung</th>
               <th class="ac-th-toggle">Singleton</th>
               <th class="ac-th-minsize">Min. Größe</th>
               <th class="ac-th-factor">+CPU / 1.000 Ident.</th>
@@ -167,6 +172,13 @@
                 [class.ac-row-singleton]="role.singleton">
               <td class="ac-td-input">
                 <input type="text" [(ngModel)]="role.label" class="ac-label-input">
+              </td>
+              <td class="ac-td-input">
+                <select [ngModel]="role.infraRole || 'none'"
+                        (ngModelChange)="setInfraRole(role, $event)"
+                        class="ac-select ac-usage-select">
+                  <option *ngFor="let option of infraRoleOptions" [ngValue]="option.value">{{ option.label }}</option>
+                </select>
               </td>
               <td class="ac-td-toggle">
                 <label class="ac-toggle">

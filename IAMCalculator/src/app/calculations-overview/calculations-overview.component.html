@@ -7,6 +7,14 @@
     <div class="ov-card" *ngFor="let calc of calculations" (click)="goToPage('/Edit/Calculation/' + calc._id)">
       <div class="ov-card-header">
         <div class="ov-calc-name">{{ calc.basicform.calculationName || '(Ohne Name)' }}</div>
+        <button
+          class="ov-delete-btn"
+          type="button"
+          (click)="deleteCalculation(calc, $event)"
+          [attr.aria-label]="'Kalkulation ' + (calc.basicform.calculationName || 'ohne Name') + ' löschen'"
+          title="Kalkulation löschen">
+          <i class="fa-solid fa-trash"></i>
+        </button>
       </div>
       <div class="ov-customer">{{ calc.customerform.customerName || '–' }}</div>
       <div class="ov-stats">

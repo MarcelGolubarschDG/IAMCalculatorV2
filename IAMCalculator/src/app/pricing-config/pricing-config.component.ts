@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ApiService } from '../services/api.service';
 import {
-  Pricing, DEFAULT_PRICING, DEFAULT_ROLE_DEFS, DEFAULT_SIZING_DEFS, DEFAULT_CONSULTING,
-  DEFAULT_CONTAINER_SIZING_DEFS, DEFAULT_DOCKER_CLUSTER,
-  ServerRoleDef, SizingDef, ContainerSizingDef, ConsultingConfig, recommendSize
+  Pricing, DEFAULT_PRICING,
+  ServerRoleDef, SizingDef, InfrastructureRoleUsage, recommendSize, normalizePricingConfig
 } from '../interfaces/pricing';
 
 interface PreviewRow {
@@ -33,6 +32,13 @@ export class PricingConfigComponent implements OnInit {
   previewRoleKey = 'webserver';
 
   readonly previewCounts = [500, 1000, 2500, 5000, 10000];
+  readonly infraRoleOptions: Array<{ value: InfrastructureRoleUsage; label: string }> = [
+    { value: 'none', label: 'Keine' },
+    { value: 'database', label: 'Datenbank' },
+    { value: 'web', label: 'Web/App' },
+    { value: 'job', label: 'Job' },
+    { value: 'environment', label: 'Stage-Server' }
+  ];
 
   constructor(private apiService: ApiService, private location: Location) {}
 
@@ -116,7 +122,8 @@ export class PricingConfigComponent implements OnInit {
       key, label: 'Neue Rolle', singleton: false,
       minSize: this.pricing.sizingDefs[0]?.key || 'XS',
       cpuPer1000: 0.5,
-      ramPer1000: 1.0
+      ramPer1000: 1.0,
+      infraRole: 'none'
     });
   }
 
@@ -126,6 +133,17 @@ export class PricingConfigComponent implements OnInit {
     if (this.previewRoleKey === key) {
       this.previewRoleKey = this.pricing.roleDefs[0]?.key || '';
     }
+  }
+
+  setInfraRole(role: ServerRoleDef, usage: InfrastructureRoleUsage) {
+    if (usage !== 'none') {
+      for (const item of this.pricing.roleDefs) {
+        if (item !== role && item.infraRole === usage) {
+          item.infraRole = 'none';
+        }
+      }
+    }
+    role.infraRole = usage;
   }
 
   // ─── Sizing preview ──────────────────────────────────────────────────────────
@@ -168,28 +186,11 @@ export class PricingConfigComponent implements OnInit {
   // ─── Init helpers ────────────────────────────────────────────────────────────
 
   private deepDefault(): Pricing {
-    return {
-      roleDefs: DEFAULT_ROLE_DEFS.map(r => ({ ...r })),
-      sizingDefs: DEFAULT_SIZING_DEFS.map(s => ({ ...s })),
-      containerSizingDefs: DEFAULT_CONTAINER_SIZING_DEFS.map(c => ({ ...c })),
-      dockerCluster: { ...DEFAULT_DOCKER_CLUSTER },
-      consulting: { ...DEFAULT_CONSULTING },
-      currency: 'EUR'
-    };
+    return normalizePricingConfig(DEFAULT_PRICING);
   }
 
   private merge(p: Partial<Pricing>): Pricing {
-    const consulting: ConsultingConfig = p.consulting
-      ? { ...DEFAULT_CONSULTING, ...p.consulting }
-      : { ...DEFAULT_CONSULTING };
-    return {
-      roleDefs: (p.roleDefs && p.roleDefs.length > 0) ? p.roleDefs.map(r => ({ ...r })) : DEFAULT_ROLE_DEFS.map(r => ({ ...r })),
-      sizingDefs: (p.sizingDefs && p.sizingDefs.length > 0) ? p.sizingDefs.map(s => ({ ...s })) : DEFAULT_SIZING_DEFS.map(s => ({ ...s })),
-      containerSizingDefs: (p.containerSizingDefs && p.containerSizingDefs.length > 0) ? p.containerSizingDefs.map(c => ({ ...c })) : DEFAULT_CONTAINER_SIZING_DEFS.map(c => ({ ...c })),
-      dockerCluster: p.dockerCluster ? { ...p.dockerCluster } : { ...DEFAULT_DOCKER_CLUSTER },
-      consulting,
-      currency: p.currency || 'EUR'
-    };
+    return normalizePricingConfig(p);
   }
 }
 

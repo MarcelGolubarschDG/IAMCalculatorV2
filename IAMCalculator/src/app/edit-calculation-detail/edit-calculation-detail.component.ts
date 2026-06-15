@@ -3,7 +3,7 @@ import { ApiService } from '../services/api.service';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Pricing, DEFAULT_PRICING, SizingDef } from '../interfaces/pricing';
+import { Pricing, DEFAULT_PRICING, calculateInfrastructureServers, normalizePricingConfig, summarizeInfrastructureServers } from '../interfaces/pricing';
 import { SyncChange } from '../new-calculation-detail/new-calculation-detail.component';
 
 @Component({
@@ -256,23 +256,15 @@ export class EditCalculationDetailComponent implements OnInit {
   getEmployeeHint(): string {
     const n = parseInt(this.EditCalcForm.get('customerform.customerEmployees')?.value);
     if (!n || isNaN(n)) return '';
+    const tf = this.EditCalcForm.get('targetsystemsform')?.value;
     const mode = this.EditCalcForm.get('targetsystemsform.sizingMode')?.value || 'vm';
-    if (mode === 'container') {
-      if (n < 2500) return 'Docker Cluster — Prod (S) + QS/DEV (S)';
-      if (n < 5000) return 'Docker Cluster — Prod (M) + QS/DEV (M)';
-      if (n < 8500) return 'Docker Cluster — Prod (L) + QS/DEV (L)';
-      return 'Docker Cluster — Prod (XL) + QS/DEV (XL)';
-    }
-    if (mode === 'container-minimalistic') {
-      if (n < 2500) return 'Docker Cluster — 1× Cluster (S), alle Stages';
-      if (n < 5000) return 'Docker Cluster — 1× Cluster (M), alle Stages';
-      if (n < 8500) return 'Docker Cluster — 1× Cluster (L), alle Stages';
-      return 'Docker Cluster — 1× Cluster (XL), alle Stages';
-    }
-    if (n < 2500) return 'Tier S — 1× DB (XL), 1× Web (M)';
-    if (n < 5000) return 'Tier M — 1× DB (XL), 1× Web (L)';
-    if (n < 8500) return 'Tier L — 1× DB (XL), 2× Web (L)';
-    return 'Tier XL — 1× DB (XL), 2× Web (XL)';
+    return summarizeInfrastructureServers(calculateInfrastructureServers(this.pricing, {
+      stages: parseInt(tf?.stages) || 2,
+      servicelevel: parseInt(tf?.servicelevel) || 1,
+      amountIdentities: n,
+      totalSystems: this.getTotalTargetSystems(tf),
+      sizingMode: mode
+    }));
   }
 
   get ptStages(): number { return parseInt(this.EditCalcForm.get('targetsystemsform.stages')?.value) || 2; }
@@ -296,91 +288,39 @@ export class EditCalculationDetailComponent implements OnInit {
     const amountIdentities = parseInt(data.customerform.customerEmployees);
     const sizingMode: string = tf.sizingMode || 'vm';
 
-    const amountSAPHCM = (tf.SAPHCMCSV || tf.SAPHCM) ? 1 : 0;
-    const totalSystems =
-      (parseInt(tf.amountMSAD) || 0) + (parseInt(tf.amountMSAAD) || 0) +
-      (parseInt(tf.amountMSEX) || 0) + (parseInt(tf.amountMSEXO) || 0) +
-      (parseInt(tf.amountMSSP) || 0) + (parseInt(tf.amountMSSPO) || 0) +
-      (parseInt(tf.amountMSTEAMS) || 0) + (parseInt(tf.amountFS) || 0) +
-      (parseInt(tf.amountSAPAPP) || 0) + (parseInt(tf.amountLDAP) || 0) +
-      (parseInt(tf.amountSTAR) || 0) + amountSAPHCM;
+    const totalSystems = this.getTotalTargetSystems(tf);
 
-    const addSrv = (role: string, stage: string, def: { key: string; cpu: number; ram: number }, sto: number, bsto: number) => {
+    const servers = calculateInfrastructureServers(this.pricing, {
+      stages,
+      servicelevel,
+      amountIdentities,
+      totalSystems,
+      sizingMode
+    });
+
+    for (const srv of servers) {
       arr.push(new FormGroup({
-        role: new FormControl(role), stage: new FormControl(stage), size: new FormControl(def.key),
-        cpu: new FormControl(def.cpu), ram: new FormControl(def.ram),
-        storage: new FormControl(sto), backupstorage: new FormControl(bsto)
+        role: new FormControl(srv.role), stage: new FormControl(srv.stage), size: new FormControl(srv.size),
+        cpu: new FormControl(srv.cpu), ram: new FormControl(srv.ram),
+        storage: new FormControl(srv.storage), backupstorage: new FormControl(srv.backupstorage)
       }), { emitEvent: false });
-    };
-
-    if (sizingMode === 'container' || sizingMode === 'container-minimalistic') {
-      const containerDefs = (this.pricing.containerSizingDefs?.length > 0)
-        ? this.pricing.containerSizingDefs
-        : DEFAULT_PRICING.containerSizingDefs;
-      const nodeCount = this.pricing.dockerCluster?.nodes || 2;
-
-      let nodeSizeKey: string;
-      if (amountIdentities < 2500)      nodeSizeKey = 'S';
-      else if (amountIdentities < 5000) nodeSizeKey = 'M';
-      else if (amountIdentities < 8500) nodeSizeKey = 'L';
-      else                              nodeSizeKey = 'XL';
-
-      const nodeDef = containerDefs.find(c => c.key === nodeSizeKey) ?? containerDefs[containerDefs.length - 1];
-
-      if (sizingMode === 'container-minimalistic') {
-        for (let i = 0; i < nodeCount; i++) addSrv('Node', 'All', nodeDef, nodeDef.storage, Math.round(nodeDef.storage / 2));
-      } else {
-        for (let i = 0; i < nodeCount; i++) addSrv('Node', 'Prod', nodeDef, nodeDef.storage, Math.round(nodeDef.storage / 2));
-        if (stages === 3) {
-          for (let i = 0; i < nodeCount; i++) addSrv('Node', 'QS/DEV', nodeDef, nodeDef.storage, Math.round(nodeDef.storage / 2));
-        } else if (stages >= 2) {
-          for (let i = 0; i < nodeCount; i++) addSrv('Node', 'DEV', nodeDef, nodeDef.storage, Math.round(nodeDef.storage / 2));
-        }
-      }
-
-    } else {
-      const minimalistic = sizingMode === 'vm-minimalistic';
-      const jobThreshold = this.pricing.consulting.jobServerThreshold || 5;
-      const amountJobServerProd = totalSystems > 0 ? Math.ceil(totalSystems / jobThreshold) : 0;
-      const amountDBServerProd = servicelevel === 3 ? 2 : 1;
-
-      const sizeDefs = this.pricing.sizingDefs;
-      const byKey = (key: string): SizingDef => sizeDefs.find(s => s.key === key) ?? sizeDefs[sizeDefs.length - 1];
-      const halfOf = (def: SizingDef): SizingDef =>
-        sizeDefs.find(s => s.cpu >= def.cpu / 2 && s.ram >= def.ram / 2) ?? sizeDefs[sizeDefs.length - 1];
-      const pick = (key: string): SizingDef => { const bp = byKey(key); return minimalistic ? halfOf(bp) : bp; };
-
-      let webSizeKey: string, webCount: number;
-      if (amountIdentities < 2500)      { webSizeKey = 'M'; webCount = 1; }
-      else if (amountIdentities < 5000) { webSizeKey = 'L'; webCount = 1; }
-      else if (amountIdentities < 8500) { webSizeKey = 'L'; webCount = 2; }
-      else                              { webSizeKey = 'XL'; webCount = 2; }
-
-      const dbDef  = pick('XL');
-      const webDef = pick(webSizeKey);
-      const jobDef = pick('L');
-      const envDef = pick('L');
-
-      for (let i = 0; i < amountDBServerProd; i++) addSrv('DB',  'Prod', dbDef,  500, 1000);
-      for (let i = 0; i < webCount;           i++) addSrv('Web', 'Prod', webDef, 100,  200);
-      for (let i = 0; i < amountJobServerProd; i++) addSrv('Job', 'Prod', jobDef, 100, 200);
-
-      if (stages >= 2) addSrv('DEV', 'DEV', envDef, 200, 500);
-      if (stages === 3) addSrv('QS', 'QS', envDef, 200, 500);
     }
   }
 
   // --- Helpers ---
 
   normalizePricing(p: Partial<Pricing>): Pricing {
-    return {
-      roleDefs: (p.roleDefs && p.roleDefs.length > 0) ? p.roleDefs.map(r => ({ ...r })) : DEFAULT_PRICING.roleDefs.map(r => ({ ...r })),
-      sizingDefs: (p.sizingDefs && p.sizingDefs.length > 0) ? p.sizingDefs.map(s => ({ ...s })) : DEFAULT_PRICING.sizingDefs.map(s => ({ ...s })),
-      containerSizingDefs: (p.containerSizingDefs && p.containerSizingDefs.length > 0) ? p.containerSizingDefs.map(c => ({ ...c })) : DEFAULT_PRICING.containerSizingDefs.map(c => ({ ...c })),
-      dockerCluster: p.dockerCluster ? { ...p.dockerCluster } : { ...DEFAULT_PRICING.dockerCluster },
-      consulting: { ...DEFAULT_PRICING.consulting, ...(p.consulting || {}) },
-      currency: p.currency || 'EUR'
-    };
+    return normalizePricingConfig(p);
+  }
+
+  private getTotalTargetSystems(tf: any): number {
+    const amountSAPHCM = (tf?.SAPHCMCSV || tf?.SAPHCM) ? 1 : 0;
+    return (parseInt(tf?.amountMSAD) || 0) + (parseInt(tf?.amountMSAAD) || 0) +
+      (parseInt(tf?.amountMSEX) || 0) + (parseInt(tf?.amountMSEXO) || 0) +
+      (parseInt(tf?.amountMSSP) || 0) + (parseInt(tf?.amountMSSPO) || 0) +
+      (parseInt(tf?.amountMSTEAMS) || 0) + (parseInt(tf?.amountFS) || 0) +
+      (parseInt(tf?.amountSAPAPP) || 0) + (parseInt(tf?.amountLDAP) || 0) +
+      (parseInt(tf?.amountSTAR) || 0) + amountSAPHCM;
   }
 
   computeSyncChanges(current: Pricing, admin: Pricing): SyncChange[] {
@@ -396,8 +336,10 @@ export class EditCalculationDetailComponent implements OnInit {
       changes.push({ label: 'PT pro 1000 Identitäten / Monat', oldVal: String(c.ptPer1000IdentitiesPerMonth), newVal: String(a.ptPer1000IdentitiesPerMonth) });
     if (c.jobServerThreshold !== a.jobServerThreshold)
       changes.push({ label: 'Jobserver-Schwelle', oldVal: `${c.jobServerThreshold} Sys./Server`, newVal: `${a.jobServerThreshold} Sys./Server` });
-    if (current.dockerCluster?.nodes !== admin.dockerCluster?.nodes)
-      changes.push({ label: 'Docker Cluster Nodes', oldVal: String(current.dockerCluster?.nodes), newVal: String(admin.dockerCluster?.nodes) });
+    if (JSON.stringify(current.dockerCluster) !== JSON.stringify(admin.dockerCluster))
+      changes.push({ label: 'Docker Cluster', oldVal: `${current.dockerCluster?.nodes} Nodes / ${current.dockerCluster?.nodeRoleLabel}`, newVal: `${admin.dockerCluster?.nodes} Nodes / ${admin.dockerCluster?.nodeRoleLabel}` });
+    if (JSON.stringify(current.roleDefs) !== JSON.stringify(admin.roleDefs))
+      changes.push({ label: 'Serverrollen', oldVal: `${current.roleDefs?.length} Rollen`, newVal: `${admin.roleDefs?.length} Rollen (geändert)` });
     if (JSON.stringify(current.sizingDefs) !== JSON.stringify(admin.sizingDefs))
       changes.push({ label: 'VM-Sizing Definitionen', oldVal: `${current.sizingDefs?.length} Größen`, newVal: `${admin.sizingDefs?.length} Größen (geändert)` });
     if (JSON.stringify(current.containerSizingDefs) !== JSON.stringify(admin.containerSizingDefs))

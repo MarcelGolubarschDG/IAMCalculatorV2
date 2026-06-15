@@ -50,7 +50,7 @@
   width: 100%; border-collapse: collapse;
 }
 .ac-sizing-table  { min-width: 700px; }
-.ac-roles-table   { min-width: 580px; }
+.ac-roles-table   { min-width: 760px; }
 .ac-preview-table { min-width: 340px; }
 
 .ac-sizing-table  thead th,
@@ -100,6 +100,7 @@
 
 /* ── Roles table columns ─────────────────────────────────────────────────── */
 .ac-th-label   { text-align: left; min-width: 150px; }
+.ac-th-usage   { text-align: left; width: 130px; }
 .ac-th-toggle  { text-align: center; width: 80px; }
 .ac-th-minsize { text-align: center; width: 90px; }
 .ac-th-factor  { text-align: left; min-width: 140px; }
@@ -119,6 +120,8 @@
   cursor: pointer; transition: border-color 0.15s;
 }
 .ac-select:focus { border-color: #ff003e; }
+.ac-usage-select { width: 130px; }
+.ac-node-role-input { max-width: 220px; }
 
 .ac-factor-row { display: flex; align-items: center; gap: 8px; }
 .ac-factor-input {

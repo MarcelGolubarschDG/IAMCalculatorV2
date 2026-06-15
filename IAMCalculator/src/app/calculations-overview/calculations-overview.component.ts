@@ -48,6 +48,28 @@ export class CalculationsOverviewComponent implements OnInit {
     })
   }
 
+  deleteCalculation(calculation: Calculation, event: Event): void {
+    event.stopPropagation();
+
+    const calculationName = calculation.basicform.calculationName || 'diese Kalkulation';
+    const confirmed = window.confirm(`Kalkulation "${calculationName}" wirklich löschen?`);
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.apiService.deleteCalculation(calculation._id).subscribe({
+      next: () => {
+        this.calculations = this.calculations.filter(existingCalculation => existingCalculation._id !== calculation._id);
+        this.toastr.success('Kalkulation gelöscht', 'Erfolg');
+      },
+      error: err => {
+        console.error('Error deleting calculation:', err);
+        this.toastr.error('Kalkulation konnte nicht gelöscht werden', 'Fehler');
+      }
+    });
+  }
+
   // calculate amout of Targetsystems for overview cards
   amountOfTargetsystems (id:string) {
     let counter = 0;
