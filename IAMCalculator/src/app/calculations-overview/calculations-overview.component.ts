@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Calculation } from '../interfaces/calculation';
 import { ApiService } from '../services/api.service';
 import { ToastrService } from 'ngx-toastr';
-import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -11,7 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     styleUrl: './calculations-overview.component.css',
     standalone: false
 })
-export class CalculationsOverviewComponent implements OnInit {
+export class CalculationsOverviewComponent {
 
   calculations: Calculation[] = [];
 
@@ -19,48 +18,30 @@ export class CalculationsOverviewComponent implements OnInit {
     private apiService: ApiService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router,
-    private location: Location
+    private router: Router
     ) {
       route.params.subscribe(() => { this.getCalculations(); });
     }
 
-    ngOnInit(): void {
-    }
-
-  // nagivate fuction
-  goToPage(value:any) {
-    this.router.navigateByUrl(value)
+  goToPage(value: string) {
+    this.router.navigateByUrl(value);
   }
 
-  // nagivate fuction
-  goBack(): void {
-    this.location.back();
-  }
-
-  // load all calculations via ApiService
   getCalculations() {
     this.apiService.getCalculations().subscribe({
-      next: res => {
-        this.calculations = res as Calculation[]
-      },
-      error: err => { console.log(err) } 
-    })
+      next: res => { this.calculations = res as Calculation[]; },
+      error: err => { console.error(err); }
+    });
   }
 
   deleteCalculation(calculation: Calculation, event: Event): void {
     event.stopPropagation();
-
     const calculationName = calculation.basicform.calculationName || 'diese Kalkulation';
-    const confirmed = window.confirm(`Kalkulation "${calculationName}" wirklich löschen?`);
-
-    if (!confirmed) {
-      return;
-    }
+    if (!window.confirm(`Kalkulation "${calculationName}" wirklich löschen?`)) return;
 
     this.apiService.deleteCalculation(calculation._id).subscribe({
       next: () => {
-        this.calculations = this.calculations.filter(existingCalculation => existingCalculation._id !== calculation._id);
+        this.calculations = this.calculations.filter(c => c._id !== calculation._id);
         this.toastr.success('Kalkulation gelöscht', 'Erfolg');
       },
       error: err => {
@@ -70,38 +51,13 @@ export class CalculationsOverviewComponent implements OnInit {
     });
   }
 
-  // calculate amout of Targetsystems for overview cards
-  amountOfTargetsystems (id:string) {
-    let counter = 0;
-    let amount = 0;
-    for (let i = 0; i < this.calculations.length; i++) {
-      if (this.calculations[i]._id === id)
-      {
-        amount = Number(this.calculations[i].targetsystemsform.amountMSAD)
-               + Number(this.calculations[i].targetsystemsform.amountMSAAD)
-               + Number(this.calculations[i].targetsystemsform.amountMSEX)
-               + Number(this.calculations[i].targetsystemsform.amountMSEXO)
-               + Number(this.calculations[i].targetsystemsform.amountMSSP)
-               + Number(this.calculations[i].targetsystemsform.amountMSSPO)
-               + Number(this.calculations[i].targetsystemsform.amountMSTEAMS)
-               + Number(this.calculations[i].targetsystemsform.amountFS)
-               + Number(this.calculations[i].targetsystemsform.amountSAPAPP)
-               + Number(this.calculations[i].targetsystemsform.amountLDAP)
-               + Number(this.calculations[i].targetsystemsform.amountSTAR)
-      }
-      
-    }
-    return amount
-  }
+  trackByCalcId(_: number, calc: Calculation): string { return calc._id; }
 
-  // calculate amout of servers for overview cards
-  amountOfServerByCalcID(id:string) {
-    let counter = 0;
-    for (let i = 0; i < this.calculations.length; i++) {
-      if (this.calculations[i]._id === id) {
-        counter = this.calculations[i].servers.length
-      };
-    }
-    return counter
+  amountOfTargetsystems(calc: Calculation): number {
+    const tf = calc.targetsystemsform;
+    return (Number(tf.amountMSAD) + Number(tf.amountMSAAD) + Number(tf.amountMSEX) +
+            Number(tf.amountMSEXO) + Number(tf.amountMSSP) + Number(tf.amountMSSPO) +
+            Number(tf.amountMSTEAMS) + Number(tf.amountFS) + Number(tf.amountSAPAPP) +
+            Number(tf.amountLDAP) + Number(tf.amountSTAR));
   }
 }

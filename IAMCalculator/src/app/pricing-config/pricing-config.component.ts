@@ -34,8 +34,9 @@ export class PricingConfigComponent implements OnInit {
   readonly previewCounts = [500, 1000, 2500, 5000, 10000];
   readonly infraRoleOptions: Array<{ value: InfrastructureRoleUsage; label: string }> = [
     { value: 'none', label: 'Keine' },
-    { value: 'database', label: 'Datenbank' },
-    { value: 'web', label: 'Web/App' },
+    { value: 'database', label: 'Datenbank (fest)' },
+    { value: 'dbagent', label: 'DB-Agent (fest)' },
+    { value: 'web', label: 'Webserver (fest)' },
     { value: 'job', label: 'Job' },
     { value: 'environment', label: 'Stage-Server' }
   ];
@@ -128,6 +129,7 @@ export class PricingConfigComponent implements OnInit {
   }
 
   deleteRole(idx: number) {
+    if (this.pricing.roleDefs[idx]?.protected) return;
     const key = this.pricing.roleDefs[idx].key;
     this.pricing.roleDefs.splice(idx, 1);
     if (this.previewRoleKey === key) {

@@ -20,7 +20,7 @@ export interface DockerClusterConfig {
   nodeRoleLabel: string;
 }
 
-export const INFRASTRUCTURE_ROLE_USAGES = ['none', 'database', 'web', 'job', 'environment'] as const;
+export const INFRASTRUCTURE_ROLE_USAGES = ['none', 'database', 'dbagent', 'web', 'job', 'environment'] as const;
 export type InfrastructureRoleUsage = typeof INFRASTRUCTURE_ROLE_USAGES[number];
 
 export interface ServerRoleDef {
@@ -31,6 +31,7 @@ export interface ServerRoleDef {
   cpuPer1000: number;
   ramPer1000: number;
   infraRole?: InfrastructureRoleUsage;
+  protected?: boolean;
 }
 
 export interface ConsultingConfig {
@@ -38,6 +39,7 @@ export interface ConsultingConfig {
   ptPerServerPerMonth: number;
   ptPer1000IdentitiesPerMonth: number;
   jobServerThreshold: number;
+  webServerSessionCapacity: number;
 }
 
 export interface Pricing {
@@ -55,6 +57,8 @@ export interface InfrastructureCalculationInput {
   amountIdentities: number;
   totalSystems: number;
   sizingMode: string;
+  mssqlRedundancy?: boolean;
+  webRedundancy?: boolean;
 }
 
 export interface InfrastructureServer {
@@ -78,13 +82,13 @@ export const DEFAULT_SIZING_DEFS: SizingDef[] = [
 ];
 
 export const DEFAULT_ROLE_DEFS: ServerRoleDef[] = [
-  { key: 'jobservice',          label: 'Jobservice',             singleton: false, minSize: 'XS', cpuPer1000: 0.5, ramPer1000: 0.5, infraRole: 'job'         },
-  { key: 'dbagent',             label: 'DB-Agent',               singleton: true,  minSize: 'S',  cpuPer1000: 1.0, ramPer1000: 2.0, infraRole: 'none'        },
-  { key: 'webserver',           label: 'Webserver',              singleton: false, minSize: 'XS', cpuPer1000: 0.5, ramPer1000: 1.0, infraRole: 'none'        },
-  { key: 'appserver',           label: 'Appserver',              singleton: false, minSize: 'S',  cpuPer1000: 1.0, ramPer1000: 1.5, infraRole: 'none'        },
-  { key: 'webserver_appserver', label: 'Webserver + Appserver',  singleton: false, minSize: 'S',  cpuPer1000: 1.5, ramPer1000: 2.0, infraRole: 'web'         },
-  { key: 'jobservice_dbagent',  label: 'Jobservice + DB-Agent',  singleton: false, minSize: 'S',  cpuPer1000: 1.5, ramPer1000: 2.5, infraRole: 'environment' },
-  { key: 'mssql',               label: 'MSSQL Server',           singleton: false, minSize: 'M',  cpuPer1000: 0.5, ramPer1000: 1.0, infraRole: 'database'    },
+  { key: 'mssql',               label: 'MSSQL Server',           singleton: false, minSize: 'M',  cpuPer1000: 0.5, ramPer1000: 1.0, infraRole: 'database',  protected: true  },
+  { key: 'dbagent',             label: 'DB-Agent',               singleton: false, minSize: 'S',  cpuPer1000: 1.0, ramPer1000: 2.0, infraRole: 'dbagent',   protected: true  },
+  { key: 'webserver',           label: 'Webserver',              singleton: false, minSize: 'XS', cpuPer1000: 0.5, ramPer1000: 1.0, infraRole: 'web',       protected: true  },
+  { key: 'jobservice',          label: 'Jobservice',             singleton: false, minSize: 'XS', cpuPer1000: 0.5, ramPer1000: 0.5, infraRole: 'job'                         },
+  { key: 'appserver',           label: 'Appserver',              singleton: false, minSize: 'S',  cpuPer1000: 1.0, ramPer1000: 1.5, infraRole: 'none'                        },
+  { key: 'webserver_appserver', label: 'Webserver + Appserver',  singleton: false, minSize: 'S',  cpuPer1000: 1.5, ramPer1000: 2.0, infraRole: 'none'                        },
+  { key: 'jobservice_dbagent',  label: 'Jobservice + DB-Agent',  singleton: false, minSize: 'S',  cpuPer1000: 1.5, ramPer1000: 2.5, infraRole: 'environment'                 },
 ];
 
 export const DEFAULT_CONTAINER_SIZING_DEFS: ContainerSizingDef[] = [
@@ -104,6 +108,7 @@ export const DEFAULT_CONSULTING: ConsultingConfig = {
   ptPerServerPerMonth: 0.5,
   ptPer1000IdentitiesPerMonth: 0.1,
   jobServerThreshold: 5,
+  webServerSessionCapacity: 500,
 };
 
 export const DEFAULT_PRICING: Pricing = {
@@ -134,7 +139,8 @@ function normalizeRoleDefs(roleDefs: ServerRoleDef[] | undefined): ServerRoleDef
     const fallbackUsage = defaultRole?.infraRole || 'none';
     return {
       ...role,
-      infraRole: normalizeInfraRoleUsage(role.infraRole, fallbackUsage)
+      infraRole: normalizeInfraRoleUsage(role.infraRole, fallbackUsage),
+      protected: defaultRole?.protected ?? role.protected ?? false
     };
   });
 }
@@ -251,30 +257,39 @@ function calculateVmInfrastructure(
   const minimalistic = input.sizingMode === 'vm-minimalistic';
   const amountIdentities = safeNumber(input.amountIdentities);
   const totalSystems = safeNumber(input.totalSystems);
-  const servicelevel = safeNumber(input.servicelevel);
   const stages = safeNumber(input.stages);
   const jobThreshold = Math.max(1, safeNumber(pricing.consulting.jobServerThreshold) || DEFAULT_CONSULTING.jobServerThreshold);
+  const sessionCapacity = Math.max(1, safeNumber(pricing.consulting.webServerSessionCapacity) || DEFAULT_CONSULTING.webServerSessionCapacity);
 
-  const databaseRole = findInfrastructureRole(pricing, 'database');
-  const webRole = findInfrastructureRole(pricing, 'web');
-  const jobRole = findInfrastructureRole(pricing, 'job');
-  const environmentRole = findInfrastructureRole(pricing, 'environment');
+  const mssqlRole    = findInfrastructureRole(pricing, 'database');
+  const dbagentRole  = findInfrastructureRole(pricing, 'dbagent');
+  const webRole      = findInfrastructureRole(pricing, 'web');
+  const jobRole      = findInfrastructureRole(pricing, 'job');
+  const envRole      = findInfrastructureRole(pricing, 'environment');
 
-  const databaseCount = databaseRole?.singleton ? 1 : (servicelevel >= 2 ? 2 : 1);
-  const webCount = webRole?.singleton ? 1 : calculateWebServerCount(amountIdentities);
-  const jobCount = totalSystems > 0
-    ? (jobRole?.singleton ? 1 : Math.ceil(totalSystems / jobThreshold))
-    : 0;
+  // MSSQL: always 1×; redundancy doubles it (disabled in minimalistic)
+  const mssqlCount = (!minimalistic && input.mssqlRedundancy) ? 2 : 1;
 
-  addRoleServers(servers, pricing, databaseRole, 'Prod', amountIdentities, minimalistic, databaseCount);
-  addRoleServers(servers, pricing, webRole, 'Prod', amountIdentities, minimalistic, webCount);
-  addRoleServers(servers, pricing, jobRole, 'Prod', amountIdentities, minimalistic, jobCount);
+  // DB-Agent: always exactly 1×
+  const dbagentCount = 1;
+
+  // Webserver: scale by active sessions (4% of identities / capacity per server)
+  const baseWebCount = Math.max(1, Math.ceil((amountIdentities * 0.04) / sessionCapacity));
+  const webCount = (!minimalistic && input.webRedundancy) ? baseWebCount * 2 : baseWebCount;
+
+  // Jobserver: ceil(systems / threshold), 0 if no systems
+  const jobCount = totalSystems > 0 ? Math.ceil(totalSystems / jobThreshold) : 0;
+
+  addRoleServers(servers, pricing, mssqlRole,   'Prod', amountIdentities, minimalistic, mssqlCount);
+  addRoleServers(servers, pricing, dbagentRole,  'Prod', amountIdentities, minimalistic, dbagentCount);
+  addRoleServers(servers, pricing, webRole,      'Prod', amountIdentities, minimalistic, webCount);
+  addRoleServers(servers, pricing, jobRole,      'Prod', amountIdentities, minimalistic, jobCount);
 
   if (stages >= 2) {
-    addRoleServers(servers, pricing, environmentRole, 'DEV', amountIdentities, minimalistic, 1);
+    addRoleServers(servers, pricing, envRole, 'DEV', amountIdentities, minimalistic, 1);
   }
   if (stages === 3) {
-    addRoleServers(servers, pricing, environmentRole, 'QS', amountIdentities, minimalistic, 1);
+    addRoleServers(servers, pricing, envRole, 'QS', amountIdentities, minimalistic, 1);
   }
 
   return servers;
@@ -335,10 +350,6 @@ function identityTier(amountIdentities: number): number {
   if (amountIdentities < 5000) return 1;
   if (amountIdentities < 8500) return 2;
   return 3;
-}
-
-function calculateWebServerCount(amountIdentities: number): number {
-  return amountIdentities < 5000 ? 1 : 2;
 }
 
 function addRepeated(

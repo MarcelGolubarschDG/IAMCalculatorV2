@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../services/api.service';
 import { Calculation } from '../interfaces/calculation';
@@ -13,164 +13,102 @@ import { ExcelExportServiceService } from '../services/excel-export-service.serv
     styleUrl: './calculation-detail.component.css',
     standalone: false
 })
-export class CalculationDetailComponent implements OnInit {
+export class CalculationDetailComponent {
 
-calculations: Calculation | undefined;
+  calculations: Calculation | undefined;
 
-servicelevel: string = ""
-stages: string = ""
-licenseOIM: string = ""
-SAPHCM: string = ""
-SAPHCMCSV: string = ""
-
-constructor(
-  private toastr: ToastrService,
-  private apiService: ApiService,
-  private route: ActivatedRoute,
-  private router: Router,
-  private location: Location,
-  private csvService: CsvExportServiceService,
-  private excelService: ExcelExportServiceService
+  constructor(
+    private toastr: ToastrService,
+    private apiService: ApiService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private location: Location,
+    private csvService: CsvExportServiceService,
+    private excelService: ExcelExportServiceService
   ) {
-    route.params.subscribe(val => {
-    // put the code from `ngOnInit` here
-    this.getCalculation()
-  }); }
-
-  ngOnInit(): void {
+    route.params.subscribe(() => { this.getCalculation(); });
   }
 
-  // nagivate fuction
   goToPage() {
     const id = String(this.route.snapshot.paramMap.get('id'));
-    this.router.navigateByUrl(`/Edit/Calculation/${id}`)
+    this.router.navigateByUrl(`/Edit/Calculation/${id}`);
   }
-  
-  goBack(): void {
-    this.location.back();
-  }
+
+  goBack(): void { this.location.back(); }
 
   delete() {
     const id = String(this.route.snapshot.paramMap.get('id'));
-    console.log('Attempting to delete calculation with ID:', id); // Ausgabe der ID
-  
-    this.apiService.deleteCalculation(id).subscribe(
-      response => {
-        console.log('Delete response:', response);
-        this.toastr.success('Calculation deleted successfully', 'Success'); // Erfolgsnachricht
-        // Weiterleitung nach dem Löschen, z.B. auf eine Liste von Berechnungen
+    this.apiService.deleteCalculation(id).subscribe({
+      next: () => {
+        this.toastr.success('Calculation deleted successfully', 'Success');
         this.router.navigate(['/calculation']);
       },
-      error => {
+      error: error => {
         console.error('Error deleting calculation:', error);
-        this.toastr.error('Failed to delete the calculation', 'Error'); // Fehlermeldung
+        this.toastr.error('Failed to delete the calculation', 'Error');
       }
-    );
+    });
   }
 
-  onExportCSV(){
+  onExportCSV() {
     const id = String(this.route.snapshot.paramMap.get('id'));
-    this.csvService.exportCsv(id)
+    this.csvService.exportCsv(id);
   }
-  onExportXLSX(){
+
+  onExportXLSX() {
     const id = String(this.route.snapshot.paramMap.get('id'));
-    this.excelService.exportXlsx(id)
+    this.excelService.exportXlsx(id);
   }
 
   getCalculation() {
     const id = String(this.route.snapshot.paramMap.get('id'));
-    this.apiService.getCalculationByCalcID(id)
-    .subscribe(calculations => this.calculations = calculations);
+    this.apiService.getCalculationByCalcID(id).subscribe(c => { this.calculations = c; });
   }
 
-  CalculateTargetsystems() {
-    let result = Number(this.calculations?.targetsystemsform.amountMSAD)
-               + Number(this.calculations?.targetsystemsform.amountMSAAD)
-               + Number(this.calculations?.targetsystemsform.amountMSEX)
-               + Number(this.calculations?.targetsystemsform.amountMSEXO)
-               + Number(this.calculations?.targetsystemsform.amountMSSP)
-               + Number(this.calculations?.targetsystemsform.amountMSSPO)
-               + Number(this.calculations?.targetsystemsform.amountMSTEAMS)
-               + Number(this.calculations?.targetsystemsform.amountFS)
-               + Number(this.calculations?.targetsystemsform.amountSAPAPP)
-               + Number(this.calculations?.targetsystemsform.amountLDAP)
-               + Number(this.calculations?.targetsystemsform.amountSTAR)
-    return result
+  trackBySrvIndex(i: number): number { return i; }
+
+  CalculateTargetsystems(): number {
+    const tf = this.calculations?.targetsystemsform;
+    if (!tf) return 0;
+    return (Number(tf.amountMSAD) + Number(tf.amountMSAAD) + Number(tf.amountMSEX) +
+            Number(tf.amountMSEXO) + Number(tf.amountMSSP) + Number(tf.amountMSSPO) +
+            Number(tf.amountMSTEAMS) + Number(tf.amountFS) + Number(tf.amountSAPAPP) +
+            Number(tf.amountLDAP) + Number(tf.amountSTAR));
   }
 
-  CalculateServicelevel() {
-    switch(this.calculations?.targetsystemsform.servicelevel) {
-      case 1:
-        this.servicelevel = "Business Standard"
-        break;
-      case 2:
-        this.servicelevel = "Business Critical"
-        break;
-      case 3:
-        this.servicelevel = "Business Critical +"
-        break;
-      default:
+  CalculateServicelevel(): string {
+    switch (this.calculations?.targetsystemsform.servicelevel) {
+      case 1: return 'Business Standard';
+      case 2: return 'Business Critical';
+      default: return '';
     }
-    return this.servicelevel
   }
-  
-  CalculateLicenseOIM() {
-    switch(this.calculations?.targetsystemsform.licenseOIM) {
-      case 1:
-        this.licenseOIM = "Standard"
-        break;
-      case 2:
-        this.licenseOIM = "Data Governance Edition"
-        break;
-      default:
+
+  CalculateLicenseOIM(): string {
+    switch (this.calculations?.targetsystemsform.licenseOIM) {
+      case 1: return 'Standard';
+      case 2: return 'Data Governance Edition';
+      default: return '';
     }
-    return this.licenseOIM
   }
 
-  CalculateStages() {
-    switch(this.calculations?.targetsystemsform.stages) {
-      case 2:
-        this.stages = "Produktion, Entwicklung"
-        break;
-      case 3:
-        this.stages = "Produktion, Qualitätssicherung, Entwicklung"
-        break;
-      default:
+  CalculateStages(): string {
+    switch (this.calculations?.targetsystemsform.stages) {
+      case 2: return 'Produktion, Entwicklung';
+      case 3: return 'Produktion, Qualitätssicherung, Entwicklung';
+      default: return '';
     }
-    return this.stages
   }
 
-  CalculateSAPHCM() {
-    switch(this.calculations?.targetsystemsform.SAPHCM) {
-      case true:
-        this.SAPHCM = "Ja"
-        break;
-      case false:
-        this.SAPHCM = "Nein"
-        break;
-      default:
-    }
-    return this.SAPHCM
+  CalculateSAPHCM(): string {
+    return this.calculations?.targetsystemsform.SAPHCM ? 'Ja' : 'Nein';
   }
 
-  CalculateSAPHCMCSV() {
-    switch(this.calculations?.targetsystemsform.SAPHCMCSV) {
-      case true:
-        this.SAPHCMCSV = "Ja"
-        break;
-      case false:
-        this.SAPHCMCSV = "Nein"
-        break;
-      default:
-    }
-    return this.SAPHCMCSV
+  CalculateSAPHCMCSV(): string {
+    return this.calculations?.targetsystemsform.SAPHCMCSV ? 'Ja' : 'Nein';
   }
 
-  
-
-  CalculateServer() {
-    
-    return this.calculations?.servers.length
+  CalculateServer(): number | undefined {
+    return this.calculations?.servers.length;
   }
-
 }

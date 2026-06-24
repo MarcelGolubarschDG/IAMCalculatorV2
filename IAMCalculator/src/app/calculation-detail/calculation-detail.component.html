@@ -190,7 +190,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let srv of calculations?.servers; let z = index">
+                                <tr *ngFor="let srv of calculations?.servers; let z = index; trackBy: trackBySrvIndex">
                                     <td>{{ z + 1 }}</td>
 
                                     <td>{{srv.stage}}</td>

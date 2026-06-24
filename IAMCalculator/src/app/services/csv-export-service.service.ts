@@ -63,7 +63,7 @@ interface ServerData {
 export class CsvExportServiceService {
 
   constructor(private http: HttpClient) {}
-  private APIUrl = `http://localhost:3000/api/Calculation/id/`
+  private APIUrl = `/api/Calculation/id/`
 
   exportCsv(id: string) {
     this.http.get<any[]>(this.APIUrl+id).pipe(
@@ -110,16 +110,5 @@ export class CsvExportServiceService {
     });
 
     return csv;
-  }
-
-
-  private convertObjectToCsv(obj: any): string {
-    const values = Object.values(obj);
-    return values.map(val => {
-      if (typeof val === 'string' && val.includes(',')) {
-        return `"${val}"`; // Werte mit Komma in Anführungszeichen setzen
-      }
-      return val;
-    }).join(',');
   }
 }

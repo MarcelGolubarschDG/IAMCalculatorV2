@@ -153,6 +153,8 @@
   font-size: 13px; padding: 4px 6px; border-radius: 4px; transition: color 0.15s;
 }
 .ac-del-btn:hover { color: #ff003e; }
+.ac-del-btn.ac-del-locked { color: #555; cursor: not-allowed; }
+.ac-del-btn.ac-del-locked:hover { color: #555; }
 
 .ac-add-btn {
   background: none; border: 1.5px dashed #ccc; color: #888;

@@ -112,6 +112,27 @@
               VM Min.: halbe HW · Container: Prod-Cluster + QS/DEV-Cluster · Container Min.: 1× Cluster alle Stages
             </div>
           </div>
+
+          <div class="ps-field" *ngIf="isVmMode">
+            <label>Redundanz</label>
+            <div class="ps-toggle-group">
+              <div class="ps-toggle-btn"
+                   [class.active]="NewCalcForm.get('targetsystemsform.mssqlRedundancy')?.value"
+                   [class.disabled]="isMinimalisticMode"
+                   (click)="toggleMssqlRedundancy()">
+                <i class="fa-solid fa-database"></i> MSSQL 2×
+              </div>
+              <div class="ps-toggle-btn"
+                   [class.active]="NewCalcForm.get('targetsystemsform.webRedundancy')?.value"
+                   [class.disabled]="isMinimalisticMode"
+                   (click)="toggleWebRedundancy()">
+                <i class="fa-solid fa-globe"></i> Webserver 2×
+              </div>
+            </div>
+            <div class="ps-hint" *ngIf="isMinimalisticMode">
+              <i class="fa-solid fa-lock"></i> Redundanz nicht verfügbar im VM Minimalistic Modus
+            </div>
+          </div>
         </div>
 
         <div class="ps-section" formGroupName="consultingform">
@@ -220,7 +241,7 @@
           <div class="ps-stage" *ngIf="getServersByStage('Prod').length > 0">
             <div class="ps-stage-label prod">Produktion</div>
             <div class="ps-server-cards">
-              <div class="ps-server-card" *ngFor="let srv of getServersByStage('Prod')">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('Prod'); trackBy: trackBySrvIndex">
                 <div class="ps-srv-role">{{ srv.value.role }}</div>
                 <div class="ps-srv-size">{{ srv.value.size }}</div>
                 <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
@@ -230,7 +251,7 @@
           <div class="ps-stage" *ngIf="getServersByStage('DEV').length > 0">
             <div class="ps-stage-label dev">Entwicklung (DEV)</div>
             <div class="ps-server-cards">
-              <div class="ps-server-card" *ngFor="let srv of getServersByStage('DEV')">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('DEV'); trackBy: trackBySrvIndex">
                 <div class="ps-srv-role">{{ srv.value.role }}</div>
                 <div class="ps-srv-size">{{ srv.value.size }}</div>
                 <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
@@ -240,7 +261,7 @@
           <div class="ps-stage" *ngIf="getServersByStage('QS').length > 0">
             <div class="ps-stage-label qs">Qualitätssicherung (QS)</div>
             <div class="ps-server-cards">
-              <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS')">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS'); trackBy: trackBySrvIndex">
                 <div class="ps-srv-role">{{ srv.value.role }}</div>
                 <div class="ps-srv-size">{{ srv.value.size }}</div>
                 <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
@@ -250,7 +271,7 @@
           <div class="ps-stage" *ngIf="getServersByStage('QS/DEV').length > 0">
             <div class="ps-stage-label qs">QS / Entwicklung (geteilt)</div>
             <div class="ps-server-cards">
-              <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS/DEV')">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('QS/DEV'); trackBy: trackBySrvIndex">
                 <div class="ps-srv-role">{{ srv.value.role }}</div>
                 <div class="ps-srv-size">{{ srv.value.size }}</div>
                 <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
@@ -260,7 +281,7 @@
           <div class="ps-stage" *ngIf="getServersByStage('All').length > 0">
             <div class="ps-stage-label all">Alle Stages (geteilt)</div>
             <div class="ps-server-cards">
-              <div class="ps-server-card" *ngFor="let srv of getServersByStage('All')">
+              <div class="ps-server-card" *ngFor="let srv of getServersByStage('All'); trackBy: trackBySrvIndex">
                 <div class="ps-srv-role">{{ srv.value.role }}</div>
                 <div class="ps-srv-size">{{ srv.value.size }}</div>
                 <div class="ps-srv-specs">{{ srv.value.cpu }} vCPU · {{ srv.value.ram }} GB</div>
@@ -338,7 +359,7 @@
           <table class="ps-diff-table">
             <thead><tr><th>Konstante</th><th>Aktuell</th><th>Neu (Admin)</th></tr></thead>
             <tbody>
-              <tr *ngFor="let ch of syncChanges">
+              <tr *ngFor="let ch of syncChanges; trackBy: trackBySyncChange">
                 <td>{{ ch.label }}</td>
                 <td class="ps-diff-old">{{ ch.oldVal }}</td>
                 <td class="ps-diff-new">{{ ch.newVal }}</td>

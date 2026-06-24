@@ -208,8 +208,12 @@
                 </div>
               </td>
               <td class="ac-td-del">
-                <button class="ac-del-btn" type="button" (click)="deleteRole(i)" title="Rolle löschen">
-                  <i class="fa-solid fa-trash"></i>
+                <button class="ac-del-btn" type="button" (click)="deleteRole(i)"
+                        [disabled]="role.protected"
+                        [class.ac-del-locked]="role.protected"
+                        [title]="role.protected ? 'Standardrolle – nicht löschbar' : 'Rolle löschen'">
+                  <i class="fa-solid fa-lock" *ngIf="role.protected"></i>
+                  <i class="fa-solid fa-trash" *ngIf="!role.protected"></i>
                 </button>
               </td>
             </tr>
@@ -254,13 +258,22 @@
           </div>
         </div>
 
-        <div class="ac-rate-field" style="margin-bottom:0">
+        <div class="ac-rate-field">
           <label>Jobserver-Schwelle</label>
           <div class="ac-rate-row">
             <input type="number" min="1" step="1" [(ngModel)]="pricing.consulting.jobServerThreshold" class="ac-rate-input">
             <span class="ac-unit">Zielsysteme / Server</span>
           </div>
           <div class="ac-pt-hint">Ab je {{ pricing.consulting.jobServerThreshold }} Zielsystemen wird ein weiterer Jobserver kalkuliert</div>
+        </div>
+
+        <div class="ac-rate-field" style="margin-bottom:0">
+          <label>Sessions / Webserver</label>
+          <div class="ac-rate-row">
+            <input type="number" min="1" step="50" [(ngModel)]="pricing.consulting.webServerSessionCapacity" class="ac-rate-input">
+            <span class="ac-unit">concurrent Sessions</span>
+          </div>
+          <div class="ac-pt-hint">Kapazität pro Webserver (Basis: 4% aktive Sessions = Identitäten × 0.04)</div>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 import { Pricing } from './pricing';
 
-interface server {
+export interface Server {
     role: string;
     stage: string;
     size: string;
@@ -38,8 +38,10 @@ export interface Calculation {
         amountSAPAPP: number;
         amountLDAP: number;
         amountSTAR: number;
+        mssqlRedundancy?: boolean;
+        webRedundancy?: boolean;
     };
-    servers: server[];
+    servers: Server[];
     consultingform?: {
         includedPtPerMonth: number;
     };

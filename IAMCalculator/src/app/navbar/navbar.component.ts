@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-navbar',
@@ -7,25 +7,10 @@ import { Router, ActivatedRoute } from '@angular/router';
     styleUrl: './navbar.component.css',
     standalone: false
 })
+export class NavbarComponent {
+  constructor(private router: Router) {}
 
-export class NavbarComponent implements OnInit {
-
-constructor(
-  private route: ActivatedRoute,
-  private router: Router
-  ) { 
-    route.params.subscribe(val => {
-    // put the code from `ngOnInit` here
-
-  }); }
-
-  ngOnInit(): void {
+  goToPage(value: string) {
+    this.router.navigateByUrl(value);
   }
-
-  // nagivate fuction
-  goToPage(value:any) {
-    this.router.navigateByUrl(value)
-  }
-
-  
 }

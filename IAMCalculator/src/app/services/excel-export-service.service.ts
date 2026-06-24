@@ -25,7 +25,7 @@ export class ExcelExportServiceService {
 
   constructor(private http: HttpClient) {}
 
-  private APIUrl = `http://localhost:3000/api/Calculation/id/`
+  private APIUrl = `/api/Calculation/id/`
 
 
   exportXlsx(id: string) {

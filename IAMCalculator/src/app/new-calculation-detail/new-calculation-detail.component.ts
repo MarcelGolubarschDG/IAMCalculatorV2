@@ -4,6 +4,7 @@ import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Pricing, DEFAULT_PRICING, calculateInfrastructureServers, normalizePricingConfig, summarizeInfrastructureServers } from '../interfaces/pricing';
+import { Calculation } from '../interfaces/calculation';
 
 export interface SyncChange {
   label: string;
@@ -42,6 +43,8 @@ export class NewCalculationDetailComponent implements OnInit {
   get ptStages(): number { return parseInt(this.NewCalcForm.get('targetsystemsform.stages')?.value) || 2; }
   get ptIdentitiesK(): number { return Math.round((parseInt(this.NewCalcForm.get('customerform.customerEmployees')?.value) || 0) / 100) / 10; }
   get isContainerMode(): boolean { const m = this.NewCalcForm.get('targetsystemsform.sizingMode')?.value || 'vm'; return m === 'container' || m === 'container-minimalistic'; }
+  get isVmMode(): boolean { const m = this.NewCalcForm.get('targetsystemsform.sizingMode')?.value || 'vm'; return m === 'vm' || m === 'vm-minimalistic'; }
+  get isMinimalisticMode(): boolean { return this.NewCalcForm.get('targetsystemsform.sizingMode')?.value === 'vm-minimalistic'; }
   get ptForStages(): number { return Math.round(this.pricing.consulting.ptPerStage * this.ptStages * 10) / 10; }
   get ptForServers(): number { return this.isContainerMode ? 2 : Math.round(this.pricing.consulting.ptPerServerPerMonth * this.serverControls.length * 10) / 10; }
   get ptForIdentities(): number { return Math.round(this.pricing.consulting.ptPer1000IdentitiesPerMonth * this.ptIdentitiesK * 10) / 10; }
@@ -90,15 +93,14 @@ export class NewCalculationDetailComponent implements OnInit {
 
   confirmSave() {
     this.showSaveConfirm = false;
-    this.onPostForm(this.NewCalcForm.value);
+    this.apiservice.addCalculation(this.buildPayload(this.NewCalcForm.value)).subscribe();
     this.NewCalcForm.reset();
     this.goToPage('/OverviewManagedIAM');
   }
 
-  onPostForm(data: any) {
+  private buildPayload(data: any): Omit<Calculation, '_id'> {
     const tf = data.targetsystemsform;
-    const jsonObject = {
-      id: data.id,
+    return {
       basicform: {
         calculationName: data.basicform?.calculationName ?? '',
         calculationDesc: data.basicform?.calculationDesc ?? ''
@@ -124,7 +126,9 @@ export class NewCalculationDetailComponent implements OnInit {
         SAPHCM: tf.SAPHCM,
         amountSAPAPP: parseInt(tf.amountSAPAPP) || 0,
         amountLDAP: parseInt(tf.amountLDAP) || 0,
-        amountSTAR: parseInt(tf.amountSTAR) || 0
+        amountSTAR: parseInt(tf.amountSTAR) || 0,
+        mssqlRedundancy: tf.mssqlRedundancy || false,
+        webRedundancy: tf.webRedundancy || false
       },
       servers: data.servers,
       consultingform: {
@@ -132,7 +136,6 @@ export class NewCalculationDetailComponent implements OnInit {
       },
       pricingSnapshot: this.normalizePricing(this.pricing)
     };
-    this.apiservice.addCalculation(jsonObject as any);
   }
 
   // --- Target system helpers ---
@@ -176,6 +179,18 @@ export class NewCalculationDetailComponent implements OnInit {
     this.NewCalcForm.get('targetsystemsform.stages')?.setValue(value);
   }
 
+  toggleMssqlRedundancy() {
+    if (this.isMinimalisticMode) return;
+    const ctrl = this.NewCalcForm.get('targetsystemsform.mssqlRedundancy');
+    ctrl?.setValue(!ctrl.value);
+  }
+
+  toggleWebRedundancy() {
+    if (this.isMinimalisticMode) return;
+    const ctrl = this.NewCalcForm.get('targetsystemsform.webRedundancy');
+    ctrl?.setValue(!ctrl.value);
+  }
+
   adjustSAPR3(delta: number) {
     const control = this.NewCalcForm.get('targetsystemsform.amountSAPAPP');
     const newVal = Math.max(0, Math.min(9, (control?.value || 0) + delta));
@@ -198,7 +213,9 @@ export class NewCalculationDetailComponent implements OnInit {
       servicelevel: parseInt(tf?.servicelevel) || 1,
       amountIdentities: n,
       totalSystems: this.getTotalTargetSystems(tf),
-      sizingMode: mode
+      sizingMode: mode,
+      mssqlRedundancy: tf?.mssqlRedundancy || false,
+      webRedundancy: tf?.webRedundancy || false
     }));
   }
 
@@ -216,12 +233,17 @@ export class NewCalculationDetailComponent implements OnInit {
 
     const totalSystems = this.getTotalTargetSystems(tf);
 
+    const mssqlRedundancy: boolean = tf.mssqlRedundancy || false;
+    const webRedundancy: boolean = tf.webRedundancy || false;
+
     const servers = calculateInfrastructureServers(this.pricing, {
       stages,
       servicelevel,
       amountIdentities,
       totalSystems,
-      sizingMode
+      sizingMode,
+      mssqlRedundancy,
+      webRedundancy
     });
 
     for (const srv of servers) {
@@ -239,14 +261,17 @@ export class NewCalculationDetailComponent implements OnInit {
     return normalizePricingConfig(p);
   }
 
-  private getTotalTargetSystems(tf: any): number {
+  trackBySrvIndex(i: number): number { return i; }
+  trackBySyncChange(_: number, ch: SyncChange): string { return ch.label; }
+
+  private getTotalTargetSystems(tf: Calculation['targetsystemsform']): number {
     const amountSAPHCM = (tf?.SAPHCMCSV || tf?.SAPHCM) ? 1 : 0;
-    return (parseInt(tf?.amountMSAD) || 0) + (parseInt(tf?.amountMSAAD) || 0) +
-      (parseInt(tf?.amountMSEX) || 0) + (parseInt(tf?.amountMSEXO) || 0) +
-      (parseInt(tf?.amountMSSP) || 0) + (parseInt(tf?.amountMSSPO) || 0) +
-      (parseInt(tf?.amountMSTEAMS) || 0) + (parseInt(tf?.amountFS) || 0) +
-      (parseInt(tf?.amountSAPAPP) || 0) + (parseInt(tf?.amountLDAP) || 0) +
-      (parseInt(tf?.amountSTAR) || 0) + amountSAPHCM;
+    return (Number(tf?.amountMSAD) || 0) + (Number(tf?.amountMSAAD) || 0) +
+      (Number(tf?.amountMSEX) || 0) + (Number(tf?.amountMSEXO) || 0) +
+      (Number(tf?.amountMSSP) || 0) + (Number(tf?.amountMSSPO) || 0) +
+      (Number(tf?.amountMSTEAMS) || 0) + (Number(tf?.amountFS) || 0) +
+      (Number(tf?.amountSAPAPP) || 0) + (Number(tf?.amountLDAP) || 0) +
+      (Number(tf?.amountSTAR) || 0) + amountSAPHCM;
   }
 
   computeSyncChanges(current: Pricing, admin: Pricing): SyncChange[] {
@@ -262,6 +287,8 @@ export class NewCalculationDetailComponent implements OnInit {
       changes.push({ label: 'PT pro 1000 Identitäten / Monat', oldVal: String(c.ptPer1000IdentitiesPerMonth), newVal: String(a.ptPer1000IdentitiesPerMonth) });
     if (c.jobServerThreshold !== a.jobServerThreshold)
       changes.push({ label: 'Jobserver-Schwelle', oldVal: `${c.jobServerThreshold} Sys./Server`, newVal: `${a.jobServerThreshold} Sys./Server` });
+    if (c.webServerSessionCapacity !== a.webServerSessionCapacity)
+      changes.push({ label: 'Sessions / Webserver', oldVal: `${c.webServerSessionCapacity}`, newVal: `${a.webServerSessionCapacity}` });
     if (JSON.stringify(current.dockerCluster) !== JSON.stringify(admin.dockerCluster))
       changes.push({ label: 'Docker Cluster', oldVal: `${current.dockerCluster?.nodes} Nodes / ${current.dockerCluster?.nodeRoleLabel}`, newVal: `${admin.dockerCluster?.nodes} Nodes / ${admin.dockerCluster?.nodeRoleLabel}` });
     if (JSON.stringify(current.roleDefs) !== JSON.stringify(admin.roleDefs))
@@ -274,12 +301,7 @@ export class NewCalculationDetailComponent implements OnInit {
     return changes;
   }
 
-  generateID(): number {
-    return parseInt(Math.random().toString(10).substring(0, 2));
-  }
-
   NewCalcForm: FormGroup = new FormGroup({
-    id: new FormControl(this.generateID()),
     basicform: new FormGroup({
       calculationName: new FormControl(null),
       calculationDesc: new FormControl('')
@@ -305,7 +327,9 @@ export class NewCalculationDetailComponent implements OnInit {
       SAPHCMCSV: new FormControl(false),
       SAPHCM: new FormControl(false),
       amountLDAP: new FormControl(0),
-      amountSTAR: new FormControl(0)
+      amountSTAR: new FormControl(0),
+      mssqlRedundancy: new FormControl(false),
+      webRedundancy: new FormControl(false)
     }),
     servers: new FormArray([]),
     consultingform: new FormGroup({
